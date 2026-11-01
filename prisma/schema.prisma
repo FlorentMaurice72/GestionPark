@@ -1,0 +1,284 @@
+// Prisma schema — GestionPark
+// Basé sur le schéma réel reconstitué par audit boîte noire (fait foi sur le CDC théorique).
+
+// ⚠️ Cascade choisi intentionnellement : la sécurité contre les suppressions
+// accidentelles repose sur des vérifications applicatives (voir actions.ts),
+// PAS sur une contrainte DB. Toute nouvelle fonction de suppression doit
+// reproduire ces gardes.
+// Concerne : Box.bien, Location.box, Paiement.location, Relance.location,
+// Document.bien (cf. lib/biens/actions.ts — supprimerBox vérifie l'absence
+// d'historique avant suppression, supprimerBien exige la confirmation tapée
+// "SUPPRIMER"). Location.locataire et Document.locataire restent en Restrict :
+// un Locataire ne doit jamais disparaître par cascade, seulement par archivage.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Bien
+// ---------------------------------------------------------------------------
+model Bien {
+  id                 Int       @id @default(autoincrement())
+  nom                String
+  typeBien           String    @map("type_bien")
+  adresseComplete    String    @map("adresse_complete")
+  nombreBoxes        Int       @map("nombre_boxes")
+  taxeFonciere       Decimal   @map("taxe_fonciere") @db.Decimal(12, 2)
+  assurance          Decimal   @db.Decimal(12, 2)
+  montantEmprunt     Decimal   @map("montant_emprunt") @db.Decimal(12, 2)
+  mensualiteEmprunt  Decimal   @map("mensualite_emprunt") @db.Decimal(12, 2)
+  tauxEmprunt        Decimal   @map("taux_emprunt") @db.Decimal(6, 3)
+  dateDebutEmprunt   DateTime  @map("date_debut_emprunt") @db.Date
+  dureeEmprunt       Int       @map("duree_emprunt")
+  // Optionnel : absent du schéma audité, ajouté en Phase 6 pour les calculs de
+  // rentabilité (aucune source fiable identifiée — saisie manuelle admin).
+  valeurEstimee      Decimal?  @map("valeur_estimee") @db.Decimal(12, 2)
+  // "actif" | "archivé"
+  statut             String    @default("actif")
+  archivedAt         DateTime? @map("archived_at")
+  createdAt          DateTime  @default(now()) @map("created_at")
+
+  boxes     Box[]
+  documents Document[]
+
+  @@map("biens")
+}
+
+// ---------------------------------------------------------------------------
+// Box
+// ---------------------------------------------------------------------------
+model Box {
+  id         Int      @id @default(autoincrement())
+  bienId     Int      @map("bien_id")
+  // Unicité globale tous biens confondus (décision produit confirmée).
+  numero     String   @unique
+  superficie Decimal  @db.Decimal(10, 2)
+  // "loué" | "vacant"
+  statut     String   @default("vacant")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  bien       Bien       @relation(fields: [bienId], references: [id], onDelete: Cascade)
+  locations  Location[]
+
+  @@map("boxes")
+}
+
+// ---------------------------------------------------------------------------
+// Locataire
+// ---------------------------------------------------------------------------
+model Locataire {
+  id            Int       @id @default(autoincrement())
+  nom           String
+  prenom        String
+  societe       String?
+  association   String?
+  email         String
+  telephone     String
+  adresse       String
+  ville         String
+  codePostal    String    @map("code_postal")
+  // "actif" | "archivé"
+  statut        String    @default("actif")
+  dateArchivage DateTime? @map("date_archivage")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  // RGPD (Phase 8) : anonymisation manuelle d'un locataire archivé (nom,
+  // coordonnées effacés) — jamais de suppression réelle de la ligne, pour
+  // préserver l'historique comptable (Location/Paiement, obligation de
+  // conservation ~10 ans). Ne couvre pas les données personnelles qui
+  // pourraient être présentes dans les Document liés (hors scope Phase 8).
+  anonymise     Boolean   @default(false)
+  anonymiseLe   DateTime? @map("anonymise_le")
+
+  locations Location[]
+  documents Document[]
+
+  @@map("locataires")
+}
+
+// ---------------------------------------------------------------------------
+// Location
+// ---------------------------------------------------------------------------
+model Location {
+  id             Int       @id @default(autoincrement())
+  boxId          Int       @map("box_id")
+  locataireId    Int       @map("locataire_id")
+  dateEntree     DateTime  @map("date_entree") @db.Date
+  loyerActuel    Decimal   @map("loyer_actuel") @db.Decimal(10, 2)
+  depotGarantie  Decimal   @map("depot_garantie") @db.Decimal(10, 2)
+  // "actif" | "terminé"
+  statut         String    @default("actif")
+  dateFin        DateTime? @map("date_fin") @db.Date
+  createdAt      DateTime  @default(now()) @map("created_at")
+  // Libellés de référence configurés manuellement pour le matching à l'import CSV.
+  // Prisma n'autorise pas les listes scalaires optionnelles : un tableau vide
+  // représente "aucun libellé configuré" plutôt que `null`.
+  matchingInputs String[]  @default([]) @map("matching_inputs")
+
+  // Cascade côté box : la suppression d'un bien entraîne celle de ses boxes,
+  // qui doit pouvoir purger leur historique de location (cf. journal de
+  // décisions Phase 5). Restrict côté locataire : on ne supprime jamais un
+  // Locataire par cascade, seulement par archivage.
+  box       Box        @relation(fields: [boxId], references: [id], onDelete: Cascade)
+  locataire Locataire  @relation(fields: [locataireId], references: [id], onDelete: Restrict)
+  paiements Paiement[]
+  relances  Relance[]
+
+  @@map("locations")
+}
+
+// ---------------------------------------------------------------------------
+// Paiement
+// ---------------------------------------------------------------------------
+model Paiement {
+  id            Int      @id @default(autoincrement())
+  locationId    Int      @map("location_id")
+  mois          Int
+  annee         Int
+  montant       Decimal  @db.Decimal(10, 2)
+  datePaiement  DateTime @map("date_paiement") @db.Date
+  createdAt     DateTime @default(now()) @map("created_at")
+  mode          String
+  // "manuel" (saisie via l'UI) | "import_csv" (import bancaire, Phase 3).
+  // Permet à un ré-import du même mois de ne remplacer que ses propres
+  // paiements précédents, sans jamais toucher aux saisies manuelles.
+  source        String   @default("manuel")
+
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@map("paiements")
+}
+
+// ---------------------------------------------------------------------------
+// Relance — archivage passif uniquement (pas de champ non audité côté
+// production réelle : construit sur la base du CDC théorique, cf. journal de
+// décisions Phase 4). Pas d'interface de consultation en V1.
+// ---------------------------------------------------------------------------
+model Relance {
+  id           Int      @id @default(autoincrement())
+  locationId   Int      @map("location_id")
+  dateEnvoi    DateTime @map("date_envoi")
+  // "email" | "sms"
+  canal        String
+  contenuTexte String   @map("contenu_texte")
+
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@map("relances")
+}
+
+// ---------------------------------------------------------------------------
+// Admin
+// ---------------------------------------------------------------------------
+model Admin {
+  id                    Int       @id @default(autoincrement())
+  email                 String    @unique
+  passwordHash          String    @map("password_hash")
+  createdAt             DateTime  @default(now()) @map("created_at")
+  // Reset de mot de passe : token à usage unique, effacé après utilisation ou
+  // expiration. Pas de table séparée, un seul token actif à la fois par admin.
+  resetToken            String?   @unique @map("reset_token")
+  resetTokenExpiresAt   DateTime? @map("reset_token_expires_at")
+
+  @@map("admins")
+}
+
+// ---------------------------------------------------------------------------
+// TentativeConnexion — rate limiting sur /login (Phase 8). Historique des
+// tentatives de connexion par email, purgé au fil de l'eau (pas de CRON,
+// cf. philosophie du projet) dans lib/login-rate-limit.ts.
+// ---------------------------------------------------------------------------
+model TentativeConnexion {
+  id        Int      @id @default(autoincrement())
+  email     String
+  reussie   Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([email, createdAt])
+  @@map("tentatives_connexion")
+}
+
+// ---------------------------------------------------------------------------
+// Document (fusion Document + Charge : charge_montant/charge_type nuls si ce
+// n'est pas une charge)
+// ---------------------------------------------------------------------------
+model Document {
+  id            Int       @id @default(autoincrement())
+  // "-" tant qu'aucun fichier réel n'est attaché (métadonnée seule, ou lettre
+  // générée dont le texte vit dans `contenuTexte`) — même convention que les
+  // champs optionnels vides ailleurs dans l'app. Sera un vrai identifiant de
+  // stockage une fois Supabase Storage branché (Phase 6, en attente des clés).
+  fileId        String    @map("file_id")
+  nomFichier    String    @map("nom_fichier")
+  type          String
+  description   String?
+  bienId        Int       @map("bien_id")
+  // Optionnel : les charges liées au bien (assurance, taxe foncière, factures
+  // d'entretien...) n'ont pas de locataire associé. Absent de l'audit d'origine
+  // (aucun Document n'y avait jamais été observé) — corrigé en Phase 6 à l'usage.
+  locataireId   Int?      @map("locataire_id")
+  chargeMontant Decimal?  @map("charge_montant") @db.Decimal(10, 2)
+  chargeType    String?   @map("charge_type")
+  // Contenu d'une lettre générée (relance avec AR, demande de congé) —
+  // alternative à un fichier réel pour les documents purement textuels
+  // (cf. Relance.contenuTexte, même principe, Phase 4).
+  contenuTexte  String?   @map("contenu_texte")
+  dateDocument  DateTime  @map("date_document") @db.Date
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  // Cascade côté bien : la suppression d'un bien (irréversible, confirmée
+  // explicitement) purge aussi ses documents. Restrict côté locataire : les
+  // documents (ex. bail) survivent à l'archivage d'un locataire (décision du
+  // 30/07/2026 — l'audit réel montre des documents consultables pour des
+  // locataires archivés, contrairement au CDC théorique).
+  bien      Bien       @relation(fields: [bienId], references: [id], onDelete: Cascade)
+  locataire Locataire? @relation(fields: [locataireId], references: [id], onDelete: Restrict)
+
+  @@map("documents")
+}
+
+// ---------------------------------------------------------------------------
+// TransactionNonIdentifiee — transactions bancaires importées (Phase 3) sans
+// correspondance trouvée avec une Location. Absente du CDC/de l'audit
+// d'origine : ajoutée en Phase 7 uniquement pour que le Dashboard puisse
+// afficher "X paiements nécessitent attribution manuelle" même rouvert plus
+// tard (auparavant ce compte n'existait que dans l'état React éphémère du
+// wizard d'import, perdu à la fermeture de l'onglet). Un ré-import du même
+// mois remplace entièrement les lignes non identifiées de ce mois (même
+// principe que Paiement.source = "import_csv", cf. lib/import/actions.ts) —
+// pas d'UI de résolution/assignation manuelle cette session, stockage brut
+// uniquement.
+// ---------------------------------------------------------------------------
+model TransactionNonIdentifiee {
+  id           Int      @id @default(autoincrement())
+  libelle      String
+  montant      Decimal  @db.Decimal(10, 2)
+  datePaiement DateTime @map("date_paiement") @db.Date
+  mois         Int
+  annee        Int
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("transactions_non_identifiees")
+}
+
+// ---------------------------------------------------------------------------
+// ImportPreset — un seul preset par banque, sélection manuelle à l'import
+// ---------------------------------------------------------------------------
+model ImportPreset {
+  id                Int      @id @default(autoincrement())
+  name              String
+  dateColumn        String   @map("date_column")
+  descriptionColumn String   @map("description_column")
+  amountColumn      String   @map("amount_column")
+  delimiter         String
+  columns           String[] @default([])
+  hasHeaderRow      Boolean  @map("has_header_row")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  @@map("import_presets")
+}
