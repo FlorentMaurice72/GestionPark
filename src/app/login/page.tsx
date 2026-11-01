@@ -27,9 +27,9 @@ async function login(formData: FormData) {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; reset?: string }>;
+  searchParams: Promise<{ error?: string; reset?: string; inscription?: string }>;
 }) {
-  const { error, reset } = await searchParams;
+  const { error, reset, inscription } = await searchParams;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-neutral-50 px-4 dark:bg-neutral-950">
@@ -67,6 +67,11 @@ export default async function LoginPage({
             />
           </div>
 
+          {inscription === "1" && !error && (
+            <p className="text-sm text-green-600 dark:text-green-400">
+              Compte créé. Connectez-vous.
+            </p>
+          )}
           {reset === "1" && !error && (
             <p className="text-sm text-green-600 dark:text-green-400">
               Mot de passe réinitialisé. Vous pouvez vous connecter.
@@ -96,6 +101,16 @@ export default async function LoginPage({
               className="text-neutral-500 underline hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200"
             >
               Mot de passe oublié ?
+            </Link>
+          </p>
+
+          <p className="text-center text-sm text-neutral-500 dark:text-neutral-400">
+            Pas de compte ?{" "}
+            <Link
+              href="/signup"
+              className="underline hover:text-neutral-700 dark:hover:text-neutral-200"
+            >
+              Créer un compte
             </Link>
           </p>
         </form>
