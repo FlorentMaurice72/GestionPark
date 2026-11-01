@@ -16,11 +16,18 @@ export async function GET() {
     error = String(e);
   }
 
+  const start = raw.slice(0, 30);
+  const end = raw.slice(-20);
+  const firstCodes = [...raw.slice(0, 5)].map(c => c.charCodeAt(0));
+
   return NextResponse.json({
     defined: !!raw,
     length: raw.length,
     scheme,
     host,
     parseError: error,
+    start,
+    end,
+    firstCharCodes: firstCodes,
   });
 }
