@@ -20,13 +20,19 @@ const PRESETS = [
 ];
 
 async function main() {
+  const admin = await prisma.admin.findFirst({ orderBy: { id: "asc" } });
+  if (!admin) {
+    console.error("Aucun admin trouvé. Créez d'abord un compte avec npm run create-admin.");
+    process.exit(1);
+  }
+
   for (const preset of PRESETS) {
-    const existant = await prisma.importPreset.findFirst({ where: { name: preset.name } });
+    const existant = await prisma.importPreset.findFirst({ where: { name: preset.name, utilisateurId: admin.id } });
     if (existant) {
       console.log(`Preset "${preset.name}" déjà présent (id ${existant.id}), ignoré.`);
       continue;
     }
-    const cree = await prisma.importPreset.create({ data: preset });
+    const cree = await prisma.importPreset.create({ data: { ...preset, utilisateurId: admin.id } });
     console.log(`Preset "${preset.name}" créé (id ${cree.id}).`);
   }
 }
