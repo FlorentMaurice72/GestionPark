@@ -28,7 +28,8 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const data = await getDashboardPageData();
+  const userId = parseInt(session.user!.id!);
+  const data = await getDashboardPageData(userId);
 
   const messageImportRequis = `Import CSV nécessaire pour ce mois`;
 

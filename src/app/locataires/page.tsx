@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import { getLocatairesPageData } from "@/lib/locataires/data";
 import { AppNav } from "@/components/AppNav";
 import { DeconnexionButton } from "@/components/DeconnexionButton";
@@ -18,12 +20,16 @@ function parseId(value: string | undefined): number | null {
 }
 
 export default async function LocatairesPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
+  const session = await auth();
+  if (!session) redirect("/login");
+  const userId = parseInt(session.user!.id!);
+
   const params = await searchParams;
   const statut = params.statut === "archivé" || params.statut === "tous" ? params.statut : "actif";
   const bienId = parseId(params.bien);
   const recherche = params.q?.trim() ?? "";
 
-  const data = await getLocatairesPageData({ statut, bienId, recherche: recherche || null });
+  const data = await getLocatairesPageData({ statut, bienId, recherche: recherche || null }, userId);
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">

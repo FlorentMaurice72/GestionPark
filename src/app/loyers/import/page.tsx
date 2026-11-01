@@ -1,9 +1,15 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import { getImportPageData } from "@/lib/import/data";
 import { ImportWizard } from "./_components/ImportWizard";
 
 export default async function ImportPage() {
-  const data = await getImportPageData();
+  const session = await auth();
+  if (!session) redirect("/login");
+  const userId = parseInt(session.user!.id!);
+
+  const data = await getImportPageData(userId);
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">

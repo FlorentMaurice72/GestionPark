@@ -32,10 +32,11 @@ export interface DocumentsPageData {
   documents: DocumentListItem[];
 }
 
-export async function getDocumentsPageData(filtres: DocumentsFiltres): Promise<DocumentsPageData> {
+export async function getDocumentsPageData(filtres: DocumentsFiltres, userId: number): Promise<DocumentsPageData> {
   const [documents, biens, locataires, locatairesActifs] = await Promise.all([
     prisma.document.findMany({
       where: {
+        bien: { utilisateurId: userId },
         ...(filtres.categorie ? { type: filtres.categorie } : {}),
         ...(filtres.bienId ? { bienId: filtres.bienId } : {}),
         ...(filtres.locataireId ? { locataireId: filtres.locataireId } : {}),
@@ -51,10 +52,10 @@ export async function getDocumentsPageData(filtres: DocumentsFiltres): Promise<D
       include: { bien: true, locataire: true },
       orderBy: { dateDocument: "desc" },
     }),
-    prisma.bien.findMany({ where: { statut: "actif" }, select: { id: true, nom: true }, orderBy: { nom: "asc" } }),
-    prisma.locataire.findMany({ select: { id: true, nom: true, prenom: true }, orderBy: { nom: "asc" } }),
+    prisma.bien.findMany({ where: { statut: "actif", utilisateurId: userId }, select: { id: true, nom: true }, orderBy: { nom: "asc" } }),
+    prisma.locataire.findMany({ where: { utilisateurId: userId }, select: { id: true, nom: true, prenom: true }, orderBy: { nom: "asc" } }),
     prisma.locataire.findMany({
-      where: { statut: "actif", locations: { some: { statut: "actif" } } },
+      where: { statut: "actif", utilisateurId: userId, locations: { some: { statut: "actif" } } },
       select: { id: true, nom: true, prenom: true },
       orderBy: { nom: "asc" },
     }),

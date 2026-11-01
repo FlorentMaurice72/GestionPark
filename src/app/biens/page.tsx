@@ -1,10 +1,16 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import { getBiensPageData } from "@/lib/biens/data";
 import { AppNav } from "@/components/AppNav";
 import { DeconnexionButton } from "@/components/DeconnexionButton";
 
 export default async function BiensPage() {
-  const biens = await getBiensPageData();
+  const session = await auth();
+  if (!session) redirect("/login");
+  const userId = parseInt(session.user!.id!);
+
+  const biens = await getBiensPageData(userId);
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">

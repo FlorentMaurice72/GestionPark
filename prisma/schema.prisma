@@ -43,9 +43,11 @@ model Bien {
   statut             String    @default("actif")
   archivedAt         DateTime? @map("archived_at")
   createdAt          DateTime  @default(now()) @map("created_at")
+  utilisateurId      Int       @map("utilisateur_id")
 
   boxes     Box[]
   documents Document[]
+  admin     Admin      @relation(fields: [utilisateurId], references: [id], onDelete: Restrict)
 
   @@map("biens")
 }
@@ -95,8 +97,10 @@ model Locataire {
   anonymise     Boolean   @default(false)
   anonymiseLe   DateTime? @map("anonymise_le")
 
-  locations Location[]
-  documents Document[]
+  locations     Location[]
+  documents     Document[]
+  utilisateurId Int        @map("utilisateur_id")
+  admin         Admin      @relation(fields: [utilisateurId], references: [id], onDelete: Restrict)
 
   @@map("locataires")
 }
@@ -185,6 +189,11 @@ model Admin {
   resetToken            String?   @unique @map("reset_token")
   resetTokenExpiresAt   DateTime? @map("reset_token_expires_at")
 
+  biens                      Bien[]
+  locataires                 Locataire[]
+  importPresets              ImportPreset[]
+  transactionsNonIdentifiees TransactionNonIdentifiee[]
+
   @@map("admins")
 }
 
@@ -255,13 +264,15 @@ model Document {
 // uniquement.
 // ---------------------------------------------------------------------------
 model TransactionNonIdentifiee {
-  id           Int      @id @default(autoincrement())
-  libelle      String
-  montant      Decimal  @db.Decimal(10, 2)
-  datePaiement DateTime @map("date_paiement") @db.Date
-  mois         Int
-  annee        Int
-  createdAt    DateTime @default(now()) @map("created_at")
+  id            Int      @id @default(autoincrement())
+  libelle       String
+  montant       Decimal  @db.Decimal(10, 2)
+  datePaiement  DateTime @map("date_paiement") @db.Date
+  mois          Int
+  annee         Int
+  createdAt     DateTime @default(now()) @map("created_at")
+  utilisateurId Int      @map("utilisateur_id")
+  admin         Admin    @relation(fields: [utilisateurId], references: [id], onDelete: Restrict)
 
   @@map("transactions_non_identifiees")
 }
@@ -279,6 +290,8 @@ model ImportPreset {
   columns           String[] @default([])
   hasHeaderRow      Boolean  @map("has_header_row")
   createdAt         DateTime @default(now()) @map("created_at")
+  utilisateurId     Int      @map("utilisateur_id")
+  admin             Admin    @relation(fields: [utilisateurId], references: [id], onDelete: Restrict)
 
   @@map("import_presets")
 }

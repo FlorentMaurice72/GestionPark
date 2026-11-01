@@ -57,17 +57,17 @@ export interface LoyersFiltres {
   statut: StatutPaiement | null;
 }
 
-export async function getLoyersPageData(filtres: LoyersFiltres): Promise<LoyersPageData> {
+export async function getLoyersPageData(filtres: LoyersFiltres, userId: number): Promise<LoyersPageData> {
   const [biens, locationsActives, bornesAnnees] = await Promise.all([
     prisma.bien.findMany({
-      where: { statut: "actif" },
+      where: { statut: "actif", utilisateurId: userId },
       select: { id: true, nom: true },
       orderBy: { nom: "asc" },
     }),
     prisma.location.findMany({
       where: {
         statut: "actif",
-        ...(filtres.bienId ? { box: { bienId: filtres.bienId } } : {}),
+        box: { bien: { utilisateurId: userId }, ...(filtres.bienId ? { bienId: filtres.bienId } : {}) },
       },
       include: {
         box: { include: { bien: true } },

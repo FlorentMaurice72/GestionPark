@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 import { genererNumeros } from "./numerotation";
 
 export interface ActionState {
@@ -101,6 +102,10 @@ export async function creerBien(_prevState: ActionState, formData: FormData): Pr
   const erreurNumeros = await verifierNumerosDisponibles(parametresBoxes.numeros);
   if (erreurNumeros) return { success: false, error: erreurNumeros };
 
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "Non authentifié." };
+  const userId = parseInt(session.user.id);
+
   const bien = await prisma.$transaction(async (tx) => {
     const nouveauBien = await tx.bien.create({
       data: {
@@ -116,6 +121,7 @@ export async function creerBien(_prevState: ActionState, formData: FormData): Pr
         dateDebutEmprunt: new Date(dateDebutEmprunt),
         dureeEmprunt,
         valeurEstimee,
+        utilisateurId: userId,
       },
     });
 
@@ -148,7 +154,11 @@ export async function ajouterBoxes(_prevState: ActionState, formData: FormData):
   const erreurNumeros = await verifierNumerosDisponibles(parametresBoxes.numeros);
   if (erreurNumeros) return { success: false, error: erreurNumeros };
 
-  const bien = await prisma.bien.findUnique({ where: { id: bienId } });
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "Non authentifié." };
+  const userId = parseInt(session.user.id);
+
+  const bien = await prisma.bien.findUnique({ where: { id: bienId, utilisateurId: userId } });
   if (!bien) return { success: false, error: "Bien introuvable." };
 
   await prisma.$transaction(async (tx) => {
@@ -203,7 +213,11 @@ export async function modifierBien(_prevState: ActionState, formData: FormData):
     return { success: false, error: valeurEstimee.error };
   }
 
-  const bien = await prisma.bien.findUnique({ where: { id } });
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "Non authentifié." };
+  const userId = parseInt(session.user.id);
+
+  const bien = await prisma.bien.findUnique({ where: { id, utilisateurId: userId } });
   if (!bien) return { success: false, error: "Bien introuvable." };
 
   await prisma.bien.update({
@@ -234,8 +248,12 @@ export async function supprimerBox(_prevState: ActionState, formData: FormData):
     return { success: false, error: "Box invalide." };
   }
 
-  const box = await prisma.box.findUnique({ where: { id: boxId } });
-  if (!box) return { success: false, error: "Box introuvable." };
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "Non authentifié." };
+  const userId = parseInt(session.user.id);
+
+  const box = await prisma.box.findUnique({ where: { id: boxId }, include: { bien: { select: { utilisateurId: true } } } });
+  if (!box || box.bien.utilisateurId !== userId) return { success: false, error: "Box introuvable." };
 
   if (box.statut !== "vacant") {
     return { success: false, error: "Ce box est actuellement loué, suppression impossible." };
@@ -269,8 +287,12 @@ export async function supprimerBien(_prevState: ActionState, formData: FormData)
     return { success: false, error: 'Veuillez saisir exactement "SUPPRIMER" pour confirmer.' };
   }
 
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "Non authentifié." };
+  const userId = parseInt(session.user.id);
+
   const bien = await prisma.bien.findUnique({
-    where: { id },
+    where: { id, utilisateurId: userId },
     include: {
       boxes: {
         include: { locations: { where: { statut: "actif" }, select: { locataireId: true } } },

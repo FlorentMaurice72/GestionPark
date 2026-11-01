@@ -19,7 +19,8 @@ export async function GET(request: Request) {
   const bienBrut = searchParams.get("bien");
   const bienId = bienBrut ? Number(bienBrut) : null;
 
-  const data = await getFinancesPageData({ mois, annee, bienId });
+  const userId = parseInt(session.user!.id!);
+  const data = await getFinancesPageData({ mois, annee, bienId }, userId);
 
   const lignes = [
     "indicateur;valeur",

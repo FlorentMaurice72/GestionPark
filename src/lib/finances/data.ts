@@ -83,9 +83,9 @@ function estChargeVariable(chargeType: string | null): boolean {
   return chargeType === null || !CHARGE_TYPES_DEJA_COMPTES_FIXES.has(chargeType);
 }
 
-export async function getFinancesPageData(filtres: FinancesFiltres): Promise<FinancesPageData> {
+export async function getFinancesPageData(filtres: FinancesFiltres, userId: number): Promise<FinancesPageData> {
   const biensActifs = await prisma.bien.findMany({
-    where: { statut: "actif", ...(filtres.bienId ? { id: filtres.bienId } : {}) },
+    where: { statut: "actif", utilisateurId: userId, ...(filtres.bienId ? { id: filtres.bienId } : {}) },
     include: {
       boxes: {
         include: { locations: { select: { dateEntree: true, dateFin: true } } },
@@ -95,7 +95,7 @@ export async function getFinancesPageData(filtres: FinancesFiltres): Promise<Fin
   });
 
   const toutesLesBiens = await prisma.bien.findMany({
-    where: { statut: "actif" },
+    where: { statut: "actif", utilisateurId: userId },
     select: { id: true, nom: true },
     orderBy: { nom: "asc" },
   });

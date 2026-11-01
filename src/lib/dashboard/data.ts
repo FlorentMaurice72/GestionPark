@@ -40,27 +40,28 @@ export interface DashboardPageData {
   notifications: Notification[];
 }
 
-export async function getDashboardPageData(): Promise<DashboardPageData> {
+export async function getDashboardPageData(userId: number): Promise<DashboardPageData> {
   const aujourdHui = new Date();
   const mois = aujourdHui.getUTCMonth() + 1;
   const annee = aujourdHui.getUTCFullYear();
 
   const [biens, loyersDuMois, kpiLocatairesActifs, dernierImportRow, nombreNonIdentifiees, toutesLesLocations, paiementsAnnee] =
     await Promise.all([
-      getBiensPageData(),
-      getLoyersPageData({ bienId: null, mois, annee, locataireId: null, boxId: null, statut: null }),
-      prisma.locataire.count({ where: { statut: "actif" } }),
+      getBiensPageData(userId),
+      getLoyersPageData({ bienId: null, mois, annee, locataireId: null, boxId: null, statut: null }, userId),
+      prisma.locataire.count({ where: { statut: "actif", utilisateurId: userId } }),
       prisma.paiement.findFirst({
-        where: { mois, annee, source: "import_csv" },
+        where: { mois, annee, source: "import_csv", location: { box: { bien: { utilisateurId: userId } } } },
         orderBy: { createdAt: "desc" },
         select: { createdAt: true },
       }),
-      prisma.transactionNonIdentifiee.count(),
+      prisma.transactionNonIdentifiee.count({ where: { utilisateurId: userId } }),
       prisma.location.findMany({
+        where: { box: { bien: { utilisateurId: userId } } },
         select: { id: true, dateEntree: true, dateFin: true, loyerActuel: true },
       }),
       prisma.paiement.findMany({
-        where: { annee },
+        where: { annee, location: { box: { bien: { utilisateurId: userId } } } },
         select: { locationId: true, mois: true, montant: true },
       }),
     ]);

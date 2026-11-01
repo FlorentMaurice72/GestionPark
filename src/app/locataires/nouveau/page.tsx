@@ -1,11 +1,17 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import { getBoxesVacantsDisponibles } from "@/lib/locataires/data";
 import { AppNav } from "@/components/AppNav";
 import { DeconnexionButton } from "@/components/DeconnexionButton";
 import { NouveauLocataireForm } from "./_components/NouveauLocataireForm";
 
 export default async function NouveauLocatairePage() {
-  const boxesVacants = await getBoxesVacantsDisponibles();
+  const session = await auth();
+  if (!session) redirect("/login");
+  const userId = parseInt(session.user!.id!);
+
+  const boxesVacants = await getBoxesVacantsDisponibles(userId);
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">

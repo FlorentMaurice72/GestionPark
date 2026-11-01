@@ -30,10 +30,11 @@ export interface LocatairesPageData {
   biens: OptionSimple[];
 }
 
-export async function getLocatairesPageData(filtres: LocatairesFiltres): Promise<LocatairesPageData> {
+export async function getLocatairesPageData(filtres: LocatairesFiltres, userId: number): Promise<LocatairesPageData> {
   const [locataires, biens] = await Promise.all([
     prisma.locataire.findMany({
       where: {
+        utilisateurId: userId,
         ...(filtres.statut !== "tous" ? { statut: filtres.statut } : {}),
         ...(filtres.recherche
           ? {
@@ -54,7 +55,7 @@ export async function getLocatairesPageData(filtres: LocatairesFiltres): Promise
       },
       orderBy: [{ nom: "asc" }, { prenom: "asc" }],
     }),
-    prisma.bien.findMany({ where: { statut: "actif" }, select: { id: true, nom: true }, orderBy: { nom: "asc" } }),
+    prisma.bien.findMany({ where: { statut: "actif", utilisateurId: userId }, select: { id: true, nom: true }, orderBy: { nom: "asc" } }),
   ]);
 
   return {
@@ -82,9 +83,9 @@ export interface BoxVacantOption {
   label: string;
 }
 
-export async function getBoxesVacantsDisponibles(): Promise<BoxVacantOption[]> {
+export async function getBoxesVacantsDisponibles(userId: number): Promise<BoxVacantOption[]> {
   const boxes = await prisma.box.findMany({
-    where: { statut: "vacant" },
+    where: { statut: "vacant", bien: { utilisateurId: userId } },
     include: { bien: true },
     orderBy: { numero: "asc" },
   });
@@ -131,9 +132,9 @@ export interface LocataireDetail {
   documents: DocumentItem[];
 }
 
-export async function getLocataireDetail(id: number): Promise<LocataireDetail | null> {
+export async function getLocataireDetail(id: number, userId: number): Promise<LocataireDetail | null> {
   const locataire = await prisma.locataire.findUnique({
-    where: { id },
+    where: { id, utilisateurId: userId },
     include: {
       locations: {
         orderBy: { createdAt: "desc" },

@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 
 export interface ActionState {
   success: boolean;
@@ -35,8 +36,12 @@ export async function creerLocataire(_prevState: ActionState, formData: FormData
     return { success: false, error: "Dépôt de garantie invalide." };
   }
 
-  const box = await prisma.box.findUnique({ where: { id: boxId } });
-  if (!box) return { success: false, error: "Box introuvable." };
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "Non authentifié." };
+  const userId = parseInt(session.user.id);
+
+  const box = await prisma.box.findUnique({ where: { id: boxId }, include: { bien: { select: { utilisateurId: true } } } });
+  if (!box || box.bien.utilisateurId !== userId) return { success: false, error: "Box introuvable." };
   if (box.statut !== "vacant") return { success: false, error: "Ce box n'est plus vacant." };
 
   const locataire = await prisma.$transaction(async (tx) => {
@@ -51,6 +56,7 @@ export async function creerLocataire(_prevState: ActionState, formData: FormData
         adresse: valeurOuTiret(formData, "adresse"),
         ville: valeurOuTiret(formData, "ville"),
         codePostal: valeurOuTiret(formData, "codePostal"),
+        utilisateurId: userId,
       },
     });
 
@@ -86,7 +92,11 @@ export async function modifierLocataire(_prevState: ActionState, formData: FormD
   if (!nom) return { success: false, error: "Nom requis." };
   if (!prenom) return { success: false, error: "Prénom requis." };
 
-  const locataire = await prisma.locataire.findUnique({ where: { id } });
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "Non authentifié." };
+  const userId = parseInt(session.user.id);
+
+  const locataire = await prisma.locataire.findUnique({ where: { id, utilisateurId: userId } });
   if (!locataire) return { success: false, error: "Locataire introuvable." };
 
   await prisma.locataire.update({
@@ -113,8 +123,12 @@ export async function archiverLocataire(_prevState: ActionState, formData: FormD
   const id = Number(formData.get("id"));
   if (!Number.isInteger(id) || id <= 0) return { success: false, error: "Locataire invalide." };
 
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "Non authentifié." };
+  const userId = parseInt(session.user.id);
+
   const locataire = await prisma.locataire.findUnique({
-    where: { id },
+    where: { id, utilisateurId: userId },
     include: { locations: { where: { statut: "actif" } } },
   });
   if (!locataire) return { success: false, error: "Locataire introuvable." };
@@ -156,7 +170,11 @@ export async function anonymiserLocataire(_prevState: ActionState, formData: For
     return { success: false, error: 'Veuillez saisir exactement "ANONYMISER" pour confirmer.' };
   }
 
-  const locataire = await prisma.locataire.findUnique({ where: { id } });
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "Non authentifié." };
+  const userId = parseInt(session.user.id);
+
+  const locataire = await prisma.locataire.findUnique({ where: { id, utilisateurId: userId } });
   if (!locataire) return { success: false, error: "Locataire introuvable." };
   if (locataire.statut !== "archivé") {
     return { success: false, error: "Seul un locataire archivé peut être anonymisé." };

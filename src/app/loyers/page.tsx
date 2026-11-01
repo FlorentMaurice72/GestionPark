@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import { getLoyersPageData } from "@/lib/loyers/data";
 import type { StatutPaiement } from "@/lib/paiements";
 import { AppNav } from "@/components/AppNav";
@@ -35,6 +37,10 @@ export default async function LoyersPage({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
+  const session = await auth();
+  if (!session) redirect("/login");
+  const userId = parseInt(session.user!.id!);
+
   const params = await searchParams;
   const today = new Date();
 
@@ -51,7 +57,7 @@ export default async function LoyersPage({
   const boxId = parseId(params.box);
   const statut = parseStatut(params.statut);
 
-  const data = await getLoyersPageData({ bienId, mois, annee, locataireId, boxId, statut });
+  const data = await getLoyersPageData({ bienId, mois, annee, locataireId, boxId, statut }, userId);
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">

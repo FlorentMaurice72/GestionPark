@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
 
 export interface EntreeImport {
   locationId: number;
@@ -95,8 +96,12 @@ export async function enregistrerTransactionsNonIdentifiees(
   annee: number,
   entrees: EntreeNonIdentifiee[],
 ): Promise<void> {
+  const session = await auth();
+  if (!session?.user?.id) return;
+  const userId = parseInt(session.user.id);
+
   await prisma.$transaction([
-    prisma.transactionNonIdentifiee.deleteMany({ where: { mois, annee } }),
+    prisma.transactionNonIdentifiee.deleteMany({ where: { mois, annee, utilisateurId: userId } }),
     ...(entrees.length > 0
       ? [
           prisma.transactionNonIdentifiee.createMany({
@@ -106,6 +111,7 @@ export async function enregistrerTransactionsNonIdentifiees(
               datePaiement: new Date(entree.datePaiement),
               mois,
               annee,
+              utilisateurId: userId,
             })),
           }),
         ]

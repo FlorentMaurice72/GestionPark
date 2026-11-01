@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import { getFinancesPageData } from "@/lib/finances/data";
 import { getDocumentsPageData } from "@/lib/documents/data";
 import { AppNav } from "@/components/AppNav";
@@ -22,6 +24,10 @@ function parseId(value: string | undefined): number | null {
 }
 
 export default async function FinancesPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
+  const session = await auth();
+  if (!session) redirect("/login");
+  const userId = parseInt(session.user!.id!);
+
   const params = await searchParams;
   const today = new Date();
 
@@ -48,7 +54,7 @@ export default async function FinancesPage({ searchParams }: { searchParams: Pro
         <OngletsFinances vue={vue} />
 
         {vue === "analyse" ? (
-          <AnalyseFinancierePane mois={mois} annee={annee} bienId={bienId} />
+          <AnalyseFinancierePane mois={mois} annee={annee} bienId={bienId} userId={userId} />
         ) : (
           <DocumentsFacturesPane
             categorie={params.categorie ?? null}
@@ -57,6 +63,7 @@ export default async function FinancesPage({ searchParams }: { searchParams: Pro
             annee={params.annee ? annee : null}
             mois={mois}
             anneeCourante={annee}
+            userId={userId}
           />
         )}
       </main>
@@ -64,8 +71,8 @@ export default async function FinancesPage({ searchParams }: { searchParams: Pro
   );
 }
 
-async function AnalyseFinancierePane({ mois, annee, bienId }: { mois: number; annee: number; bienId: number | null }) {
-  const data = await getFinancesPageData({ mois, annee, bienId });
+async function AnalyseFinancierePane({ mois, annee, bienId, userId }: { mois: number; annee: number; bienId: number | null; userId: number }) {
+  const data = await getFinancesPageData({ mois, annee, bienId }, userId);
   return <AnalyseFinanciere data={data} mois={mois} annee={annee} bienId={bienId} />;
 }
 
@@ -76,6 +83,7 @@ async function DocumentsFacturesPane({
   annee,
   mois,
   anneeCourante,
+  userId,
 }: {
   categorie: string | null;
   bienId: number | null;
@@ -83,8 +91,9 @@ async function DocumentsFacturesPane({
   annee: number | null;
   mois: number;
   anneeCourante: number;
+  userId: number;
 }) {
-  const data = await getDocumentsPageData({ categorie, bienId, locataireId, annee });
+  const data = await getDocumentsPageData({ categorie, bienId, locataireId, annee }, userId);
   return (
     <DocumentsFactures
       data={data}

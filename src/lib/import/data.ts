@@ -28,10 +28,11 @@ export interface ImportPageData {
 
 // Toutes les Locations (pas seulement actives) : une transaction en retard
 // peut légitimement concerner une Location déjà terminée.
-export async function getImportPageData(): Promise<ImportPageData> {
+export async function getImportPageData(userId: number): Promise<ImportPageData> {
   const [presets, locations] = await Promise.all([
-    prisma.importPreset.findMany({ orderBy: { name: "asc" } }),
+    prisma.importPreset.findMany({ where: { utilisateurId: userId }, orderBy: { name: "asc" } }),
     prisma.location.findMany({
+      where: { box: { bien: { utilisateurId: userId } } },
       include: { box: { include: { bien: true } }, locataire: true },
       orderBy: { id: "asc" },
     }),

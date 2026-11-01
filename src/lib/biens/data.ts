@@ -10,9 +10,9 @@ export interface BienListItem {
   nombreBoxesTotal: number;
 }
 
-export async function getBiensPageData(): Promise<BienListItem[]> {
+export async function getBiensPageData(userId: number): Promise<BienListItem[]> {
   const biens = await prisma.bien.findMany({
-    where: { statut: "actif" },
+    where: { statut: "actif", utilisateurId: userId },
     include: { boxes: { select: { statut: true } } },
     orderBy: { nom: "asc" },
   });
@@ -55,9 +55,9 @@ export interface BienDetail {
   boxes: BoxDetail[];
 }
 
-export async function getBienDetail(id: number): Promise<BienDetail | null> {
+export async function getBienDetail(id: number, userId: number): Promise<BienDetail | null> {
   const bien = await prisma.bien.findUnique({
-    where: { id },
+    where: { id, utilisateurId: userId },
     include: {
       boxes: {
         include: {

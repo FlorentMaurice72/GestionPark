@@ -1,16 +1,21 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import { getLocataireDetail } from "@/lib/locataires/data";
 import { AppNav } from "@/components/AppNav";
 import { DeconnexionButton } from "@/components/DeconnexionButton";
 import { ModifierLocataireForm } from "./_components/ModifierLocataireForm";
 
 export default async function ModifierLocatairePage({ params }: { params: Promise<{ id: string }> }) {
+  const session = await auth();
+  if (!session) redirect("/login");
+  const userId = parseInt(session.user!.id!);
+
   const { id } = await params;
   const locataireId = Number(id);
   if (!Number.isInteger(locataireId) || locataireId <= 0) notFound();
 
-  const locataire = await getLocataireDetail(locataireId);
+  const locataire = await getLocataireDetail(locataireId, userId);
   if (!locataire) notFound();
 
   const nomComplet = `${locataire.nom} ${locataire.prenom}`;

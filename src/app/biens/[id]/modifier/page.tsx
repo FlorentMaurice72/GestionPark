@@ -1,16 +1,21 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import { getBienDetail } from "@/lib/biens/data";
 import { AppNav } from "@/components/AppNav";
 import { DeconnexionButton } from "@/components/DeconnexionButton";
 import { ModifierBienForm } from "./_components/ModifierBienForm";
 
 export default async function ModifierBienPage({ params }: { params: Promise<{ id: string }> }) {
+  const session = await auth();
+  if (!session) redirect("/login");
+  const userId = parseInt(session.user!.id!);
+
   const { id } = await params;
   const bienId = Number(id);
   if (!Number.isInteger(bienId) || bienId <= 0) notFound();
 
-  const bien = await getBienDetail(bienId);
+  const bien = await getBienDetail(bienId, userId);
   if (!bien) notFound();
 
   return (
