@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 const ONGLETS = [
   { href: "/", label: "Dashboard" },
+  { href: "/echeancier", label: "Échéancier" },
   { href: "/loyers", label: "Loyers & Paiements" },
   { href: "/biens", label: "Mes Biens" },
   { href: "/locataires", label: "Mes Locataires" },
@@ -17,7 +18,10 @@ export function AppNav() {
   return (
     <nav className="flex gap-4 border-b border-neutral-200 bg-white px-6 dark:border-neutral-800 dark:bg-neutral-900">
       {ONGLETS.map((onglet) => {
-        const actif = pathname === onglet.href || pathname.startsWith(`${onglet.href}/`);
+        const actif =
+          onglet.href === "/"
+            ? pathname === "/"
+            : pathname === onglet.href || pathname.startsWith(`${onglet.href}/`);
         return (
           <Link
             key={onglet.href}

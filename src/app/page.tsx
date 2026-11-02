@@ -11,6 +11,8 @@ import { ActionsUrgentes } from "./_components/ActionsUrgentes";
 import { GraphiqueLoyers12Mois } from "./_components/GraphiqueLoyers12Mois";
 import { AccesRapides } from "./_components/AccesRapides";
 import { OnboardingGuide } from "./_components/OnboardingGuide";
+import { ProchainesEcheances } from "./_components/ProchainesEcheances";
+import { getEcheancierData } from "@/lib/echeancier/data";
 
 const formatteurDate = new Intl.DateTimeFormat("fr-FR", {
   weekday: "long",
@@ -30,7 +32,15 @@ export default async function DashboardPage() {
   }
 
   const userId = parseInt(session.user!.id!);
-  const data = await getDashboardPageData(userId);
+  const [data, echeancierData] = await Promise.all([
+    getDashboardPageData(userId),
+    getEcheancierData(userId),
+  ]);
+
+  const prochainesEcheances = [
+    ...echeancierData.ceMoisCi,
+    ...echeancierData.leMoisProchain,
+  ].slice(0, 5);
 
   const messageImportRequis = `Import CSV nécessaire pour ce mois`;
 
@@ -98,6 +108,8 @@ export default async function DashboardPage() {
           nombreImpayes={data.kpiImpayes ?? 0}
           nombreNonIdentifiees={data.nombreNonIdentifiees}
         />
+
+        <ProchainesEcheances echeances={prochainesEcheances} />
 
         <GraphiqueLoyers12Mois points={data.historique} annee={data.annee} />
 
