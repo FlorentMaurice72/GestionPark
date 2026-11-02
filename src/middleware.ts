@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { auth } from "@/lib/auth";
+import NextAuth from "next-auth";
+import { authConfig } from "@/lib/auth.config";
+
+const { auth } = NextAuth(authConfig);
 
 // Routes accessibles sans abonnement actif (auth requise mais pas d'abo).
 const ROUTES_LIBRES = ["/abonnement", "/login", "/signup"];
