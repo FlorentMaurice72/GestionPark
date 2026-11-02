@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PricingSection } from "./PricingSection";
 
 export function LandingPage() {
   return (
@@ -178,49 +179,7 @@ export function LandingPage() {
       </section>
 
       {/* ── Tarifs ──────────────────────────────────────────────────── */}
-      <section id="tarifs" className="px-6 py-16">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="mb-3 text-3xl font-bold">Un tarif simple, tout inclus</h2>
-          <p className="mb-12 text-neutral-500 dark:text-neutral-400">
-            Accès complet à toutes les fonctionnalités. Aucun coût caché.
-          </p>
-          <div className="mx-auto max-w-sm rounded-2xl border-2 border-neutral-900 p-8 dark:border-neutral-100">
-            <p className="mb-1 text-sm font-medium text-neutral-500 uppercase tracking-wide dark:text-neutral-400">
-              Accès complet
-            </p>
-            <div className="mb-6">
-              <span className="text-4xl font-bold">19,90 €</span>
-              <span className="text-neutral-500 dark:text-neutral-400"> / mois</span>
-              <p className="mt-1 text-sm text-neutral-400">ou 199 €/an — économisez 2 mois</p>
-            </div>
-            <ul className="mb-8 space-y-2 text-sm text-left text-neutral-600 dark:text-neutral-400">
-              {[
-                "Biens et boxes illimités",
-                "Locataires illimités",
-                "Import CSV bancaire",
-                "Suivi des paiements",
-                "Relances automatiques",
-                "Documents & quittances",
-                "Tableau de bord complet",
-                "Support par email",
-              ].map((item) => (
-                <li key={item} className="flex items-center gap-2">
-                  <span className="text-green-500">✓</span> {item}
-                </li>
-              ))}
-            </ul>
-            <Link
-              href="/signup"
-              className="block w-full rounded-md bg-neutral-900 px-4 py-3 text-center text-sm font-medium text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
-            >
-              Commencer gratuitement
-            </Link>
-            <p className="mt-3 text-center text-xs text-neutral-400">
-              14 jours d&apos;essai gratuit · Sans engagement
-            </p>
-          </div>
-        </div>
-      </section>
+      <PricingSection />
 
       {/* ── CTA final ───────────────────────────────────────────────── */}
       <section className="bg-neutral-900 px-6 py-16 text-center dark:bg-neutral-100">

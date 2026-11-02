@@ -188,7 +188,10 @@ model Admin {
   resetTokenExpiresAt   DateTime? @map("reset_token_expires_at")
   // Stripe — abonnement
   // "trial" | "active" | "past_due" | "canceled" | "incomplete"
+  // "trial" | "active" | "past_due" | "canceled" | "incomplete"
   subscriptionStatus            String    @default("trial") @map("subscription_status")
+  // "essentiel" | "pro"
+  subscriptionPlan              String    @default("essentiel") @map("subscription_plan")
   trialEndsAt                   DateTime? @map("trial_ends_at")
   stripeCustomerId              String?   @unique @map("stripe_customer_id")
   stripeSubscriptionId          String?   @unique @map("stripe_subscription_id")
