@@ -60,7 +60,8 @@ export function ImportWizard({ presets: presetsProp, locations }: Props) {
           throw new Error("Fichier ou préréglage manquant.");
         }
 
-        const texte = await fichier.text();
+        const buffer = await fichier.arrayBuffer();
+        const texte = new TextDecoder("iso-8859-1").decode(buffer);
         const { transactions, erreurs } = extraireTransactions(texte, preset);
 
         const lignesCalculees: LigneImport[] = transactions.map((transaction) => {
