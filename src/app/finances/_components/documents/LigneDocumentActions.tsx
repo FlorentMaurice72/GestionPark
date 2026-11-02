@@ -81,6 +81,21 @@ export function LigneDocumentActions({
             <div className="mt-3 flex justify-end gap-2">
               <button
                 type="button"
+                onClick={() => {
+                  const blob = new Blob([contenuTexte], { type: "text/plain;charset=utf-8" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `${nomFichier.replace(/\s+/g, "_")}.txt`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
+              >
+                Télécharger .txt
+              </button>
+              <button
+                type="button"
                 onClick={async () => {
                   try {
                     await navigator.clipboard.writeText(contenuTexte);

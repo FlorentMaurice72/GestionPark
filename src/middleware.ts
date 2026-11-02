@@ -30,15 +30,26 @@ export default auth(async function middleware(req: NextRequest & { auth: unknown
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // Connecté : vérifie l'abonnement sauf sur les routes libres.
+  // Routes libres (abonnement non requis).
   if (ROUTES_LIBRES.some((r) => pathname.startsWith(r))) {
     return NextResponse.next();
   }
 
-  // Récupère le statut d'abonnement depuis un cookie ou la DB.
-  // Pour éviter une requête DB à chaque requête, on encode le statut dans le
-  // JWT via le callback session (voir src/lib/auth.ts — à enrichir si besoin).
-  // Pour l'instant on laisse passer : la vérification fine se fait dans chaque page.
+  // Vérifie l'abonnement depuis le JWT (pas de requête DB).
+  const user = (session as { user?: { subscriptionStatus?: string; trialEndsAt?: string | null } }).user;
+  const subscriptionStatus = user?.subscriptionStatus;
+  const trialEndsAt = user?.trialEndsAt;
+
+  const trialActif =
+    subscriptionStatus === "trialing" && trialEndsAt
+      ? new Date(trialEndsAt) > new Date()
+      : false;
+  const abonnementActif = subscriptionStatus === "active" || trialActif;
+
+  if (!abonnementActif) {
+    return NextResponse.redirect(new URL("/abonnement", req.url));
+  }
+
   return NextResponse.next();
 });
 

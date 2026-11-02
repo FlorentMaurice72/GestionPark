@@ -36,7 +36,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
 
           await enregistrerTentative(emailNormalise, true);
-          return { id: String(admin.id), email: admin.email };
+          return {
+            id: String(admin.id),
+            email: admin.email,
+            subscriptionStatus: admin.subscriptionStatus,
+            trialEndsAt: admin.trialEndsAt?.toISOString() ?? null,
+          };
         } catch (error) {
           if (error instanceof TropDeTentatives) throw error;
           console.error("[auth] Erreur inattendue dans authorize :", error);
