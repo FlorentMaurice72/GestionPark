@@ -184,10 +184,15 @@ model Admin {
   email                 String    @unique
   passwordHash          String    @map("password_hash")
   createdAt             DateTime  @default(now()) @map("created_at")
-  // Reset de mot de passe : token à usage unique, effacé après utilisation ou
-  // expiration. Pas de table séparée, un seul token actif à la fois par admin.
   resetToken            String?   @unique @map("reset_token")
   resetTokenExpiresAt   DateTime? @map("reset_token_expires_at")
+  // Stripe — abonnement
+  // "trial" | "active" | "past_due" | "canceled" | "incomplete"
+  subscriptionStatus            String    @default("trial") @map("subscription_status")
+  trialEndsAt                   DateTime? @map("trial_ends_at")
+  stripeCustomerId              String?   @unique @map("stripe_customer_id")
+  stripeSubscriptionId          String?   @unique @map("stripe_subscription_id")
+  subscriptionCurrentPeriodEnd  DateTime? @map("subscription_current_period_end")
 
   biens                      Bien[]
   locataires                 Locataire[]

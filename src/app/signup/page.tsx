@@ -18,7 +18,8 @@ async function inscrire(formData: FormData) {
   if (existant) redirect("/signup?error=email-pris");
 
   const passwordHash = await hashPassword(password);
-  await prisma.admin.create({ data: { email, passwordHash } });
+  const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+  await prisma.admin.create({ data: { email, passwordHash, trialEndsAt } });
 
   redirect("/login?inscription=1");
 }
