@@ -10,6 +10,7 @@ import { ImportTimeline } from "./_components/ImportTimeline";
 import { ActionsUrgentes } from "./_components/ActionsUrgentes";
 import { GraphiqueLoyers12Mois } from "./_components/GraphiqueLoyers12Mois";
 import { AccesRapides } from "./_components/AccesRapides";
+import { OnboardingGuide } from "./_components/OnboardingGuide";
 
 const formatteurDate = new Intl.DateTimeFormat("fr-FR", {
   weekday: "long",
@@ -48,6 +49,12 @@ export default async function DashboardPage() {
       </header>
 
       <main className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-6">
+        <OnboardingGuide
+          biensDone={data.kpiOccupation.boxesTotal > 0}
+          locatairesDone={data.kpiLocatairesActifs > 0}
+          paiementDone={data.importFaitCeMois || (data.kpiLoyersEncaisses !== null && data.kpiLoyersEncaisses > 0)}
+        />
+
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <KPICard
             label="Taux d'occupation"

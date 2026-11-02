@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { AppNav } from "@/components/AppNav";
 import { DeconnexionButton } from "@/components/DeconnexionButton";
-import { NouveauBienForm } from "./_components/NouveauBienForm";
+import { NouveauBienWizard } from "./_components/NouveauBienWizard";
 
 export default function NouveauBienPage() {
   return (
@@ -18,7 +18,7 @@ export default function NouveauBienPage() {
       </header>
 
       <main className="mx-auto max-w-3xl px-6 py-6">
-        <NouveauBienForm />
+        <NouveauBienWizard />
       </main>
     </div>
   );

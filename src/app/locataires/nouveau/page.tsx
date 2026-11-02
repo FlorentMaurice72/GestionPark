@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth";
 import { getBoxesVacantsDisponibles } from "@/lib/locataires/data";
 import { AppNav } from "@/components/AppNav";
 import { DeconnexionButton } from "@/components/DeconnexionButton";
-import { NouveauLocataireForm } from "./_components/NouveauLocataireForm";
+import { NouveauLocataireWizard } from "./_components/NouveauLocataireWizard";
 
 export default async function NouveauLocatairePage() {
   const session = await auth();
@@ -30,7 +30,7 @@ export default async function NouveauLocatairePage() {
       </header>
 
       <main className="mx-auto max-w-3xl px-6 py-6">
-        <NouveauLocataireForm boxesVacants={boxesVacants} />
+        <NouveauLocataireWizard boxesVacants={boxesVacants} />
       </main>
     </div>
   );

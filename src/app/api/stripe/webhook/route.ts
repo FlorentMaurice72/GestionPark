@@ -27,17 +27,17 @@ export async function POST(req: NextRequest) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session;
       if (session.mode !== "subscription") break;
-      const adminId = session.subscription_data?.metadata?.adminId
-        ?? (session as { metadata?: Record<string, string> }).metadata?.adminId;
+      const adminId = (session as { metadata?: Record<string, string> }).metadata?.adminId;
       if (!adminId) break;
 
       const sub = await stripe.subscriptions.retrieve(session.subscription as string);
+      const periodEnd = (sub as unknown as { current_period_end?: number }).current_period_end;
       await prisma.admin.update({
         where: { id: parseInt(adminId) },
         data: {
           stripeSubscriptionId: sub.id,
           subscriptionStatus: sub.status,
-          subscriptionCurrentPeriodEnd: new Date(sub.current_period_end * 1000),
+          subscriptionCurrentPeriodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
         },
       });
       break;
@@ -47,26 +47,19 @@ export async function POST(req: NextRequest) {
     case "customer.subscription.deleted": {
       const sub = event.data.object as Stripe.Subscription;
       const adminId = sub.metadata?.adminId;
+      const subPeriodEnd = (sub as unknown as { current_period_end?: number }).current_period_end;
+      const periodEndDate = subPeriodEnd ? new Date(subPeriodEnd * 1000) : null;
       if (!adminId) {
-        // Cherche par stripeSubscriptionId si pas de metadata
-        const admin = await prisma.admin.findFirst({
-          where: { stripeSubscriptionId: sub.id },
-        });
+        const admin = await prisma.admin.findFirst({ where: { stripeSubscriptionId: sub.id } });
         if (!admin) break;
         await prisma.admin.update({
           where: { id: admin.id },
-          data: {
-            subscriptionStatus: sub.status,
-            subscriptionCurrentPeriodEnd: new Date(sub.current_period_end * 1000),
-          },
+          data: { subscriptionStatus: sub.status, subscriptionCurrentPeriodEnd: periodEndDate },
         });
       } else {
         await prisma.admin.update({
           where: { id: parseInt(adminId) },
-          data: {
-            subscriptionStatus: sub.status,
-            subscriptionCurrentPeriodEnd: new Date(sub.current_period_end * 1000),
-          },
+          data: { subscriptionStatus: sub.status, subscriptionCurrentPeriodEnd: periodEndDate },
         });
       }
       break;

@@ -60,6 +60,12 @@ export async function creerLocataire(_prevState: ActionState, formData: FormData
       },
     });
 
+    const bool = (key: string, def: boolean) => {
+      const v = formData.get(key);
+      if (v === null) return def;
+      return v === "true" || v === "1";
+    };
+
     await tx.location.create({
       data: {
         boxId,
@@ -67,6 +73,13 @@ export async function creerLocataire(_prevState: ActionState, formData: FormData
         dateEntree: new Date(dateEntree),
         loyerActuel,
         depotGarantie,
+        renouvellementAuto: bool("renouvellementAuto", true),
+        typeBail: String(formData.get("typeBail") ?? "bail_box") || "bail_box",
+        termeLoyerType: String(formData.get("termeLoyerType") ?? "a_echoir") || "a_echoir",
+        moyenPaiement: String(formData.get("moyenPaiement") ?? "virement") || "virement",
+        relanceActive: bool("relanceActive", true),
+        avisLoyerAuto: bool("avisLoyerAuto", true),
+        quittanceAuto: bool("quittanceAuto", true),
       },
     });
 

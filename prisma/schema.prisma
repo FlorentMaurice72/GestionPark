@@ -122,7 +122,15 @@ model Location {
   // Libellés de référence configurés manuellement pour le matching à l'import CSV.
   // Prisma n'autorise pas les listes scalaires optionnelles : un tableau vide
   // représente "aucun libellé configuré" plutôt que `null`.
-  matchingInputs String[]  @default([]) @map("matching_inputs")
+  matchingInputs     String[]  @default([]) @map("matching_inputs")
+  // Champs ajoutés pour le wizard de création (Brik-inspired, Phase 9)
+  renouvellementAuto Boolean   @default(true) @map("renouvellement_auto")
+  typeBail           String    @default("bail_box") @map("type_bail")
+  termeLoyerType     String    @default("a_echoir") @map("terme_loyer_type")
+  moyenPaiement      String    @default("virement") @map("moyen_paiement")
+  relanceActive      Boolean   @default(true) @map("relance_active")
+  avisLoyerAuto      Boolean   @default(true) @map("avis_loyer_auto")
+  quittanceAuto      Boolean   @default(true) @map("quittance_auto")
 
   // Cascade côté box : la suppression d'un bien entraîne celle de ses boxes,
   // qui doit pouvoir purger leur historique de location (cf. journal de
