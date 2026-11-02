@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
+import { LandingPage } from "./_components/LandingPage";
 import { getDashboardPageData } from "@/lib/dashboard/data";
 import { AppNav } from "@/components/AppNav";
 import { DeconnexionButton } from "@/components/DeconnexionButton";
@@ -25,7 +25,7 @@ function capitaliser(texte: string): string {
 export default async function DashboardPage() {
   const session = await auth();
   if (!session) {
-    redirect("/login");
+    return <LandingPage />;
   }
 
   const userId = parseInt(session.user!.id!);
