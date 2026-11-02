@@ -111,6 +111,10 @@ export interface LocationHistorique {
   depotGarantie: number;
   termeLoyerType: string;
   typeBail: string;
+  renouvellementAuto: boolean;
+  relanceActive: boolean;
+  avisLoyerAuto: boolean;
+  quittanceAuto: boolean;
   totalEncaisse: number;
   totalAttendu: number;
   solde: number;
@@ -217,6 +221,10 @@ export async function getLocataireDetail(id: number, userId: number): Promise<Lo
       depotGarantie: location.depotGarantie.toNumber(),
       termeLoyerType: location.termeLoyerType,
       typeBail: location.typeBail,
+      renouvellementAuto: location.renouvellementAuto,
+      relanceActive: location.relanceActive,
+      avisLoyerAuto: location.avisLoyerAuto,
+      quittanceAuto: location.quittanceAuto,
       totalEncaisse,
       totalAttendu,
       solde,

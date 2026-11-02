@@ -8,6 +8,7 @@ import { formaterMontant } from "@/lib/format";
 import { ArchiverButton } from "./_components/ArchiverButton";
 import { AnonymiserSection } from "./_components/AnonymiserSection";
 import { EtatLoyerMensuel } from "./_components/EtatLoyerMensuel";
+import { AutomatisationToggles } from "./_components/AutomatisationToggles";
 
 const TERME_LABELS: Record<string, string> = {
   a_echoir: "À échoir (début de mois)",
@@ -135,6 +136,16 @@ export default async function LocataireDetailPage({ params }: { params: Promise<
 
               {/* Grille mensuelle */}
               <EtatLoyerMensuel paiementsParMois={loc.paiementsParMois} loyerActuel={loc.loyerActuel} />
+
+              {/* Automatisations */}
+              <AutomatisationToggles
+                locationId={loc.id}
+                locataireId={locataire.id}
+                renouvellementAuto={loc.renouvellementAuto}
+                relanceActive={loc.relanceActive}
+                avisLoyerAuto={loc.avisLoyerAuto}
+                quittanceAuto={loc.quittanceAuto}
+              />
             </div>
           );
         })}

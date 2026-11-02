@@ -216,3 +216,39 @@ export async function anonymiserLocataire(_prevState: ActionState, formData: For
 
   return { success: true };
 }
+
+export async function modifierAutomatisationsLocation(
+  _prevState: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const locationId = Number(formData.get("locationId"));
+  const locataireId = Number(formData.get("locataireId"));
+  if (!Number.isInteger(locationId) || locationId <= 0) return { success: false, error: "Location invalide." };
+
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "Non authentifié." };
+  const userId = parseInt(session.user.id);
+
+  const location = await prisma.location.findUnique({
+    where: { id: locationId },
+    include: { box: { include: { bien: { select: { utilisateurId: true } } } } },
+  });
+  if (!location || location.box.bien.utilisateurId !== userId) {
+    return { success: false, error: "Location introuvable." };
+  }
+
+  const bool = (key: string) => formData.get(key) === "true";
+
+  await prisma.location.update({
+    where: { id: locationId },
+    data: {
+      renouvellementAuto: bool("renouvellementAuto"),
+      relanceActive: bool("relanceActive"),
+      avisLoyerAuto: bool("avisLoyerAuto"),
+      quittanceAuto: bool("quittanceAuto"),
+    },
+  });
+
+  revalidatePath(`/locataires/${locataireId}`);
+  return { success: true };
+}
