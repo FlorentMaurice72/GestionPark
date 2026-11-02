@@ -144,7 +144,15 @@ export function RelanceModal({
                 />
               </div>
 
-              {copie && <p className="text-sm text-green-600 dark:text-green-400">Texte copié et relance enregistrée.</p>}
+              {(copie || etat.success) && (
+                <p className="text-sm text-green-600 dark:text-green-400">
+                  {etat.emailEnvoye
+                    ? "Email envoyé et relance enregistrée."
+                    : canal === "email"
+                    ? "Relance enregistrée. Ajoutez RESEND_API_KEY pour activer l'envoi automatique."
+                    : "Texte copié et relance enregistrée."}
+                </p>
+              )}
               {etat.error && <p className="text-sm text-red-600 dark:text-red-400">{etat.error}</p>}
 
               <div className="flex justify-end gap-2 pt-2">

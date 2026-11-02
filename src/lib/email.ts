@@ -12,6 +12,21 @@ const EMAIL_FROM = process.env.EMAIL_FROM ?? "GestionPark <onboarding@resend.dev
 
 export class EmailNonConfigure extends Error {}
 
+export async function envoyerEmailRelance(destinataire: string, contenu: string): Promise<void> {
+  if (!process.env.RESEND_API_KEY) {
+    throw new EmailNonConfigure("RESEND_API_KEY absente.");
+  }
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const firstLine = contenu.split("\n")[0]?.trim() ?? "Relance de loyer";
+  await resend.emails.send({
+    from: EMAIL_FROM,
+    to: destinataire,
+    subject: firstLine,
+    text: contenu,
+    html: contenu.replace(/\n/g, "<br>"),
+  });
+}
+
 export async function envoyerEmailResetMotDePasse(destinataire: string, lien: string): Promise<void> {
   if (!process.env.RESEND_API_KEY) {
     throw new EmailNonConfigure("RESEND_API_KEY absente.");

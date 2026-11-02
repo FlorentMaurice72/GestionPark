@@ -77,6 +77,15 @@ export function LoyersTable({ lignes, afficherColonneBien, mois, annee }: Props)
                       telephone={ligne.locataireTelephone}
                     />
                   )}
+                  {ligne.montantRecu > 0 && (
+                    <a
+                      href={`/api/quittance/${ligne.locationId}/${mois}/${annee}`}
+                      download
+                      className="rounded-md border border-neutral-300 px-2 py-1 text-xs font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
+                    >
+                      Quittance
+                    </a>
+                  )}
                 </div>
               </td>
             </tr>

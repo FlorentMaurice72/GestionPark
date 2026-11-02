@@ -2,9 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { envoyerEmailRelance, EmailNonConfigure } from "@/lib/email";
 
 export interface CreerRelanceState {
   success: boolean;
+  emailEnvoye?: boolean;
   error?: string;
 }
 
@@ -26,9 +28,26 @@ export async function creerRelance(
     return { success: false, error: "Texte invalide." };
   }
 
-  const location = await prisma.location.findUnique({ where: { id: locationId } });
+  const location = await prisma.location.findUnique({
+    where: { id: locationId },
+    include: { locataire: { select: { email: true } } },
+  });
   if (!location) {
     return { success: false, error: "Location introuvable." };
+  }
+
+  let emailEnvoye = false;
+  if (canal === "email" && location.locataire.email) {
+    try {
+      await envoyerEmailRelance(location.locataire.email, contenuTexte.trim());
+      emailEnvoye = true;
+    } catch (err) {
+      if (err instanceof EmailNonConfigure) {
+        emailEnvoye = false;
+      } else {
+        return { success: false, error: "Erreur lors de l'envoi de l'email." };
+      }
+    }
   }
 
   await prisma.relance.create({
@@ -41,6 +60,5 @@ export async function creerRelance(
   });
 
   revalidatePath("/loyers");
-
-  return { success: true };
+  return { success: true, emailEnvoye };
 }
