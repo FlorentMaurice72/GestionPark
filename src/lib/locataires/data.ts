@@ -93,6 +93,13 @@ export async function getBoxesVacantsDisponibles(userId: number): Promise<BoxVac
   return boxes.map((box) => ({ id: box.id, label: `${box.numero} — ${box.bien.nom}` }));
 }
 
+export interface PaiementMois {
+  mois: number;
+  annee: number;
+  montant: number;
+  statut: "paye" | "partiel" | "impaye" | "futur";
+}
+
 export interface LocationHistorique {
   id: number;
   boxNumero: string;
@@ -101,7 +108,13 @@ export interface LocationHistorique {
   dateFin: Date | null;
   statut: string;
   loyerActuel: number;
+  depotGarantie: number;
+  termeLoyerType: string;
+  typeBail: string;
   totalEncaisse: number;
+  totalAttendu: number;
+  solde: number;
+  paiementsParMois: PaiementMois[];
 }
 
 export interface DocumentItem {
@@ -151,22 +164,47 @@ export async function getLocataireDetail(id: number, userId: number): Promise<Lo
   let totalEncaisseGlobal = 0;
 
   const locations: LocationHistorique[] = locataire.locations.map((location) => {
+    const loyer = location.loyerActuel.toNumber();
     const totalEncaisse = location.paiements.reduce((acc, p) => acc + p.montant.toNumber(), 0);
     totalEncaisseGlobal += totalEncaisse;
 
-    if (location.statut === "actif") {
-      const sommesParMois = new Map<string, number>();
-      for (const p of location.paiements) {
-        const cle = cleMois(p.annee, p.mois);
-        sommesParMois.set(cle, (sommesParMois.get(cle) ?? 0) + p.montant.toNumber());
-      }
-      moisImpayesCumules = calculerMoisImpayesCumules(
-        location.dateEntree,
-        location.loyerActuel.toNumber(),
-        sommesParMois,
-        today,
-      );
+    const sommesParMois = new Map<string, number>();
+    for (const p of location.paiements) {
+      const cle = cleMois(p.annee, p.mois);
+      sommesParMois.set(cle, (sommesParMois.get(cle) ?? 0) + p.montant.toNumber());
     }
+
+    if (location.statut === "actif") {
+      moisImpayesCumules = calculerMoisImpayesCumules(location.dateEntree, loyer, sommesParMois, today);
+    }
+
+    // Calcul de la grille mensuelle et du total attendu
+    const fin = location.dateFin ?? today;
+    const paiementsParMois: PaiementMois[] = [];
+    let totalAttendu = 0;
+
+    const debut = new Date(Date.UTC(location.dateEntree.getUTCFullYear(), location.dateEntree.getUTCMonth(), 1));
+    const finMois = new Date(Date.UTC(fin.getUTCFullYear(), fin.getUTCMonth(), 1));
+    const todayMois = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), 1));
+
+    for (let d = new Date(debut); d <= finMois; d = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 1))) {
+      const mois = d.getUTCMonth() + 1;
+      const annee = d.getUTCFullYear();
+      const estFutur = d > todayMois;
+      const montant = sommesParMois.get(cleMois(annee, mois)) ?? 0;
+      let statut: PaiementMois["statut"];
+      if (estFutur) {
+        statut = "futur";
+      } else {
+        totalAttendu += loyer;
+        if (montant >= loyer) statut = "paye";
+        else if (montant > 0) statut = "partiel";
+        else statut = "impaye";
+      }
+      paiementsParMois.push({ mois, annee, montant, statut });
+    }
+
+    const solde = totalAttendu - totalEncaisse;
 
     return {
       id: location.id,
@@ -175,8 +213,14 @@ export async function getLocataireDetail(id: number, userId: number): Promise<Lo
       dateEntree: location.dateEntree,
       dateFin: location.dateFin,
       statut: location.statut,
-      loyerActuel: location.loyerActuel.toNumber(),
+      loyerActuel: loyer,
+      depotGarantie: location.depotGarantie.toNumber(),
+      termeLoyerType: location.termeLoyerType,
+      typeBail: location.typeBail,
       totalEncaisse,
+      totalAttendu,
+      solde,
+      paiementsParMois,
     };
   });
 
