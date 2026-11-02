@@ -14,10 +14,16 @@ async function inscrire(formData: FormData) {
   if (password.length < 8) redirect("/signup?error=mdp-trop-court");
   if (password !== confirmation) redirect("/signup?error=mdp-different");
 
+  let existant;
   try {
-    const existant = await prisma.admin.findUnique({ where: { email } });
-    if (existant) redirect("/signup?error=email-pris");
+    existant = await prisma.admin.findUnique({ where: { email } });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    redirect(`/signup?error=db&detail=${encodeURIComponent(msg.slice(0, 200))}`);
+  }
+  if (existant) redirect("/signup?error=email-pris");
 
+  try {
     const passwordHash = await hashPassword(password);
     const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
     await prisma.admin.create({ data: { email, passwordHash, trialEndsAt } });
