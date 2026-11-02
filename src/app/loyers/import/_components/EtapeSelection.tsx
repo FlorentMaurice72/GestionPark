@@ -2,6 +2,8 @@
 
 import { NOMS_MOIS } from "@/lib/dates";
 import type { PresetOption } from "@/lib/import/data";
+import type { PresetCreated } from "@/lib/import/preset-actions";
+import { CreerPresetModal } from "./CreerPresetModal";
 
 interface Props {
   presets: PresetOption[];
@@ -15,6 +17,7 @@ interface Props {
   onChangePreset: (presetId: number) => void;
   onChangeFichier: (fichier: File | null) => void;
   onValider: () => void;
+  onCreerPreset: (preset: PresetCreated) => void;
 }
 
 export function EtapeSelection({
@@ -29,6 +32,7 @@ export function EtapeSelection({
   onChangePreset,
   onChangeFichier,
   onValider,
+  onCreerPreset,
 }: Props) {
   const pretAAnalyser = mois > 0 && annee > 0 && presetId !== null && fichier !== null;
 
@@ -88,11 +92,10 @@ export function EtapeSelection({
                 </option>
               ))}
             </select>
-            {presets.length === 0 && (
-              <p className="mt-1 text-xs text-red-600 dark:text-red-400">
-                Aucun préréglage bancaire en base — exécuter le script de seed avant de continuer.
-              </p>
-            )}
+            <p className="mt-1 text-xs text-neutral-500">
+              {presets.length === 0 ? "Aucun préréglage. " : null}
+              <CreerPresetModal onCreated={onCreerPreset} />
+            </p>
           </div>
 
           <div className="sm:col-span-2">

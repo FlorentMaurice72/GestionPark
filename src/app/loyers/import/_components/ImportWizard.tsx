@@ -5,6 +5,7 @@ import { extraireTransactions } from "@/lib/import/csv";
 import { trouverLocationCorrespondante } from "@/lib/import/matching";
 import { importerPaiements, enregistrerTransactionsNonIdentifiees } from "@/lib/import/actions";
 import type { LocationOption, PresetOption } from "@/lib/import/data";
+import type { PresetCreated } from "@/lib/import/preset-actions";
 import { StepIndicator } from "./StepIndicator";
 import { EtapeSelection } from "./EtapeSelection";
 import { EtapeTraitement } from "./EtapeTraitement";
@@ -32,11 +33,12 @@ function etatInitial() {
   };
 }
 
-export function ImportWizard({ presets, locations }: Props) {
+export function ImportWizard({ presets: presetsProp, locations }: Props) {
+  const [presets, setPresets] = useState<PresetOption[]>(presetsProp);
   const [etape, setEtape] = useState<Etape>(etatInitial().etape);
   const [mois, setMois] = useState(etatInitial().mois);
   const [annee, setAnnee] = useState(etatInitial().annee);
-  const [presetId, setPresetId] = useState<number | null>(presets.length === 1 ? presets[0].id : null);
+  const [presetId, setPresetId] = useState<number | null>(presetsProp.length === 1 ? presetsProp[0].id : null);
   const [fichier, setFichier] = useState<File | null>(null);
   const [erreurTraitement, setErreurTraitement] = useState<string | null>(null);
 
@@ -160,6 +162,21 @@ export function ImportWizard({ presets, locations }: Props) {
     setEtape("import");
   }
 
+  function handlePresetCree(preset: PresetCreated) {
+    const nouveau: PresetOption = {
+      id: preset.id,
+      name: preset.name,
+      delimiter: preset.delimiter,
+      columns: preset.columns,
+      dateColumn: preset.dateColumn,
+      descriptionColumn: preset.descriptionColumn,
+      amountColumn: preset.amountColumn,
+      hasHeaderRow: preset.hasHeaderRow,
+    };
+    setPresets((prev) => [...prev, nouveau]);
+    setPresetId(preset.id);
+  }
+
   function handleNouvelImport() {
     const initial = etatInitial();
     setEtape(initial.etape);
@@ -194,6 +211,7 @@ export function ImportWizard({ presets, locations }: Props) {
             setErreurTraitement(null);
             setEtape("traitement");
           }}
+          onCreerPreset={handlePresetCree}
         />
       )}
 
