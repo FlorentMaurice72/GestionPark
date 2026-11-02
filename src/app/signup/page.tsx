@@ -14,12 +14,17 @@ async function inscrire(formData: FormData) {
   if (password.length < 8) redirect("/signup?error=mdp-trop-court");
   if (password !== confirmation) redirect("/signup?error=mdp-different");
 
-  const existant = await prisma.admin.findUnique({ where: { email } });
-  if (existant) redirect("/signup?error=email-pris");
+  try {
+    const existant = await prisma.admin.findUnique({ where: { email } });
+    if (existant) redirect("/signup?error=email-pris");
 
-  const passwordHash = await hashPassword(password);
-  const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
-  await prisma.admin.create({ data: { email, passwordHash, trialEndsAt } });
+    const passwordHash = await hashPassword(password);
+    const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
+    await prisma.admin.create({ data: { email, passwordHash, trialEndsAt } });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    redirect(`/signup?error=db&detail=${encodeURIComponent(msg.slice(0, 200))}`);
+  }
 
   redirect("/login?inscription=1");
 }
@@ -27,15 +32,18 @@ async function inscrire(formData: FormData) {
 export default async function SignupPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; detail?: string }>;
 }) {
-  const { error } = await searchParams;
+  // detail déstructuré plus haut dans messages
+
+  const { error, detail } = await searchParams;
 
   const messages: Record<string, string> = {
     "email-requis": "L'adresse email est requise.",
     "mdp-trop-court": "Le mot de passe doit contenir au moins 8 caractères.",
     "mdp-different": "Les mots de passe ne correspondent pas.",
     "email-pris": "Un compte existe déjà avec cet email.",
+    "db": `Erreur base de données : ${detail ?? "inconnue"}`,
   };
 
   return (
