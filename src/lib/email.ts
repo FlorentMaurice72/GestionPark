@@ -27,6 +27,34 @@ export async function envoyerEmailRelance(destinataire: string, contenu: string)
   });
 }
 
+export async function envoyerEmailAvisLoyer(
+  destinataire: string,
+  opts: {
+    locataireNom: string;
+    bienNom: string;
+    boxNumero: string;
+    mois: number;
+    annee: number;
+    montant: number;
+    bailleurNom?: string | null;
+    bailleurEmail: string;
+  }
+): Promise<void> {
+  if (!process.env.RESEND_API_KEY) throw new EmailNonConfigure("RESEND_API_KEY absente.");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const moisLabel = new Date(opts.annee, opts.mois - 1).toLocaleString("fr-FR", { month: "long" });
+  const subject = `Avis de loyer — ${moisLabel} ${opts.annee}`;
+  const html = `
+    <p>Bonjour ${opts.locataireNom},</p>
+    <p>Votre loyer pour le mois de <strong>${moisLabel} ${opts.annee}</strong> s'élève à <strong>${opts.montant} €</strong>.</p>
+    <p>Box : ${opts.boxNumero} — ${opts.bienNom}</p>
+    <p>Merci de procéder au règlement à la date habituelle.</p>
+    <br>
+    <p>${opts.bailleurNom ?? opts.bailleurEmail}</p>
+  `;
+  await resend.emails.send({ from: EMAIL_FROM, to: destinataire, subject, html, text: html.replace(/<[^>]+>/g, "") });
+}
+
 export async function envoyerEmailResetMotDePasse(destinataire: string, lien: string): Promise<void> {
   if (!process.env.RESEND_API_KEY) {
     throw new EmailNonConfigure("RESEND_API_KEY absente.");
