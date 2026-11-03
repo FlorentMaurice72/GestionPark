@@ -39,7 +39,7 @@ export async function GET(
   }
 
   const [admin, paiements] = await Promise.all([
-    prisma.admin.findUnique({ where: { id: userId }, select: { email: true } }),
+    prisma.admin.findUnique({ where: { id: userId }, select: { email: true, nomBailleur: true, adresseBailleur: true } }),
     prisma.paiement.findMany({
       where: { locationId, mois, annee },
       orderBy: { datePaiement: "desc" },
@@ -66,6 +66,8 @@ export async function GET(
     montantRecu,
     dateEncaissement: datePaiement,
     bailleurEmail: admin?.email ?? "",
+    bailleurNom: admin?.nomBailleur ?? null,
+    bailleurAdresse: admin?.adresseBailleur ?? null,
   });
 
   const pdfBuffer = await renderToBuffer(element);

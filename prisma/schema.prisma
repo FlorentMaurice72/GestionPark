@@ -204,6 +204,8 @@ model Admin {
   stripeCustomerId              String?   @unique @map("stripe_customer_id")
   stripeSubscriptionId          String?   @unique @map("stripe_subscription_id")
   subscriptionCurrentPeriodEnd  DateTime? @map("subscription_current_period_end")
+  nomBailleur                   String?   @map("nom_bailleur")
+  adresseBailleur               String?   @map("adresse_bailleur")
 
   biens                      Bien[]
   locataires                 Locataire[]

@@ -15,6 +15,8 @@ interface QuittanceProps {
   montantRecu: number;
   dateEncaissement: string;
   bailleurEmail: string;
+  bailleurNom?: string | null;
+  bailleurAdresse?: string | null;
 }
 
 const NOMS_MOIS = [
@@ -55,6 +57,8 @@ export function QuittanceDocument({
   montantRecu,
   dateEncaissement,
   bailleurEmail,
+  bailleurNom,
+  bailleurAdresse,
 }: QuittanceProps) {
   const nomMois = NOMS_MOIS[mois - 1];
   const montantDu = Math.max(loyerActuel - montantRecu, 0);
@@ -72,6 +76,18 @@ export function QuittanceDocument({
 
         <View style={styles.section}>
           <Text style={styles.sectionTitre}>BAILLEUR</Text>
+          {bailleurNom && (
+            <View style={styles.ligne}>
+              <Text style={styles.label}>Nom</Text>
+              <Text style={styles.valeur}>{bailleurNom}</Text>
+            </View>
+          )}
+          {bailleurAdresse && (
+            <View style={styles.ligne}>
+              <Text style={styles.label}>Adresse</Text>
+              <Text style={styles.valeur}>{bailleurAdresse}</Text>
+            </View>
+          )}
           <View style={styles.ligne}>
             <Text style={styles.label}>Email</Text>
             <Text style={styles.valeur}>{bailleurEmail}</Text>
