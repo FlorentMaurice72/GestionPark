@@ -8,7 +8,7 @@ const { auth } = NextAuth(authConfig);
 // Routes accessibles sans abonnement actif (auth requise mais pas d'abo).
 const ROUTES_LIBRES = ["/abonnement", "/login", "/signup"];
 // Routes publiques (pas d'auth du tout).
-const ROUTES_PUBLIQUES = ["/login", "/signup", "/api/stripe/webhook"];
+const ROUTES_PUBLIQUES = ["/login", "/signup", "/api/auth", "/api/stripe/webhook"];
 
 export default auth(async function middleware(req: NextRequest & { auth: unknown }) {
   const { pathname } = req.nextUrl;
