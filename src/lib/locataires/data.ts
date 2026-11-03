@@ -106,6 +106,7 @@ export interface LocationHistorique {
   bienNom: string;
   dateEntree: Date;
   dateFin: Date | null;
+  dateRevisionIRL: Date | null;
   statut: string;
   loyerActuel: number;
   depotGarantie: number;
@@ -216,6 +217,7 @@ export async function getLocataireDetail(id: number, userId: number): Promise<Lo
       bienNom: location.box.bien.nom,
       dateEntree: location.dateEntree,
       dateFin: location.dateFin,
+      dateRevisionIRL: location.dateRevisionIRL ?? null,
       statut: location.statut,
       loyerActuel: loyer,
       depotGarantie: location.depotGarantie.toNumber(),

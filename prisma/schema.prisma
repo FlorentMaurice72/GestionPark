@@ -118,6 +118,7 @@ model Location {
   // "actif" | "terminé"
   statut         String    @default("actif")
   dateFin        DateTime? @map("date_fin") @db.Date
+  dateRevisionIRL DateTime? @map("date_revision_irl") @db.Date
   createdAt      DateTime  @default(now()) @map("created_at")
   // Libellés de référence configurés manuellement pour le matching à l'import CSV.
   // Prisma n'autorise pas les listes scalaires optionnelles : un tableau vide

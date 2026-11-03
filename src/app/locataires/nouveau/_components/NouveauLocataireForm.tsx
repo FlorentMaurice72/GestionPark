@@ -124,6 +124,10 @@ export function NouveauLocataireForm({ boxesVacants }: { boxesVacants: BoxVacant
             <label className="mb-1 block text-xs font-medium text-neutral-500">Dépôt de garantie (€)</label>
             <input name="depotGarantie" type="number" step="0.01" min="0" required className={champClasses} />
           </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-neutral-500">Date de révision IRL (optionnel)</label>
+            <input name="dateRevisionIRL" type="date" className={champClasses} />
+          </div>
         </div>
       </fieldset>
 

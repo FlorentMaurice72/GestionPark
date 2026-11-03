@@ -29,7 +29,7 @@ export async function getAlertesData(userId: number): Promise<{
     prisma.location.findMany({
       where: { statut: "actif", box: { bien: { utilisateurId: userId } } },
       include: {
-        locataire: { select: { nom: true, prenom: true } },
+        locataire: { select: { id: true, nom: true, prenom: true } },
         box: { select: { numero: true, bien: { select: { nom: true } } } },
       },
     }),
@@ -83,7 +83,24 @@ export async function getAlertesData(userId: number): Promise<{
           dateEcheance: fin,
           statut: fin <= aujourd ? "due" : "a_venir",
           type: "fin_bail",
-          lien: `/locataires/${loc.locataireId}`,
+          lien: `/locataires/${loc.locataire.id}`,
+        });
+      }
+    }
+
+    if (loc.dateRevisionIRL) {
+      const rev = new Date(loc.dateRevisionIRL);
+      const joursAvant = Math.ceil((rev.getTime() - aujourd.getTime()) / 86400000);
+      if (joursAvant >= -30 && joursAvant <= 60) {
+        const nom = `${loc.locataire.prenom} ${loc.locataire.nom}`;
+        items.push({
+          id: `system-irl-${loc.id}`,
+          titre: `Révision IRL — ${nom}`,
+          description: `${loc.box.bien.nom} · Box ${loc.box.numero} · révision le ${rev.toLocaleDateString("fr-FR")}`,
+          dateEcheance: rev,
+          statut: rev <= aujourd ? "due" : "a_venir",
+          type: "fin_bail",
+          lien: `/locataires/${loc.locataire.id}`,
         });
       }
     }

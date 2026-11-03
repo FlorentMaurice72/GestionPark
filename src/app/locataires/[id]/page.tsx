@@ -132,6 +132,13 @@ export default async function LocataireDetailPage({ params }: { params: Promise<
                   valeur={TYPE_BAIL_LABELS[loc.typeBail ?? "bail_box"] ?? loc.typeBail ?? "—"}
                   sous={`${loc.bienNom} · Box ${loc.boxNumero}`}
                 />
+                {loc.dateRevisionIRL && (
+                  <KPITile
+                    label="Révision IRL"
+                    valeur={formaterDate(loc.dateRevisionIRL)}
+                    sous="Date de révision du loyer"
+                  />
+                )}
               </div>
 
               {/* Grille mensuelle */}

@@ -80,6 +80,7 @@ export async function creerLocataire(_prevState: ActionState, formData: FormData
         relanceActive: bool("relanceActive", true),
         avisLoyerAuto: bool("avisLoyerAuto", true),
         quittanceAuto: bool("quittanceAuto", true),
+        dateRevisionIRL: (() => { const v = formData.get("dateRevisionIRL"); return typeof v === "string" && v ? new Date(v) : null; })(),
       },
     });
 
