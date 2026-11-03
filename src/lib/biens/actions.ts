@@ -106,6 +106,15 @@ export async function creerBien(_prevState: ActionState, formData: FormData): Pr
   if (!session?.user?.id) return { success: false, error: "Non authentifié." };
   const userId = parseInt(session.user.id);
 
+  const admin = await prisma.admin.findUnique({ where: { id: userId }, select: { subscriptionPlan: true } });
+  if (admin?.subscriptionPlan === "essentiel") {
+    const totalBoxes = await prisma.box.count({ where: { bien: { utilisateurId: userId } } });
+    const newBoxCount = parametresBoxes.numeros.length;
+    if (totalBoxes + newBoxCount > 30) {
+      return { success: false, error: `Plan Essentiel limité à 30 boxes (vous en avez ${totalBoxes}, vous essayez d'en ajouter ${newBoxCount}). Passez au plan Pro pour des boxes illimitées.` };
+    }
+  }
+
   const bien = await prisma.$transaction(async (tx) => {
     const nouveauBien = await tx.bien.create({
       data: {
@@ -157,6 +166,15 @@ export async function ajouterBoxes(_prevState: ActionState, formData: FormData):
   const session = await auth();
   if (!session?.user?.id) return { success: false, error: "Non authentifié." };
   const userId = parseInt(session.user.id);
+
+  const adminPlan = await prisma.admin.findUnique({ where: { id: userId }, select: { subscriptionPlan: true } });
+  if (adminPlan?.subscriptionPlan === "essentiel") {
+    const totalBoxes = await prisma.box.count({ where: { bien: { utilisateurId: userId } } });
+    const newBoxCount = parametresBoxes.numeros.length;
+    if (totalBoxes + newBoxCount > 30) {
+      return { success: false, error: `Plan Essentiel limité à 30 boxes (vous en avez ${totalBoxes}, vous essayez d'en ajouter ${newBoxCount}). Passez au plan Pro pour des boxes illimitées.` };
+    }
+  }
 
   const bien = await prisma.bien.findUnique({ where: { id: bienId, utilisateurId: userId } });
   if (!bien) return { success: false, error: "Bien introuvable." };
