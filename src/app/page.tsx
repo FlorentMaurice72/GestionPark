@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { LandingPage } from "./_components/LandingPage";
 import { getDashboardPageData } from "@/lib/dashboard/data";
-import { AppNav } from "@/components/AppNav";
+import { AppNavWrapper } from "@/components/AppNavWrapper";
 import { DeconnexionButton } from "@/components/DeconnexionButton";
 import { NotificationBell } from "@/components/NotificationBell";
 import { formaterMontant, formaterPourcentage } from "@/lib/format";
@@ -46,7 +46,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
-      <AppNav />
+      <AppNavWrapper />
       <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-4 dark:border-neutral-800 dark:bg-neutral-900">
         <div>
           <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Dashboard</h1>

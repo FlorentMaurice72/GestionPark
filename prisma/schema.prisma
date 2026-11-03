@@ -140,6 +140,7 @@ model Location {
   locataire Locataire  @relation(fields: [locataireId], references: [id], onDelete: Restrict)
   paiements Paiement[]
   relances  Relance[]
+  rappels   Rappel[]
 
   @@map("locations")
 }
@@ -211,6 +212,7 @@ model Admin {
   locataires                 Locataire[]
   importPresets              ImportPreset[]
   transactionsNonIdentifiees TransactionNonIdentifiee[]
+  rappels                    Rappel[]
 
   @@map("admins")
 }
@@ -312,4 +314,23 @@ model ImportPreset {
   admin             Admin    @relation(fields: [utilisateurId], references: [id], onDelete: Restrict)
 
   @@map("import_presets")
+}
+
+// ---------------------------------------------------------------------------
+// Rappel — rappels personnels et alertes reportées
+// ---------------------------------------------------------------------------
+model Rappel {
+  id          Int       @id @default(autoincrement())
+  adminId     Int       @map("admin_id")
+  titre       String
+  description String?
+  dateRappel  DateTime  @map("date_rappel") @db.Date
+  traitee     Boolean   @default(false)
+  locationId  Int?      @map("location_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  admin    Admin     @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  location Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
+
+  @@map("rappels")
 }

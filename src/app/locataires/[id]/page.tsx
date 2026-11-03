@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { getLocataireDetail } from "@/lib/locataires/data";
-import { AppNav } from "@/components/AppNav";
+import { AppNavWrapper } from "@/components/AppNavWrapper";
 import { DeconnexionButton } from "@/components/DeconnexionButton";
 import { formaterMontant } from "@/lib/format";
 import { ArchiverButton } from "./_components/ArchiverButton";
@@ -42,7 +42,7 @@ export default async function LocataireDetailPage({ params }: { params: Promise<
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
-      <AppNav />
+      <AppNavWrapper />
       <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-4 dark:border-neutral-800 dark:bg-neutral-900">
         <div className="flex items-center gap-3">
           <Link

@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
-import { AppNav } from "@/components/AppNav";
+import { AppNavWrapper } from "@/components/AppNavWrapper";
 import { DeconnexionButton } from "@/components/DeconnexionButton";
 import { OngletsFinances } from "../_components/OngletsFinances";
 import { ExportForm } from "./_components/ExportForm";
@@ -13,7 +13,7 @@ export default async function ExportPage() {
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
-      <AppNav />
+      <AppNavWrapper />
       <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-4 dark:border-neutral-800 dark:bg-neutral-900">
         <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Finances &amp; Documents</h1>
         <DeconnexionButton />

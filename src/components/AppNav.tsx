@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 const ONGLETS = [
   { href: "/", label: "Dashboard" },
   { href: "/echeancier", label: "Échéancier" },
+  { href: "/alertes", label: "Alertes" },
   { href: "/loyers", label: "Loyers & Paiements" },
   { href: "/biens", label: "Mes Biens" },
   { href: "/locataires", label: "Mes Locataires" },
@@ -13,11 +14,11 @@ const ONGLETS = [
   { href: "/profil", label: "Mon compte" },
 ];
 
-export function AppNav() {
+export function AppNav({ nombreUrgentes = 0 }: { nombreUrgentes?: number }) {
   const pathname = usePathname();
 
   return (
-    <nav className="flex gap-4 border-b border-neutral-200 bg-white px-6 dark:border-neutral-800 dark:bg-neutral-900">
+    <nav className="flex items-center gap-4 border-b border-neutral-200 bg-white px-6 dark:border-neutral-800 dark:bg-neutral-900">
       {ONGLETS.map((onglet) => {
         const actif =
           onglet.href === "/"
@@ -34,6 +35,11 @@ export function AppNav() {
             }`}
           >
             {onglet.label}
+            {onglet.href === "/alertes" && nombreUrgentes > 0 && (
+              <span className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white">
+                {nombreUrgentes > 99 ? "99+" : nombreUrgentes}
+              </span>
+            )}
           </Link>
         );
       })}
