@@ -3,6 +3,7 @@ import { formaterMontant } from "@/lib/format";
 import { StatutBadge, ImpayesCumulesBadge } from "./StatutBadge";
 import { PaiementModal } from "./PaiementModal";
 import { RelanceModal } from "./RelanceModal";
+import { BoutonAvisLoyer } from "./BoutonAvisLoyer";
 
 interface Props {
   lignes: LigneLoyer[];
@@ -77,6 +78,7 @@ export function LoyersTable({ lignes, afficherColonneBien, mois, annee }: Props)
                       telephone={ligne.locataireTelephone}
                     />
                   )}
+                  <BoutonAvisLoyer locationId={ligne.locationId} mois={mois} annee={annee} />
                   {ligne.montantRecu > 0 && (
                     <a
                       href={`/api/quittance/${ligne.locationId}/${mois}/${annee}`}
