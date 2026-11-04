@@ -46,11 +46,11 @@ export interface BienDetail {
   adresseComplete: string;
   taxeFonciere: number;
   assurance: number;
-  montantEmprunt: number;
-  mensualiteEmprunt: number;
-  tauxEmprunt: number;
-  dateDebutEmprunt: Date;
-  dureeEmprunt: number;
+  montantEmprunt: number | null;
+  mensualiteEmprunt: number | null;
+  tauxEmprunt: number | null;
+  dateDebutEmprunt: Date | null;
+  dureeEmprunt: number | null;
   valeurEstimee: number | null;
   boxes: BoxDetail[];
 }
@@ -81,11 +81,11 @@ export async function getBienDetail(id: number, userId: number): Promise<BienDet
     adresseComplete: bien.adresseComplete,
     taxeFonciere: bien.taxeFonciere.toNumber(),
     assurance: bien.assurance.toNumber(),
-    montantEmprunt: bien.montantEmprunt.toNumber(),
-    mensualiteEmprunt: bien.mensualiteEmprunt.toNumber(),
-    tauxEmprunt: bien.tauxEmprunt.toNumber(),
-    dateDebutEmprunt: bien.dateDebutEmprunt,
-    dureeEmprunt: bien.dureeEmprunt,
+    montantEmprunt: bien.montantEmprunt?.toNumber() ?? null,
+    mensualiteEmprunt: bien.mensualiteEmprunt?.toNumber() ?? null,
+    tauxEmprunt: bien.tauxEmprunt?.toNumber() ?? null,
+    dateDebutEmprunt: bien.dateDebutEmprunt ?? null,
+    dureeEmprunt: bien.dureeEmprunt ?? null,
     valeurEstimee: bien.valeurEstimee?.toNumber() ?? null,
     boxes: bien.boxes
       .map((box) => ({

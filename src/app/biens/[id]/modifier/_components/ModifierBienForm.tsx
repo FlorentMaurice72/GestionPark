@@ -62,56 +62,51 @@ export function ModifierBienForm({ bien }: { bien: BienDetail }) {
               className={champClasses}
             />
           </Champ>
-          <Champ label="Montant emprunt (€)">
+          <Champ label="Montant emprunt (€, optionnel)">
             <input
               name="montantEmprunt"
               type="number"
               step="0.01"
               min="0"
-              defaultValue={bien.montantEmprunt}
-              required
+              defaultValue={bien.montantEmprunt ?? ""}
               className={champClasses}
             />
           </Champ>
-          <Champ label="Mensualité emprunt (€)">
+          <Champ label="Mensualité emprunt (€, optionnel)">
             <input
               name="mensualiteEmprunt"
               type="number"
               step="0.01"
               min="0"
-              defaultValue={bien.mensualiteEmprunt}
-              required
+              defaultValue={bien.mensualiteEmprunt ?? ""}
               className={champClasses}
             />
           </Champ>
-          <Champ label="Taux emprunt (%)">
+          <Champ label="Taux emprunt (%, optionnel)">
             <input
               name="tauxEmprunt"
               type="number"
               step="0.001"
               min="0"
-              defaultValue={bien.tauxEmprunt}
-              required
+              defaultValue={bien.tauxEmprunt ?? ""}
               className={champClasses}
             />
           </Champ>
-          <Champ label="Durée emprunt (mois)">
+          <Champ label="Durée emprunt (mois, optionnel)">
             <input
               name="dureeEmprunt"
               type="number"
               step="1"
               min="1"
-              defaultValue={bien.dureeEmprunt}
-              required
+              defaultValue={bien.dureeEmprunt ?? ""}
               className={champClasses}
             />
           </Champ>
-          <Champ label="Date de début d'emprunt">
+          <Champ label="Date de début d'emprunt (optionnel)">
             <input
               name="dateDebutEmprunt"
               type="date"
-              defaultValue={toISODate(bien.dateDebutEmprunt)}
-              required
+              defaultValue={bien.dateDebutEmprunt ? toISODate(bien.dateDebutEmprunt) : ""}
               className={champClasses}
             />
           </Champ>

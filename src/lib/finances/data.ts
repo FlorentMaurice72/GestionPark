@@ -24,10 +24,10 @@ export interface IndicateursPeriode {
 export interface DetailBienFinances {
   bienId: number;
   bienNom: string;
-  montantEmprunt: number;
-  tauxEmprunt: number;
-  mensualiteEmprunt: number;
-  dureeEmprunt: number;
+  montantEmprunt: number | null;
+  tauxEmprunt: number | null;
+  mensualiteEmprunt: number | null;
+  dureeEmprunt: number | null;
   etatEmprunt: EtatEmprunt;
   revenusMensuel: number;
   revenusAnnuel: number;
@@ -133,7 +133,7 @@ export async function getFinancesPageData(filtres: FinancesFiltres, userId: numb
 
   const chargesVariablesDocs = documentsChargeAnnee.filter((d) => estChargeVariable(d.chargeType));
 
-  const mensualiteTotale = biensActifs.reduce((acc, b) => acc + b.mensualiteEmprunt.toNumber(), 0);
+  const mensualiteTotale = biensActifs.reduce((acc, b) => acc + (b.mensualiteEmprunt?.toNumber() ?? 0), 0);
   const chargesFixesTotalMensuel = biensActifs.reduce(
     (acc, b) => acc + (b.taxeFonciere.toNumber() + b.assurance.toNumber()) / 12,
     0,
@@ -183,10 +183,10 @@ export async function getFinancesPageData(filtres: FinancesFiltres, userId: numb
 
       const taxeFonciere = bien.taxeFonciere.toNumber();
       const assurance = bien.assurance.toNumber();
-      const montantEmprunt = bien.montantEmprunt.toNumber();
-      const tauxEmprunt = bien.tauxEmprunt.toNumber();
-      const mensualiteEmprunt = bien.mensualiteEmprunt.toNumber();
-      const dureeEmprunt = bien.dureeEmprunt;
+      const montantEmprunt = bien.montantEmprunt?.toNumber() ?? null;
+      const tauxEmprunt = bien.tauxEmprunt?.toNumber() ?? null;
+      const mensualiteEmprunt = bien.mensualiteEmprunt?.toNumber() ?? null;
+      const dureeEmprunt = bien.dureeEmprunt ?? null;
       const valeurEstimee = bien.valeurEstimee?.toNumber() ?? null;
 
       const revenusAnnuel = revenusAnnuelAgg._sum.montant?.toNumber() ?? 0;
@@ -194,7 +194,7 @@ export async function getFinancesPageData(filtres: FinancesFiltres, userId: numb
       const chargesVariablesAnnuelles = chargesVariablesDocs
         .filter((d) => d.bienId === bien.id)
         .reduce((acc, d) => acc + (d.chargeMontant?.toNumber() ?? 0), 0);
-      const mensualitesAnnuelles = mensualiteEmprunt * 12;
+      const mensualitesAnnuelles = (mensualiteEmprunt ?? 0) * 12;
 
       return {
         bienId: bien.id,
@@ -204,11 +204,11 @@ export async function getFinancesPageData(filtres: FinancesFiltres, userId: numb
         mensualiteEmprunt,
         dureeEmprunt,
         etatEmprunt: calculerEtatEmprunt({
-          montantEmprunt,
-          tauxEmprunt,
-          mensualiteEmprunt,
-          dateDebutEmprunt: bien.dateDebutEmprunt,
-          dureeEmprunt,
+          montantEmprunt: montantEmprunt ?? 0,
+          tauxEmprunt: tauxEmprunt ?? 0,
+          mensualiteEmprunt: mensualiteEmprunt ?? 0,
+          dateDebutEmprunt: bien.dateDebutEmprunt ?? new Date(),
+          dureeEmprunt: dureeEmprunt ?? 0,
         }),
         revenusMensuel: revenusMensuelAgg._sum.montant?.toNumber() ?? 0,
         revenusAnnuel,
@@ -225,7 +225,7 @@ export async function getFinancesPageData(filtres: FinancesFiltres, userId: numb
         ),
         cashFlowMensuel: calculerCashFlowMensuel(
           revenusMensuelAgg._sum.montant?.toNumber() ?? 0,
-          mensualiteEmprunt,
+          mensualiteEmprunt ?? 0,
           (chargesFixesAnnuelles + chargesVariablesAnnuelles) / 12,
         ),
       };

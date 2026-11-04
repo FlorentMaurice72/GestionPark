@@ -31,11 +31,11 @@ model Bien {
   nombreBoxes        Int       @map("nombre_boxes")
   taxeFonciere       Decimal   @map("taxe_fonciere") @db.Decimal(12, 2)
   assurance          Decimal   @db.Decimal(12, 2)
-  montantEmprunt     Decimal   @map("montant_emprunt") @db.Decimal(12, 2)
-  mensualiteEmprunt  Decimal   @map("mensualite_emprunt") @db.Decimal(12, 2)
-  tauxEmprunt        Decimal   @map("taux_emprunt") @db.Decimal(6, 3)
-  dateDebutEmprunt   DateTime  @map("date_debut_emprunt") @db.Date
-  dureeEmprunt       Int       @map("duree_emprunt")
+  montantEmprunt     Decimal?  @map("montant_emprunt") @db.Decimal(12, 2)
+  mensualiteEmprunt  Decimal?  @map("mensualite_emprunt") @db.Decimal(12, 2)
+  tauxEmprunt        Decimal?  @map("taux_emprunt") @db.Decimal(6, 3)
+  dateDebutEmprunt   DateTime? @map("date_debut_emprunt") @db.Date
+  dureeEmprunt       Int?      @map("duree_emprunt")
   // Optionnel : absent du schéma audité, ajouté en Phase 6 pour les calculs de
   // rentabilité (aucune source fiable identifiée — saisie manuelle admin).
   valeurEstimee      Decimal?  @map("valeur_estimee") @db.Decimal(12, 2)

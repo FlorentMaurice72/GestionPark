@@ -11,27 +11,29 @@ export function DetailBienCard({ detail }: { detail: DetailBienFinances }) {
     <div className="rounded-lg border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
       <h3 className="mb-3 text-sm font-semibold text-neutral-900 dark:text-neutral-100">{detail.bienNom}</h3>
 
-      <div className="mb-4">
-        <div className="mb-1 flex justify-between text-xs text-neutral-500">
-          <span>
-            Emprunt : {formaterMontant(detail.etatEmprunt.restantDu)} restant dû sur{" "}
-            {formaterMontant(detail.montantEmprunt)}
-          </span>
-          <span>
-            {detail.etatEmprunt.moisEcoules} / {detail.dureeEmprunt} mois
-          </span>
+      {detail.montantEmprunt != null && (
+        <div className="mb-4">
+          <div className="mb-1 flex justify-between text-xs text-neutral-500">
+            <span>
+              Emprunt : {formaterMontant(detail.etatEmprunt.restantDu)} restant dû sur{" "}
+              {formaterMontant(detail.montantEmprunt)}
+            </span>
+            <span>
+              {detail.etatEmprunt.moisEcoules} / {detail.dureeEmprunt} mois
+            </span>
+          </div>
+          <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
+            <div
+              className="h-full bg-neutral-900 dark:bg-neutral-100"
+              style={{ width: `${Math.min(detail.etatEmprunt.progression * 100, 100)}%` }}
+            />
+          </div>
+          <p className="mt-1 text-xs text-neutral-500">
+            Mensualité {formaterMontant(detail.mensualiteEmprunt ?? 0)} · Taux {detail.tauxEmprunt ?? 0} % ·{" "}
+            {detail.etatEmprunt.moisRestants} mois restants
+          </p>
         </div>
-        <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
-          <div
-            className="h-full bg-neutral-900 dark:bg-neutral-100"
-            style={{ width: `${Math.min(detail.etatEmprunt.progression * 100, 100)}%` }}
-          />
-        </div>
-        <p className="mt-1 text-xs text-neutral-500">
-          Mensualité {formaterMontant(detail.mensualiteEmprunt)} · Taux {detail.tauxEmprunt} % ·{" "}
-          {detail.etatEmprunt.moisRestants} mois restants
-        </p>
-      </div>
+      )}
 
       <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
         <Info label="Revenus (mois)" valeur={formaterMontant(detail.revenusMensuel)} />

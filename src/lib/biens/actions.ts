@@ -70,23 +70,23 @@ export async function creerBien(_prevState: ActionState, formData: FormData): Pr
   const adresseComplete = String(formData.get("adresseComplete") ?? "").trim();
   const taxeFonciere = Number(formData.get("taxeFonciere"));
   const assurance = Number(formData.get("assurance"));
-  const montantEmprunt = Number(formData.get("montantEmprunt"));
-  const mensualiteEmprunt = Number(formData.get("mensualiteEmprunt"));
-  const tauxEmprunt = Number(formData.get("tauxEmprunt"));
-  const dateDebutEmprunt = formData.get("dateDebutEmprunt");
-  const dureeEmprunt = Number(formData.get("dureeEmprunt"));
+  const montantEmpruntRaw = String(formData.get("montantEmprunt") ?? "").trim();
+  const mensualiteEmpruntRaw = String(formData.get("mensualiteEmprunt") ?? "").trim();
+  const tauxEmpruntRaw = String(formData.get("tauxEmprunt") ?? "").trim();
+  const dateDebutEmpruntRaw = String(formData.get("dateDebutEmprunt") ?? "").trim();
+  const dureeEmpruntRaw = String(formData.get("dureeEmprunt") ?? "").trim();
+
+  const montantEmprunt = montantEmpruntRaw ? Number(montantEmpruntRaw) : null;
+  const mensualiteEmprunt = mensualiteEmpruntRaw ? Number(mensualiteEmpruntRaw) : null;
+  const tauxEmprunt = tauxEmpruntRaw ? Number(tauxEmpruntRaw) : null;
+  const dateDebutEmprunt = dateDebutEmpruntRaw || null;
+  const dureeEmprunt = dureeEmpruntRaw ? Number(dureeEmpruntRaw) : null;
 
   if (!nom) return { success: false, error: "Nom du bien requis." };
   if (!typeBien) return { success: false, error: "Type de bien requis." };
   if (!adresseComplete) return { success: false, error: "Adresse requise." };
-  if (![taxeFonciere, assurance, montantEmprunt, mensualiteEmprunt, tauxEmprunt].every(Number.isFinite)) {
+  if (![taxeFonciere, assurance].every(Number.isFinite)) {
     return { success: false, error: "Champs financiers invalides." };
-  }
-  if (typeof dateDebutEmprunt !== "string" || !dateDebutEmprunt) {
-    return { success: false, error: "Date de début d'emprunt invalide." };
-  }
-  if (!Number.isInteger(dureeEmprunt) || dureeEmprunt <= 0) {
-    return { success: false, error: "Durée d'emprunt invalide." };
   }
 
   const valeurEstimee = extraireValeurEstimee(formData);
@@ -124,11 +124,11 @@ export async function creerBien(_prevState: ActionState, formData: FormData): Pr
         nombreBoxes: parametresBoxes.numeros.length,
         taxeFonciere,
         assurance,
-        montantEmprunt,
-        mensualiteEmprunt,
-        tauxEmprunt,
-        dateDebutEmprunt: new Date(dateDebutEmprunt),
-        dureeEmprunt,
+        montantEmprunt: montantEmprunt ?? null,
+        mensualiteEmprunt: mensualiteEmprunt ?? null,
+        tauxEmprunt: tauxEmprunt ?? null,
+        dateDebutEmprunt: dateDebutEmprunt ? new Date(dateDebutEmprunt) : null,
+        dureeEmprunt: dureeEmprunt ?? null,
         valeurEstimee,
         utilisateurId: userId,
       },
@@ -206,24 +206,24 @@ export async function modifierBien(_prevState: ActionState, formData: FormData):
   const adresseComplete = String(formData.get("adresseComplete") ?? "").trim();
   const taxeFonciere = Number(formData.get("taxeFonciere"));
   const assurance = Number(formData.get("assurance"));
-  const montantEmprunt = Number(formData.get("montantEmprunt"));
-  const mensualiteEmprunt = Number(formData.get("mensualiteEmprunt"));
-  const tauxEmprunt = Number(formData.get("tauxEmprunt"));
-  const dateDebutEmprunt = formData.get("dateDebutEmprunt");
-  const dureeEmprunt = Number(formData.get("dureeEmprunt"));
+  const montantEmpruntRaw2 = String(formData.get("montantEmprunt") ?? "").trim();
+  const mensualiteEmpruntRaw2 = String(formData.get("mensualiteEmprunt") ?? "").trim();
+  const tauxEmpruntRaw2 = String(formData.get("tauxEmprunt") ?? "").trim();
+  const dateDebutEmpruntRaw2 = String(formData.get("dateDebutEmprunt") ?? "").trim();
+  const dureeEmpruntRaw2 = String(formData.get("dureeEmprunt") ?? "").trim();
+
+  const montantEmprunt = montantEmpruntRaw2 ? Number(montantEmpruntRaw2) : null;
+  const mensualiteEmprunt = mensualiteEmpruntRaw2 ? Number(mensualiteEmpruntRaw2) : null;
+  const tauxEmprunt = tauxEmpruntRaw2 ? Number(tauxEmpruntRaw2) : null;
+  const dateDebutEmprunt = dateDebutEmpruntRaw2 || null;
+  const dureeEmprunt = dureeEmpruntRaw2 ? Number(dureeEmpruntRaw2) : null;
 
   if (!Number.isInteger(id) || id <= 0) return { success: false, error: "Bien invalide." };
   if (!nom) return { success: false, error: "Nom du bien requis." };
   if (!typeBien) return { success: false, error: "Type de bien requis." };
   if (!adresseComplete) return { success: false, error: "Adresse requise." };
-  if (![taxeFonciere, assurance, montantEmprunt, mensualiteEmprunt, tauxEmprunt].every(Number.isFinite)) {
+  if (![taxeFonciere, assurance].every(Number.isFinite)) {
     return { success: false, error: "Champs financiers invalides." };
-  }
-  if (typeof dateDebutEmprunt !== "string" || !dateDebutEmprunt) {
-    return { success: false, error: "Date de début d'emprunt invalide." };
-  }
-  if (!Number.isInteger(dureeEmprunt) || dureeEmprunt <= 0) {
-    return { success: false, error: "Durée d'emprunt invalide." };
   }
 
   const valeurEstimee = extraireValeurEstimee(formData);
@@ -246,11 +246,11 @@ export async function modifierBien(_prevState: ActionState, formData: FormData):
       adresseComplete,
       taxeFonciere,
       assurance,
-      montantEmprunt,
-      mensualiteEmprunt,
-      tauxEmprunt,
-      dateDebutEmprunt: new Date(dateDebutEmprunt),
-      dureeEmprunt,
+      montantEmprunt: montantEmprunt ?? null,
+      mensualiteEmprunt: mensualiteEmprunt ?? null,
+      tauxEmprunt: tauxEmprunt ?? null,
+      dateDebutEmprunt: dateDebutEmprunt ? new Date(dateDebutEmprunt) : null,
+      dureeEmprunt: dureeEmprunt ?? null,
       valeurEstimee,
     },
   });

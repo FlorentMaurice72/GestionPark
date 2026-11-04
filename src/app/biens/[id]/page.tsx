@@ -48,10 +48,10 @@ export default async function BienDetailPage({ params }: { params: Promise<{ id:
           <Info label="Adresse" valeur={bien.adresseComplete} pleineLargeur />
           <Info label="Taxe foncière" valeur={formaterMontant(bien.taxeFonciere)} />
           <Info label="Assurance" valeur={formaterMontant(bien.assurance)} />
-          <Info label="Montant emprunt" valeur={formaterMontant(bien.montantEmprunt)} />
-          <Info label="Mensualité emprunt" valeur={formaterMontant(bien.mensualiteEmprunt)} />
-          <Info label="Taux emprunt" valeur={`${bien.tauxEmprunt} %`} />
-          <Info label="Durée emprunt" valeur={`${bien.dureeEmprunt} mois`} />
+          {bien.montantEmprunt != null && <Info label="Montant emprunt" valeur={formaterMontant(bien.montantEmprunt)} />}
+          {bien.mensualiteEmprunt != null && <Info label="Mensualité emprunt" valeur={formaterMontant(bien.mensualiteEmprunt)} />}
+          {bien.tauxEmprunt != null && <Info label="Taux emprunt" valeur={`${bien.tauxEmprunt} %`} />}
+          {bien.dureeEmprunt != null && <Info label="Durée emprunt" valeur={`${bien.dureeEmprunt} mois`} />}
         </div>
 
         <div className="flex items-center justify-between">
