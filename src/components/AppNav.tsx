@@ -10,6 +10,7 @@ const ONGLETS = [
   { href: "/biens", label: "Mes biens immobiliers" },
   { href: "/locataires", label: "Mes locataires" },
   { href: "/finances", label: "Finances & Documents" },
+  { href: "/guide", label: "Guide" },
   { href: "/profil", label: "Mon compte" },
 ];
 

@@ -1,0 +1,1022 @@
+<title>GestionPark — Tutoriel</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Lato:wght@300;400;700&display=swap">
+
+<style>
+/* ── Design tokens ── */
+:root {
+  --bleu: #0047AB;
+  --canard: #0097A7;
+  --teal: #20B2AA;
+  --nuit: #0F2C59;
+  --bg: #F4F8FF;
+  --bg2: #EEF4FF;
+  --blanc: #FFFFFF;
+  --fg: #0F2C59;
+  --muted: #64748B;
+  --border: #CBD5E1;
+  --danger: #E53E3E;
+  --ok: #2D9748;
+  --warn: #D97706;
+  --chip: #E0F2FE;
+  --chip-fg: #0369A1;
+  color-scheme: light;
+}
+*,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+body {
+  background: var(--nuit);
+  font-family: 'Lato', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100dvh;
+  padding: max(16px, env(safe-area-inset-top,0px)) max(16px, env(safe-area-inset-right,0px)) max(16px, env(safe-area-inset-bottom,0px)) max(16px, env(safe-area-inset-left,0px));
+}
+
+/* ── Top header ── */
+#top-header {
+  width: 100%; max-width: 920px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0 8px;
+}
+.h-logo svg { display:block; }
+.h-title {
+  font-family: 'Montserrat', sans-serif; font-weight: 900;
+  font-size: clamp(14px,2vw,18px); color: white; letter-spacing: .05em;
+}
+.h-sub {
+  font-size: clamp(9px,1.2vw,11px); color: rgba(255,255,255,.45);
+  font-family: 'Lato', sans-serif; font-weight: 300;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.chapter-pill {
+  margin-left: auto;
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18);
+  color: rgba(255,255,255,.75); font-family: 'Montserrat', sans-serif;
+  font-weight: 700; font-size: clamp(8px,1.1vw,10px); letter-spacing: .08em;
+  padding: .35em 1em; border-radius: 100px;
+}
+
+/* ── Stage ── */
+#stage-wrap { width: 100%; max-width: 920px; }
+#stage {
+  position: relative; width: 100%;
+  aspect-ratio: 16/9;
+  background: var(--bg);
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.55);
+}
+
+/* ── Progress bar ── */
+#prog-bar {
+  position: absolute; top: 0; left: 0; height: 3px;
+  background: var(--canard); width: 0%; z-index: 20;
+  transition: width .2s linear;
+}
+
+/* ── Scene base ── */
+.scene {
+  position: absolute; inset: 0;
+  opacity: 0; pointer-events: none;
+  transition: opacity .5s ease;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 4% 5%;
+}
+.scene.show { opacity: 1; pointer-events: auto; }
+
+/* ── Caption ── */
+#caption {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: rgba(15,44,89,.88); backdrop-filter: blur(4px);
+  color: #fff; font-size: clamp(9px,1.6vw,14px);
+  font-family: 'Lato', sans-serif; font-weight: 300;
+  padding: .5em 1.4em; text-align: center;
+  letter-spacing: .01em; line-height: 1.4;
+  z-index: 15; min-height: 2.6em;
+}
+
+/* ── Step badge (shared) ── */
+.step-badge {
+  display: inline-flex; align-items: center; gap: .5em;
+  background: var(--bleu); color: white;
+  font-family: 'Montserrat', sans-serif; font-weight: 800;
+  font-size: clamp(7px,1.2vw,11px); letter-spacing: .1em;
+  text-transform: uppercase; padding: .4em 1em;
+  border-radius: 100px; margin-bottom: 3%;
+  opacity: 0; transform: translateY(-6px);
+  transition: opacity .4s, transform .4s;
+}
+.step-badge.show { opacity:1; transform:translateY(0); }
+
+.scene-title {
+  font-family: 'Montserrat', sans-serif; font-weight: 800;
+  font-size: clamp(14px,2.4vw,22px); color: var(--nuit);
+  text-align: center; text-wrap: balance;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .4s .15s, transform .4s .15s;
+  margin-bottom: 4%;
+}
+.scene-title.show { opacity:1; transform:translateY(0); }
+
+/* ══ SCENE 1 — Accueil ══ */
+#s1 { background: linear-gradient(145deg, var(--nuit) 0%, #003080 100%); }
+.s1-logo { animation: s1pop .7s ease both; }
+@keyframes s1pop {
+  from { opacity:0; transform: scale(.55) rotate(-6deg); }
+  to   { opacity:1; transform: scale(1) rotate(0); }
+}
+.s1-name {
+  font-family: 'Montserrat', sans-serif; font-weight: 900;
+  font-size: clamp(28px,5.5vw,54px); color: white;
+  letter-spacing: .06em; margin: 2% 0 1%;
+  animation: fadeUp .7s .3s ease both;
+}
+.s1-tuto {
+  font-family: 'Montserrat', sans-serif; font-weight: 700;
+  font-size: clamp(10px,1.8vw,16px); color: var(--canard);
+  letter-spacing: .15em; text-transform: uppercase;
+  animation: fadeUp .7s .5s ease both; margin-bottom: 5%;
+}
+.s1-chapters {
+  display: flex; gap: 2%; flex-wrap: wrap; justify-content: center;
+  animation: fadeUp .7s .7s ease both;
+}
+.chap {
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+  color: rgba(255,255,255,.8); font-family: 'Montserrat', sans-serif;
+  font-weight: 700; font-size: clamp(7px,1.1vw,10px); letter-spacing: .08em;
+  padding: .4em 1em; border-radius: 100px; white-space: nowrap;
+}
+
+/* ══ SCENE 2 — Inscription ══ */
+#s2 { background: var(--blanc); justify-content: flex-start; padding-top: 5%; }
+.form-mock {
+  width: 60%; max-width: 340px;
+  background: white; border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 24px rgba(0,71,171,.1);
+  padding: 5% 6%;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity .4s .2s, transform .4s .2s;
+}
+.form-mock.show { opacity:1; transform:translateY(0); }
+.form-logo-row {
+  display: flex; align-items: center; gap: .6em;
+  margin-bottom: 5%;
+}
+.form-brand {
+  font-family:'Montserrat',sans-serif; font-weight:900;
+  font-size: clamp(12px,1.6vw,14px); color:var(--nuit);
+  letter-spacing:.05em;
+}
+.f-row { margin-bottom: 3%; }
+.f-label {
+  font-family:'Montserrat',sans-serif; font-weight:700;
+  font-size:clamp(7px,1vw,9px); color:var(--muted);
+  text-transform:uppercase; letter-spacing:.08em;
+  margin-bottom:.8%;
+}
+.f-input {
+  width:100%; border:1px solid var(--border);
+  border-radius:6px; padding:.6em .8em;
+  font-family:'Lato',sans-serif; font-size:clamp(8px,1.2vw,11px);
+  color:var(--fg); background:var(--bg);
+}
+.f-input.active { border-color:var(--canard); box-shadow:0 0 0 2px rgba(0,151,167,.2); }
+.f-btn {
+  width:100%; background:var(--bleu); color:white;
+  font-family:'Montserrat',sans-serif; font-weight:800;
+  font-size:clamp(8px,1.2vw,11px); letter-spacing:.05em;
+  border:none; border-radius:8px; padding:.7em;
+  margin-top:4%; cursor:pointer;
+}
+.form-tip {
+  margin-top:4%; font-size:clamp(7px,1vw,9px); color:var(--muted);
+  text-align:center; display:flex; align-items:center; gap:.4em; justify-content:center;
+}
+
+/* ══ SCENE 3 — Premier bien ══ */
+#s3 { background: var(--bg); }
+.bien-form {
+  width: 90%; display: grid; grid-template-columns: 1fr 1fr; gap: 3% 4%;
+}
+.bien-field {
+  display: flex; flex-direction: column; gap: .8%;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .35s, transform .35s;
+}
+.bien-field.show { opacity:1; transform:translateY(0); }
+.bf-label {
+  font-family:'Montserrat',sans-serif; font-weight:700;
+  font-size:clamp(7px,1.1vw,9.5px); color:var(--muted);
+  text-transform:uppercase; letter-spacing:.08em;
+}
+.bf-val {
+  background:white; border:1px solid var(--border);
+  border-radius:6px; padding:.7em .9em;
+  font-size:clamp(8px,1.2vw,11px); color:var(--fg);
+  font-family:'Lato',sans-serif;
+}
+.bf-val.filled { border-color:var(--canard); background:var(--bg2); }
+.bien-submit {
+  grid-column: 1/-1; text-align:right; margin-top:1%;
+  opacity:0; transition:opacity .4s;
+}
+.bien-submit.show { opacity:1; }
+.bien-btn {
+  background:var(--bleu); color:white;
+  font-family:'Montserrat',sans-serif; font-weight:800;
+  font-size:clamp(8px,1.2vw,11px); padding:.6em 1.6em;
+  border-radius:8px; border:none;
+}
+
+/* ══ SCENE 4 — Ajouter boxs ══ */
+#s4 { background: var(--blanc); }
+.boxs-grid {
+  display: grid; grid-template-columns: repeat(5,1fr); gap: 2%;
+  width: 90%; margin-top: 1%;
+}
+.box-cell {
+  aspect-ratio: 1;
+  border-radius: 8px; border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family:'Montserrat',sans-serif; font-weight:800;
+  font-size:clamp(8px,1.4vw,13px); color:var(--muted);
+  opacity:0; transform:scale(.85);
+  transition:opacity .3s, transform .3s, background .4s, border-color .4s, color .4s;
+}
+.box-cell.appear { opacity:1; transform:scale(1); }
+.box-cell.rented { background:var(--canard); border-color:var(--canard); color:white; }
+.box-cell.vacant { background:#F0FDF4; border-color:#22C55E; color:#166534; }
+
+/* ══ SCENE 5 — Ajouter locataire ══ */
+#s5 { background: var(--bg); }
+.loc-form {
+  width: 88%; background:white; border-radius:12px;
+  border:1px solid var(--border); padding:4% 5%;
+  box-shadow:0 4px 20px rgba(0,71,171,.08);
+  opacity:0; transform:translateY(10px);
+  transition:opacity .4s .2s, transform .4s .2s;
+}
+.loc-form.show { opacity:1; transform:translateY(0); }
+.loc-row { display:flex; gap:4%; margin-bottom:3%; }
+.loc-field { flex:1; display:flex; flex-direction:column; gap:.8%; }
+.lf-label {
+  font-family:'Montserrat',sans-serif; font-weight:700;
+  font-size:clamp(7px,1.1vw,9.5px); color:var(--muted);
+  text-transform:uppercase; letter-spacing:.08em;
+}
+.lf-val {
+  background:var(--bg); border:1px solid var(--border);
+  border-radius:6px; padding:.6em .8em;
+  font-size:clamp(8px,1.2vw,11px); color:var(--fg);
+  font-family:'Lato',sans-serif;
+}
+.lf-val.hl { border-color:var(--bleu); }
+.loc-badge-row { display:flex; gap:2%; margin-top:1%; }
+.loc-badge {
+  display:inline-flex; align-items:center; gap:.5em;
+  background:var(--chip); color:var(--chip-fg);
+  font-family:'Montserrat',sans-serif; font-weight:700;
+  font-size:clamp(7px,1vw,9px); padding:.4em .9em;
+  border-radius:100px;
+  opacity:0; transform:scale(.9);
+  transition:opacity .3s, transform .3s;
+}
+.loc-badge.show { opacity:1; transform:scale(1); }
+
+/* ══ SCENE 6 — Tableau de bord ══ */
+#s6 { background: var(--bg); flex-direction:column; align-items:flex-start; gap:3%; }
+.db-kpi-row { display:flex; gap:2.5%; width:100%; }
+.db-kpi {
+  flex:1; background:white; border-radius:10px;
+  padding:3% 3.5%; border:1px solid var(--border);
+  opacity:0; transform:translateY(8px);
+  transition:opacity .4s, transform .4s;
+}
+.db-kpi.show { opacity:1; transform:translateY(0); }
+.db-kpi-lbl {
+  font-family:'Montserrat',sans-serif; font-weight:700;
+  font-size:clamp(6px,.9vw,8.5px); color:var(--muted);
+  text-transform:uppercase; letter-spacing:.08em; margin-bottom:2%;
+}
+.db-kpi-val {
+  font-family:'Montserrat',sans-serif; font-weight:900;
+  font-size:clamp(14px,2.4vw,24px); color:var(--nuit);
+  font-variant-numeric:tabular-nums;
+}
+.db-bar { height:3px; background:#E2E8F0; border-radius:2px; margin-top:3%; overflow:hidden; }
+.db-fill { height:100%; background:var(--canard); width:0%; transition:width 1.4s ease; }
+
+.db-chart-row { display:flex; gap:2.5%; width:100%; flex:1; }
+.db-chart-card {
+  background:white; border-radius:10px;
+  padding:3% 3.5%; border:1px solid var(--border);
+  opacity:0; transition:opacity .4s .3s;
+  flex:1; min-width:0;
+}
+.db-chart-card.show { opacity:1; }
+.db-cc-title {
+  font-family:'Montserrat',sans-serif; font-weight:700;
+  font-size:clamp(7px,1.1vw,10px); color:var(--muted);
+  text-transform:uppercase; letter-spacing:.08em; margin-bottom:2%;
+}
+
+/* ══ SCENE 7 — Enregistrer paiement ══ */
+#s7 { background: var(--bg); flex-direction:column; align-items:flex-start; gap:3%; }
+.pay-list { width:100%; }
+.pay-item {
+  display:flex; align-items:center; gap:3%;
+  background:white; border-radius:8px; padding:2.2% 3%;
+  border:1px solid var(--border); margin-bottom:1.5%;
+  opacity:0; transform:translateX(-10px);
+  transition:opacity .3s, transform .3s;
+}
+.pay-item.show { opacity:1; transform:translateX(0); }
+.pi-name { flex:1; font-size:clamp(9px,1.4vw,12px); font-weight:700; color:var(--fg); }
+.pi-box { font-size:clamp(8px,1.2vw,10px); color:var(--muted); width:12%; text-align:center; }
+.pi-amt { font-size:clamp(9px,1.4vw,12px); font-weight:700; color:var(--fg); width:14%; text-align:right;
+  font-variant-numeric:tabular-nums; }
+.pi-status { width:20%; }
+.badge { display:inline-flex; align-items:center; gap:.4em; padding:.3em .9em; border-radius:100px;
+  font-size:clamp(7px,1vw,9.5px); font-weight:700; font-family:'Montserrat',sans-serif; }
+.b-ok  { background:#DCFCE7; color:var(--ok); }
+.b-no  { background:#FEE2E2; color:var(--danger); }
+.b-warn{ background:#FEF3C7; color:var(--warn); }
+.pi-action {
+  background:var(--canard); color:white;
+  font-family:'Montserrat',sans-serif; font-weight:800;
+  font-size:clamp(7px,1.1vw,10px); border:none; border-radius:6px;
+  padding:.4em .9em; cursor:pointer;
+  opacity:0; transition:opacity .3s;
+}
+.pi-action.show { opacity:1; }
+
+/* ══ SCENE 8 — Documents ══ */
+#s8 { background: var(--blanc); flex-direction:column; gap:4%; }
+.doc-list { width:85%; display:flex; flex-direction:column; gap:2%; }
+.doc-item {
+  display:flex; align-items:center; gap:3%;
+  padding:2.5% 3%; background:var(--bg);
+  border-radius:8px; border:1px solid var(--border);
+  opacity:0; transform:translateX(-10px);
+  transition:opacity .3s, transform .3s;
+}
+.doc-item.show { opacity:1; transform:translateX(0); }
+.doc-icon { font-size:clamp(14px,2vw,18px); flex-shrink:0; }
+.doc-name {
+  flex:1; font-size:clamp(9px,1.4vw,12px); font-weight:700; color:var(--fg); min-width:0;
+}
+.doc-size { font-size:clamp(8px,1.1vw,10px); color:var(--muted); }
+.doc-dl {
+  background:var(--bleu); color:white;
+  font-family:'Montserrat',sans-serif; font-weight:700;
+  font-size:clamp(7px,1.1vw,9px); border:none; border-radius:6px;
+  padding:.4em .8em; cursor:pointer;
+}
+
+/* ══ SCENE 9 — Conclusion ══ */
+#s9 {
+  background: linear-gradient(145deg, var(--nuit) 0%, #003080 55%, #004D99 100%);
+}
+.s9-check-row {
+  display:flex; flex-direction:column; gap:2.5%; width:68%;
+  margin:4% 0;
+}
+.s9-check {
+  display:flex; align-items:center; gap:3%;
+  opacity:0; transform:translateY(6px);
+  transition:opacity .4s, transform .4s;
+}
+.s9-check.show { opacity:1; transform:translateY(0); }
+.s9-chk-icon {
+  width:clamp(18px,2.6vw,24px); height:clamp(18px,2.6vw,24px);
+  background:var(--canard); border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+  font-size:clamp(10px,1.4vw,13px); color:white; font-weight:900;
+}
+.s9-chk-txt {
+  font-size:clamp(9px,1.5vw,13px); color:rgba(255,255,255,.85);
+  font-family:'Lato',sans-serif; font-weight:400;
+}
+.s9-cta {
+  background:var(--canard); color:white;
+  font-family:'Montserrat',sans-serif; font-weight:800;
+  font-size:clamp(10px,1.6vw,14px); letter-spacing:.04em;
+  padding:.9em 2.4em; border-radius:100px; border:none; cursor:pointer;
+  box-shadow:0 8px 24px rgba(0,151,167,.5);
+  animation:fadeUp .6s .6s ease both, pulse 2s 1.2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100%{ box-shadow:0 8px 24px rgba(0,151,167,.5); }
+  50%     { box-shadow:0 8px 36px rgba(0,151,167,.85); }
+}
+@keyframes fadeUp {
+  from{ opacity:0; transform:translateY(12px); }
+  to  { opacity:1; transform:translateY(0); }
+}
+@keyframes fadeIn {
+  from{ opacity:0; } to{ opacity:1; }
+}
+
+/* ── Bottom bar ── */
+#bottom-bar {
+  width:100%; max-width:920px;
+  display:flex; align-items:center; gap:10px;
+  padding:10px 0 0;
+}
+.ctrl-btn {
+  background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18);
+  color:white; border-radius:8px; cursor:pointer;
+  font-family:'Montserrat',sans-serif; font-weight:700;
+  font-size:clamp(9px,1.2vw,11px); padding:7px 16px;
+  transition:background .2s; flex-shrink:0;
+}
+.ctrl-btn:hover{ background:rgba(255,255,255,.22); }
+#time-display {
+  font-family:'Montserrat',sans-serif; font-weight:700;
+  font-size:clamp(8px,1.1vw,10px); color:rgba(255,255,255,.45);
+  font-variant-numeric:tabular-nums; white-space:nowrap;
+}
+.dots { display:flex; gap:5px; align-items:center; margin:0 auto; }
+.dot {
+  width:6px; height:6px; border-radius:50%;
+  background:rgba(255,255,255,.25);
+  transition:background .3s, transform .3s, width .3s;
+  cursor:pointer; flex-shrink:0;
+}
+.dot.active { background:var(--canard); transform:scale(1.35); width:14px; border-radius:3px; }
+</style>
+
+<div id="top-header">
+  <div class="h-logo">
+    <svg width="30" height="22" viewBox="0 0 80 60" aria-hidden="true">
+      <polygon points="30,4 50,14 30,24 10,14" fill="#20B2AA"/>
+      <polygon points="10,14 30,24 30,42 10,32" fill="#0097A7"/>
+      <polygon points="30,24 50,14 50,32 30,42" fill="#0047AB"/>
+      <circle cx="26" cy="40" r="8" fill="#0097A7"/>
+      <circle cx="26" cy="40" r="3.5" fill="white"/>
+      <rect x="32" y="37" width="17" height="5" rx="2" fill="#0097A7"/>
+    </svg>
+  </div>
+  <div>
+    <div class="h-title">GESTIONPARK</div>
+    <div class="h-sub">Guide de démarrage</div>
+  </div>
+  <div class="chapter-pill" id="chapter-pill">Étape 1 / 9</div>
+</div>
+
+<div id="stage-wrap">
+  <div id="stage">
+    <div id="prog-bar"></div>
+
+    <!-- S1: Accueil tutoriel -->
+    <div class="scene" id="s1">
+      <div class="s1-logo">
+        <svg width="80" height="60" viewBox="0 0 80 60" aria-hidden="true">
+          <polygon points="30,4 50,14 30,24 10,14" fill="#20B2AA"/>
+          <polygon points="10,14 30,24 30,42 10,32" fill="#0097A7"/>
+          <polygon points="30,24 50,14 50,32 30,42" fill="#0047AB"/>
+          <polygon points="50,18 62,24 50,30 38,24" fill="#20B2AA"/>
+          <polygon points="50,30 62,24 62,38 50,44" fill="#0047AB"/>
+          <circle cx="26" cy="40" r="8" fill="#0097A7"/>
+          <circle cx="26" cy="40" r="3.5" fill="white"/>
+          <rect x="32" y="37" width="17" height="5" rx="2" fill="#0097A7"/>
+          <rect x="42" y="42" width="3.5" height="3.5" fill="#0097A7"/>
+          <rect x="47" y="42" width="3.5" height="3.5" fill="#0097A7"/>
+        </svg>
+      </div>
+      <p class="s1-name">GESTIONPARK</p>
+      <p class="s1-tuto">Guide de démarrage complet</p>
+      <div class="s1-chapters">
+        <span class="chap">① Inscription</span>
+        <span class="chap">② Votre bien</span>
+        <span class="chap">③ Vos boxs</span>
+        <span class="chap">④ Locataires</span>
+        <span class="chap">⑤ Tableau de bord</span>
+        <span class="chap">⑥ Paiements</span>
+        <span class="chap">⑦ Documents</span>
+        <span class="chap">⑧ Profil</span>
+      </div>
+    </div>
+
+    <!-- S2: Inscription & connexion -->
+    <div class="scene" id="s2">
+      <div class="step-badge" id="b2">① Inscription</div>
+      <div class="scene-title" id="t2">Créez votre compte en 60 secondes</div>
+      <div class="form-mock" id="fm2">
+        <div class="form-logo-row">
+          <svg width="22" height="17" viewBox="0 0 80 60"><polygon points="30,4 50,14 30,24 10,14" fill="#20B2AA"/><polygon points="10,14 30,24 30,42 10,32" fill="#0097A7"/><polygon points="30,24 50,14 50,32 30,42" fill="#0047AB"/></svg>
+          <span class="form-brand">GESTIONPARK</span>
+        </div>
+        <div class="f-row">
+          <div class="f-label">Prénom &amp; Nom</div>
+          <div class="f-input" id="fi-name">Jean Dupont</div>
+        </div>
+        <div class="f-row">
+          <div class="f-label">Email</div>
+          <div class="f-input active" id="fi-email">jean.dupont@email.fr</div>
+        </div>
+        <div class="f-row">
+          <div class="f-label">Mot de passe</div>
+          <div class="f-input" id="fi-pwd">••••••••••</div>
+        </div>
+        <button class="f-btn">Créer mon compte →</button>
+        <div class="form-tip">🔒 Données hébergées en France · 100 % sécurisé</div>
+      </div>
+    </div>
+
+    <!-- S3: Premier bien -->
+    <div class="scene" id="s3">
+      <div class="step-badge" id="b3">② Votre premier bien</div>
+      <div class="scene-title" id="t3">Renseignez votre site de stockage</div>
+      <div class="bien-form" id="bien-form">
+        <div class="bien-field" id="bf1">
+          <div class="bf-label">Nom du bien</div>
+          <div class="bf-val filled">Entrepôt Nord — Lyon 7</div>
+        </div>
+        <div class="bien-field" id="bf2">
+          <div class="bf-label">Adresse</div>
+          <div class="bf-val filled">14 Rue des Marronniers, Lyon</div>
+        </div>
+        <div class="bien-field" id="bf3">
+          <div class="bf-label">Ville</div>
+          <div class="bf-val filled">Lyon</div>
+        </div>
+        <div class="bien-field" id="bf4">
+          <div class="bf-label">Code postal</div>
+          <div class="bf-val filled">69007</div>
+        </div>
+        <div class="bien-field" id="bf5">
+          <div class="bf-label">Type de bien</div>
+          <div class="bf-val filled">Box de stockage</div>
+        </div>
+        <div class="bien-field" id="bf6">
+          <div class="bf-label">Nombre d'unités</div>
+          <div class="bf-val filled">20 boxs</div>
+        </div>
+        <div class="bien-submit" id="bs-submit">
+          <button class="bien-btn">Enregistrer le bien →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- S4: Ajouter boxs -->
+    <div class="scene" id="s4">
+      <div class="step-badge" id="b4">③ Vos boxs</div>
+      <div class="scene-title" id="t4">Ajoutez vos unités — nom, surface, loyer</div>
+      <div class="boxs-grid" id="boxs-grid">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <!-- S5: Ajouter locataire -->
+    <div class="scene" id="s5">
+      <div class="step-badge" id="b5">④ Vos locataires</div>
+      <div class="scene-title" id="t5">Associez un locataire à chaque box</div>
+      <div class="loc-form" id="loc-form">
+        <div class="loc-row">
+          <div class="loc-field">
+            <div class="lf-label">Prénom &amp; Nom</div>
+            <div class="lf-val hl">Sophie Laurent</div>
+          </div>
+          <div class="loc-field">
+            <div class="lf-label">Email</div>
+            <div class="lf-val">s.laurent@email.fr</div>
+          </div>
+        </div>
+        <div class="loc-row">
+          <div class="loc-field">
+            <div class="lf-label">Box attribuée</div>
+            <div class="lf-val hl">B-03 · 12 m²</div>
+          </div>
+          <div class="loc-field">
+            <div class="lf-label">Loyer mensuel</div>
+            <div class="lf-val">120 € / mois</div>
+          </div>
+        </div>
+        <div class="loc-row">
+          <div class="loc-field">
+            <div class="lf-label">Date d'entrée</div>
+            <div class="lf-val">01 / 03 / 2026</div>
+          </div>
+          <div class="loc-field">
+            <div class="lf-label">Type de bail</div>
+            <div class="lf-val">Mensuel reconductible</div>
+          </div>
+        </div>
+        <div class="loc-badge-row">
+          <div class="loc-badge" id="lb1">📧 Email de bienvenue envoyé</div>
+          <div class="loc-badge" id="lb2">📄 Contrat PDF généré</div>
+          <div class="loc-badge" id="lb3">📆 Échéancier créé</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S6: Tableau de bord -->
+    <div class="scene" id="s6">
+      <div class="step-badge" id="b6">⑤ Tableau de bord</div>
+      <div class="db-kpi-row">
+        <div class="db-kpi" id="dk1">
+          <div class="db-kpi-lbl">Occupation</div>
+          <div class="db-kpi-val" id="dkv1">0 %</div>
+          <div class="db-bar"><div class="db-fill" id="dkf1"></div></div>
+        </div>
+        <div class="db-kpi" id="dk2">
+          <div class="db-kpi-lbl">Loyers du mois</div>
+          <div class="db-kpi-val" id="dkv2">0 €</div>
+        </div>
+        <div class="db-kpi" id="dk3">
+          <div class="db-kpi-lbl">Impayés</div>
+          <div class="db-kpi-val" id="dkv3" style="color:var(--danger)">0</div>
+        </div>
+        <div class="db-kpi" id="dk4">
+          <div class="db-kpi-lbl">Cash-flow</div>
+          <div class="db-kpi-val" id="dkv4" style="color:var(--ok)">0 €</div>
+        </div>
+      </div>
+      <div class="db-chart-row">
+        <div class="db-chart-card" id="dcc1">
+          <div class="db-cc-title">Revenus encaissés — 2026</div>
+          <svg id="db-svg" viewBox="0 0 400 70" preserveAspectRatio="none" style="width:100%;height:auto;overflow:visible">
+            <line x1="0" y1="70" x2="400" y2="70" stroke="#E2E8F0" stroke-width="1"/>
+            <line x1="0" y1="46" x2="400" y2="46" stroke="#E2E8F0" stroke-width=".8" stroke-dasharray="4,4"/>
+            <line x1="0" y1="23" x2="400" y2="23" stroke="#E2E8F0" stroke-width=".8" stroke-dasharray="4,4"/>
+            <path id="db-area" d="" fill="rgba(0,151,167,.12)"/>
+            <path id="db-line" d="" fill="none" stroke="#0097A7" stroke-width="2.2"
+              stroke-linejoin="round" stroke-linecap="round"
+              stroke-dasharray="800" stroke-dashoffset="800"/>
+          </svg>
+        </div>
+        <div class="db-chart-card" id="dcc2" style="max-width:30%">
+          <div class="db-cc-title">Occupation par mois</div>
+          <svg id="db-bar-svg" viewBox="0 0 120 70" style="width:100%;height:auto">
+            <!-- bars built by JS -->
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- S7: Enregistrer paiement -->
+    <div class="scene" id="s7">
+      <div class="step-badge" id="b7">⑥ Suivi des paiements</div>
+      <div class="scene-title" id="t7">Enregistrez un paiement reçu en un clic</div>
+      <div class="pay-list" id="pay-list">
+        <div class="pay-item" id="pi1"><span class="pi-name">Martin Dupont</span><span class="pi-box">A-01</span><span class="pi-amt">90 €</span><span class="pi-status"><span class="badge b-ok">✓ Payé</span></span><button class="pi-action" style="opacity:0;pointer-events:none">— </button></div>
+        <div class="pay-item" id="pi2"><span class="pi-name">Sophie Laurent</span><span class="pi-box">B-03</span><span class="pi-amt">120 €</span><span class="pi-status"><span class="badge b-no" id="pi2-badge">✕ Impayé</span></span><button class="pi-action" id="pi2-btn">✓ Marquer payé</button></div>
+        <div class="pay-item" id="pi3"><span class="pi-name">Paul Renard</span><span class="pi-box">C-02</span><span class="pi-amt">90 €</span><span class="pi-status"><span class="badge b-ok">✓ Payé</span></span><button class="pi-action" style="opacity:0;pointer-events:none">—</button></div>
+        <div class="pay-item" id="pi4"><span class="pi-name">Lucie Bernard</span><span class="pi-box">A-04</span><span class="pi-amt">90 €</span><span class="pi-status"><span class="badge b-warn">⚠ Partiel</span></span><button class="pi-action" id="pi4-btn">✓ Marquer payé</button></div>
+      </div>
+    </div>
+
+    <!-- S8: Documents -->
+    <div class="scene" id="s8">
+      <div class="step-badge" id="b8">⑦ Documents &amp; Finances</div>
+      <div class="scene-title" id="t8">Tous vos documents générés automatiquement</div>
+      <div class="doc-list" id="doc-list">
+        <div class="doc-item" id="di1"><span class="doc-icon">📄</span><span class="doc-name">Quittance_Martin_Dupont_Nov2026.pdf</span><span class="doc-size">24 Ko</span><button class="doc-dl">⤓ PDF</button></div>
+        <div class="doc-item" id="di2"><span class="doc-icon">📋</span><span class="doc-name">Contrat_bail_Sophie_Laurent.pdf</span><span class="doc-size">48 Ko</span><button class="doc-dl">⤓ PDF</button></div>
+        <div class="doc-item" id="di3"><span class="doc-icon">📊</span><span class="doc-name">Export_fiscal_2026_Entrep-Nord.csv</span><span class="doc-size">8 Ko</span><button class="doc-dl">⤓ CSV</button></div>
+      </div>
+    </div>
+
+    <!-- S9: Conclusion -->
+    <div class="scene" id="s9">
+      <div style="animation:fadeUp .7s ease both">
+        <svg width="60" height="45" viewBox="0 0 80 60" aria-hidden="true">
+          <polygon points="30,4 50,14 30,24 10,14" fill="#20B2AA"/>
+          <polygon points="10,14 30,24 30,42 10,32" fill="#0097A7"/>
+          <polygon points="30,24 50,14 50,32 30,42" fill="rgba(255,255,255,.75)"/>
+          <circle cx="26" cy="40" r="8" fill="#0097A7"/>
+          <circle cx="26" cy="40" r="3.5" fill="white"/>
+          <rect x="32" y="37" width="17" height="5" rx="2" fill="#0097A7"/>
+        </svg>
+      </div>
+      <p class="s1-name" style="font-size:clamp(22px,4.5vw,46px);animation:fadeUp .7s .2s ease both">Vous êtes prêt !</p>
+      <div class="s9-check-row" id="s9-checks">
+        <div class="s9-check" id="sc1"><div class="s9-chk-icon">✓</div><span class="s9-chk-txt">Votre bien et vos boxs sont configurés</span></div>
+        <div class="s9-check" id="sc2"><div class="s9-chk-icon">✓</div><span class="s9-chk-txt">Vos locataires sont enregistrés avec leur bail</span></div>
+        <div class="s9-check" id="sc3"><div class="s9-chk-icon">✓</div><span class="s9-chk-txt">Les paiements et les relances sont automatisés</span></div>
+        <div class="s9-check" id="sc4"><div class="s9-chk-icon">✓</div><span class="s9-chk-txt">Vos documents PDF sont disponibles en un clic</span></div>
+      </div>
+      <button class="s9-cta">Accéder à mon tableau de bord →</button>
+    </div>
+
+    <div id="caption"></div>
+  </div>
+</div>
+
+<div id="bottom-bar">
+  <button class="ctrl-btn" id="btn-restart">↺ Restart</button>
+  <button class="ctrl-btn" id="btn-play">▶ Lire</button>
+  <div class="dots" id="dots"></div>
+  <div id="time-display">0:00 / 4:30</div>
+</div>
+
+<script>
+const SCENES = [
+  { id:'s1', dur:16000, step:1,
+    cap:"« Bienvenue dans GestionPark. Ce guide va vous montrer, étape par étape, comment prendre en main le logiciel en moins de 5 minutes. »" },
+  { id:'s2', dur:28000, step:2,
+    cap:"« Créez votre compte en entrant votre nom, votre email et un mot de passe. Votre accès est immédiat — aucune carte bancaire requise. »" },
+  { id:'s3', dur:32000, step:3,
+    cap:"« Ajoutez votre premier bien : donnez-lui un nom, une adresse, et indiquez le nombre d'unités. GestionPark s'adapte à 1 garage comme à 100 boxs. »" },
+  { id:'s4', dur:26000, step:4,
+    cap:"« Créez chaque box : numéro, surface et loyer mensuel. Vous pouvez tout renseigner en quelques secondes via notre interface grille. »" },
+  { id:'s5', dur:30000, step:5,
+    cap:"« Ajoutez vos locataires et associez-les à leurs boxs. GestionPark génère le contrat PDF et crée l'échéancier automatiquement. »" },
+  { id:'s6', dur:30000, step:6,
+    cap:"« Votre tableau de bord est prêt : taux d'occupation, revenus encaissés, impayés et cash-flow — tout en temps réel. »" },
+  { id:'s7', dur:28000, step:7,
+    cap:"« Chaque mois, enregistrez les paiements reçus d'un clic. Les locataires en retard reçoivent une relance automatique à J+5. »" },
+  { id:'s8', dur:22000, step:8,
+    cap:"« Téléchargez vos quittances, contrats, et exportez vos loyers annuels pour votre déclaration fiscale en un clic. »" },
+  { id:'s9', dur:18000, step:9,
+    cap:"« C'est tout ! Votre gestion locative est maintenant entièrement digitalisée. Bienvenue dans GestionPark. »" },
+];
+
+const TOTAL = SCENES.reduce((s,sc)=>s+sc.dur,0);
+let cur=-1, playing=false, timer=null, startT=null;
+
+// Build dots
+const dotsEl=document.getElementById('dots');
+SCENES.forEach((_,i)=>{
+  const d=document.createElement('div'); d.className='dot';
+  d.onclick=()=>goTo(i); dotsEl.appendChild(d);
+});
+function allDots(){ return [...dotsEl.querySelectorAll('.dot')]; }
+
+function fmt(ms){ const s=Math.floor(ms/1000); return Math.floor(s/60)+':'+(s%60<10?'0':'')+(s%60); }
+
+function updateTime(elapsed){
+  let acc=0; for(let j=0;j<cur;j++) acc+=SCENES[j].dur;
+  document.getElementById('time-display').textContent=fmt(acc+elapsed)+' / '+fmt(TOTAL);
+}
+
+function showScene(i){
+  if(cur>=0){
+    document.getElementById(SCENES[cur].id).classList.remove('show');
+    allDots()[cur].classList.remove('active');
+  }
+  cur=i;
+  const sc=SCENES[cur];
+  document.getElementById(sc.id).classList.add('show');
+  allDots()[cur].classList.add('active');
+  document.getElementById('caption').textContent=sc.cap;
+  document.getElementById('chapter-pill').textContent='Étape '+sc.step+' / 9';
+  runAnims(cur);
+  updateTime(0);
+}
+
+function runAnims(i){
+  if(i===1){
+    setTimeout(()=>document.getElementById('b2')?.classList.add('show'),100);
+    setTimeout(()=>document.getElementById('t2')?.classList.add('show'),200);
+    setTimeout(()=>document.getElementById('fm2')?.classList.add('show'),300);
+    // simulate typing animation on email
+    setTimeout(()=>{
+      const el=document.getElementById('fi-email');
+      if(el){ el.textContent=''; const txt='jean.dupont@email.fr'; let k=0;
+        const iv=setInterval(()=>{ el.textContent+=txt[k++]; if(k>=txt.length) clearInterval(iv); },60); }
+    },1200);
+  }
+  if(i===2){
+    setTimeout(()=>document.getElementById('b3')?.classList.add('show'),100);
+    setTimeout(()=>document.getElementById('t3')?.classList.add('show'),200);
+    ['bf1','bf2','bf3','bf4','bf5','bf6'].forEach((id,j)=>{
+      setTimeout(()=>document.getElementById(id)?.classList.add('show'),400+j*300);
+    });
+    setTimeout(()=>document.getElementById('bs-submit')?.classList.add('show'),2800);
+  }
+  if(i===3){
+    setTimeout(()=>document.getElementById('b4')?.classList.add('show'),100);
+    setTimeout(()=>document.getElementById('t4')?.classList.add('show'),200);
+    buildBoxs();
+  }
+  if(i===4){
+    setTimeout(()=>document.getElementById('b5')?.classList.add('show'),100);
+    setTimeout(()=>document.getElementById('t5')?.classList.add('show'),200);
+    setTimeout(()=>document.getElementById('loc-form')?.classList.add('show'),400);
+    ['lb1','lb2','lb3'].forEach((id,j)=>{
+      setTimeout(()=>document.getElementById(id)?.classList.add('show'),1800+j*400);
+    });
+  }
+  if(i===5){
+    setTimeout(()=>document.getElementById('b6')?.classList.add('show'),100);
+    ['dk1','dk2','dk3','dk4'].forEach((id,j)=>{
+      setTimeout(()=>document.getElementById(id)?.classList.add('show'),200+j*200);
+    });
+    setTimeout(()=>{
+      document.getElementById('dcc1')?.classList.add('show');
+      document.getElementById('dcc2')?.classList.add('show');
+      buildDbChart(); buildDbBars(); animDbCounters();
+    },600);
+  }
+  if(i===6){
+    setTimeout(()=>document.getElementById('b7')?.classList.add('show'),100);
+    setTimeout(()=>document.getElementById('t7')?.classList.add('show'),200);
+    ['pi1','pi2','pi3','pi4'].forEach((id,j)=>{
+      setTimeout(()=>document.getElementById(id)?.classList.add('show'),300+j*300);
+    });
+    setTimeout(()=>{
+      const btn=document.getElementById('pi2-btn');
+      if(btn){ btn.classList.add('show'); }
+    },1800);
+    setTimeout(()=>{
+      const btn=document.getElementById('pi4-btn');
+      if(btn){ btn.classList.add('show'); }
+    },2400);
+    // animate marking paid
+    setTimeout(()=>{
+      const badge=document.getElementById('pi2-badge');
+      if(badge){ badge.className='badge b-ok'; badge.textContent='✓ Payé'; }
+      const btn=document.getElementById('pi2-btn');
+      if(btn){ btn.style.opacity='0'; }
+    }, 9000);
+  }
+  if(i===7){
+    setTimeout(()=>document.getElementById('b8')?.classList.add('show'),100);
+    setTimeout(()=>document.getElementById('t8')?.classList.add('show'),200);
+    ['di1','di2','di3'].forEach((id,j)=>{
+      setTimeout(()=>document.getElementById(id)?.classList.add('show'),400+j*450);
+    });
+  }
+  if(i===8){
+    ['sc1','sc2','sc3','sc4'].forEach((id,j)=>{
+      setTimeout(()=>document.getElementById(id)?.classList.add('show'),600+j*400);
+    });
+  }
+}
+
+function resetAnims(i){
+  const removeSh=ids=>ids.forEach(id=>document.getElementById(id)?.classList.remove('show'));
+  if(i===1){
+    removeSh(['b2','t2','fm2']);
+    const el=document.getElementById('fi-email'); if(el) el.textContent='jean.dupont@email.fr';
+  }
+  if(i===2){
+    removeSh(['b3','t3','bf1','bf2','bf3','bf4','bf5','bf6','bs-submit']);
+  }
+  if(i===3){ removeSh(['b4','t4']); }
+  if(i===4){ removeSh(['b5','t5','loc-form','lb1','lb2','lb3']); }
+  if(i===5){
+    removeSh(['b6','dk1','dk2','dk3','dk4','dcc1','dcc2']);
+    ['dkv1','dkv2','dkv3','dkv4'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent='0'+(id==='dkv1'?' %':' €'); });
+    document.getElementById('dkv3').textContent='0';
+    document.getElementById('dkf1').style.width='0%';
+    const dl=document.getElementById('db-line'); if(dl){dl.style.strokeDashoffset='800';dl.setAttribute('d','');}
+    const da=document.getElementById('db-area'); if(da) da.setAttribute('d','');
+  }
+  if(i===6){
+    removeSh(['b7','t7','pi1','pi2','pi3','pi4']);
+    const badge=document.getElementById('pi2-badge');
+    if(badge){ badge.className='badge b-no'; badge.textContent='✕ Impayé'; }
+    ['pi2-btn','pi4-btn'].forEach(id=>{ const btn=document.getElementById(id); if(btn) btn.style.opacity='0'; });
+  }
+  if(i===7){ removeSh(['b8','t8','di1','di2','di3']); }
+  if(i===8){ removeSh(['sc1','sc2','sc3','sc4']); }
+}
+
+// Boxs grid
+const BOX_LABELS=['A01','A02','A03','A04','B01','B02','B03','B04','C01','C02','C03','C04','D01','D02','D03','D04','E01','E02','E03','E04'];
+const RENTED_IDX=new Set([0,1,2,4,5,6,8,9,11,13,14,16,17]);
+function buildBoxs(){
+  const grid=document.getElementById('boxs-grid');
+  if(!grid) return;
+  grid.innerHTML='';
+  BOX_LABELS.forEach((lbl,idx)=>{
+    const c=document.createElement('div'); c.className='box-cell';
+    c.textContent=lbl; grid.appendChild(c);
+    setTimeout(()=>{
+      c.classList.add('appear');
+      setTimeout(()=>{
+        c.classList.add(RENTED_IDX.has(idx)?'rented':'vacant');
+      },200);
+    },idx*80+300);
+  });
+}
+
+// Dashboard chart
+const dbPts=[40,48,52,47,55,58,53,61,56,63,70,0];
+function buildDbChart(){
+  const W=400,H=70,mx=85;
+  const xs=dbPts.map((_,i)=>16+i*(W-32)/11);
+  const ys=dbPts.map(v=>H-4-(v/mx)*(H-12));
+  const L='M '+xs.map((x,i)=>`${x},${ys[i]}`).join(' L ');
+  const A=L+` L ${xs[11]},${H} L ${xs[0]},${H} Z`;
+  document.getElementById('db-line')?.setAttribute('d',L);
+  document.getElementById('db-area')?.setAttribute('d',A);
+  setTimeout(()=>{
+    const el=document.getElementById('db-line');
+    if(el){ el.style.transition='stroke-dashoffset 2s ease'; el.style.strokeDashoffset='0'; }
+  },50);
+}
+function buildDbBars(){
+  const svg=document.getElementById('db-bar-svg'); if(!svg) return;
+  svg.innerHTML='';
+  const vals=[72,78,80,74,83,85,82,89,86,88,92,0];
+  const W=120,H=70,bw=7,gap=3;
+  const totalW=vals.length*(bw+gap)-gap;
+  const startX=(W-totalW)/2;
+  vals.forEach((v,i)=>{
+    if(v===0) return;
+    const bh=(v/100)*(H-12);
+    const x=startX+i*(bw+gap);
+    const color=v>=90?'#2D9748':v>=70?'#0097A7':v>=40?'#D97706':'#E53E3E';
+    const rect=document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('x',x); rect.setAttribute('y',H-bh-4);
+    rect.setAttribute('width',bw); rect.setAttribute('height',bh);
+    rect.setAttribute('rx','2'); rect.setAttribute('fill',color);
+    rect.setAttribute('opacity','0');
+    svg.appendChild(rect);
+    setTimeout(()=>{ rect.setAttribute('opacity','1'); rect.style.transition='opacity .3s'; },400+i*120);
+  });
+}
+function animDbCounters(){
+  animNum2('dkv1',0,87,' %',1400);
+  animNum2('dkv2',0,2450,' €',1600);
+  animNum2('dkv3',0,1,'',400);
+  animNum2('dkv4',0,890,' €',1800);
+  setTimeout(()=>{ const kf=document.getElementById('dkf1'); if(kf) kf.style.width='87%'; },200);
+}
+function animNum2(id,from,to,sfx,dur){
+  const el=document.getElementById(id); if(!el) return;
+  const start=performance.now();
+  function step(now){
+    const p=Math.min((now-start)/dur,1);
+    const e=1-Math.pow(1-p,3);
+    el.textContent=Math.round(from+(to-from)*e).toLocaleString('fr-FR')+sfx;
+    if(p<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// Progress
+function updateProg(off){
+  let acc=0; for(let j=0;j<cur;j++) acc+=SCENES[j].dur;
+  document.getElementById('prog-bar').style.width=((acc+off)/TOTAL*100)+'%';
+}
+
+function goTo(i){
+  clearTimeout(timer);
+  if(cur>=0) resetAnims(cur);
+  showScene(i);
+  if(playing) schedNext();
+  updateProg(0);
+}
+
+function schedNext(){
+  startT=Date.now();
+  const sc=SCENES[cur];
+  timer=setTimeout(()=>{
+    if(cur<SCENES.length-1) goTo(cur+1);
+    else{ playing=false; document.getElementById('btn-play').textContent='↺ Revoir'; }
+  },sc.dur);
+  function tick(){
+    if(!playing||cur<0) return;
+    const off=Date.now()-startT;
+    updateProg(off); updateTime(off);
+    if(off<sc.dur) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+document.getElementById('btn-play').onclick=function(){
+  if(!playing){
+    if(cur===-1||cur===SCENES.length-1){
+      SCENES.forEach((_,i)=>resetAnims(i));
+      showScene(0);
+    }
+    playing=true; this.textContent='⏸ Pause';
+    schedNext();
+  } else {
+    clearTimeout(timer); playing=false;
+    this.textContent='▶ Lire';
+  }
+};
+
+document.getElementById('btn-restart').onclick=function(){
+  clearTimeout(timer); playing=false;
+  document.getElementById('btn-play').textContent='▶ Lire';
+  SCENES.forEach((_,i)=>resetAnims(i));
+  if(cur>=0){
+    document.getElementById(SCENES[cur].id).classList.remove('show');
+    allDots()[cur].classList.remove('active');
+  }
+  cur=-1;
+  document.getElementById('prog-bar').style.width='0%';
+  document.getElementById('caption').textContent='';
+  document.getElementById('chapter-pill').textContent='Étape 1 / 9';
+  document.getElementById('time-display').textContent='0:00 / 4:30';
+};
+
+// Auto-start
+setTimeout(()=>{
+  showScene(0); playing=true;
+  document.getElementById('btn-play').textContent='⏸ Pause';
+  schedNext();
+},500);
+</script>

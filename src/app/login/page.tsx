@@ -3,6 +3,7 @@ import Link from "next/link";
 import { AuthError } from "next-auth";
 import { signIn } from "@/lib/auth";
 import { TropDeTentatives } from "@/lib/login-rate-limit";
+import { DemoModal } from "@/components/DemoModal";
 
 async function login(formData: FormData) {
   "use server";
@@ -113,6 +114,10 @@ export default async function LoginPage({
               Créer un compte
             </Link>
           </p>
+
+          <div className="border-t border-neutral-200 pt-4 dark:border-neutral-700">
+            <DemoModal />
+          </div>
         </form>
       </div>
     </div>
