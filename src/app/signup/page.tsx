@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
+import { envoyerEmailBienvenue } from "@/lib/email";
 
 async function inscrire(formData: FormData) {
   "use server";
@@ -31,6 +32,9 @@ async function inscrire(formData: FormData) {
     const msg = err instanceof Error ? err.message : String(err);
     redirect(`/signup?error=db&detail=${encodeURIComponent(msg.slice(0, 200))}`);
   }
+
+  /* Email de bienvenue — non-bloquant */
+  try { await envoyerEmailBienvenue(email); } catch {}
 
   redirect("/login?inscription=1");
 }

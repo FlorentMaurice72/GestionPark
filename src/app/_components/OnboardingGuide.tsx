@@ -12,7 +12,7 @@ interface Props {
 const ETAPES = [
   {
     titre: "Ajoutez votre premier bien",
-    desc: "Renseignez l'adresse, le type (garage, box, entrepôt…) et les boxes qui le composent.",
+    desc: "Renseignez l'adresse, le type (garage, box, entrepôt…) et les boxs qui le composent.",
     href: "/biens/nouveau",
     cta: "Ajouter un bien →",
   },
@@ -24,7 +24,7 @@ const ETAPES = [
   },
   {
     titre: "Importez vos relevés bancaires",
-    desc: "Glissez votre CSV bancaire pour que GestionPark rapproche automatiquement les paiements.",
+    desc: "Glissez votre CSV bancaire pour que GestionPark rapproche automatiquement les paiements reçus.",
     href: "/loyers/import",
     cta: "Importer un relevé →",
   },
@@ -69,8 +69,8 @@ export function OnboardingGuide({ biensDone, locatairesDone, paiementDone }: Pro
 
       <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-800">
         <div
-          className="h-full rounded-full bg-neutral-900 transition-all duration-500 dark:bg-neutral-100"
-          style={{ width: `${(completedCount / 3) * 100}%` }}
+          className="h-full rounded-full transition-all duration-500"
+          style={{ width: `${(completedCount / 3) * 100}%`, backgroundColor: "#0047AB" }}
         />
       </div>
 
@@ -102,7 +102,8 @@ export function OnboardingGuide({ biensDone, locatairesDone, paiementDone }: Pro
             ) : (
               <Link
                 href={e.href}
-                className="rounded-md bg-neutral-900 px-3 py-2 text-center text-xs font-medium text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
+                className="rounded-md px-3 py-2 text-center text-xs font-medium text-white hover:opacity-90"
+                style={{ backgroundColor: "#0047AB" }}
               >
                 {e.cta}
               </Link>

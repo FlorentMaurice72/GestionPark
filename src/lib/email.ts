@@ -55,6 +55,86 @@ export async function envoyerEmailAvisLoyer(
   await resend.emails.send({ from: EMAIL_FROM, to: destinataire, subject, html, text: html.replace(/<[^>]+>/g, "") });
 }
 
+export async function envoyerEmailBienvenue(destinataire: string): Promise<void> {
+  if (!process.env.RESEND_API_KEY) return; /* non-bloquant si pas configuré */
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const siteUrl = process.env.NEXT_PUBLIC_URL ?? "https://gestionpark.fr";
+  await resend.emails.send({
+    from: EMAIL_FROM,
+    to: destinataire,
+    subject: "Bienvenue sur GestionPark 🎉 — 3 étapes pour démarrer",
+    html: `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#F4F8FF;font-family:Arial,sans-serif">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F4F8FF;padding:32px 16px">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08)">
+
+        <!-- Header -->
+        <tr><td style="background:#0047AB;padding:28px 32px">
+          <p style="margin:0;color:#ffffff;font-size:20px;font-weight:700;letter-spacing:1px">GESTIONPARK</p>
+          <p style="margin:6px 0 0;color:rgba(255,255,255,.75);font-size:13px">Logiciel de gestion de boxs de stockage</p>
+        </td></tr>
+
+        <!-- Body -->
+        <tr><td style="padding:32px">
+          <h1 style="margin:0 0 8px;font-size:22px;color:#0F2C59">Bienvenue ! 🎉</h1>
+          <p style="margin:0 0 20px;color:#64748B;font-size:14px;line-height:1.6">
+            Votre compte GestionPark est créé. Vous avez <strong>14 jours d'essai gratuit</strong> pour explorer toutes les fonctionnalités — aucun prélèvement pendant cette période.
+          </p>
+
+          <p style="margin:0 0 12px;font-weight:600;color:#0F2C59;font-size:14px">3 étapes pour démarrer :</p>
+
+          <!-- Étapes -->
+          <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px">
+            ${[
+              ["1", "#0047AB", "Ajoutez votre premier bien", "Renseignez l'adresse et les boxs qui le composent."],
+              ["2", "#0097A7", "Créez votre premier locataire", "Saisissez ses coordonnées, le box et le loyer mensuel."],
+              ["3", "#20B2AA", "Importez votre relevé bancaire", "Glissez votre CSV — GestionPark identifie les paiements automatiquement."],
+            ].map(([n, c, t, d]) => `
+            <tr><td style="padding:10px 0;border-bottom:1px solid #F1F5F9">
+              <table cellpadding="0" cellspacing="0"><tr>
+                <td style="width:32px;vertical-align:top">
+                  <span style="display:inline-block;width:26px;height:26px;border-radius:50%;background:${c};color:#fff;text-align:center;line-height:26px;font-size:12px;font-weight:700">${n}</span>
+                </td>
+                <td style="padding-left:12px">
+                  <p style="margin:0 0 2px;font-weight:600;color:#0F2C59;font-size:13px">${t}</p>
+                  <p style="margin:0;color:#64748B;font-size:12px">${d}</p>
+                </td>
+              </tr></table>
+            </td></tr>`).join("")}
+          </table>
+
+          <!-- CTA -->
+          <table cellpadding="0" cellspacing="0" style="margin:0 0 24px">
+            <tr><td style="border-radius:8px;background:#0047AB">
+              <a href="${siteUrl}/guide" style="display:inline-block;padding:14px 28px;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none">
+                Voir le guide de démarrage →
+              </a>
+            </td></tr>
+          </table>
+
+          <p style="margin:0;color:#94A3B8;font-size:12px;line-height:1.6">
+            Besoin d'aide ? Répondez à cet email ou ouvrez le chat depuis l'application.<br>
+            Vous recevrez un rappel 3 jours avant la fin de votre essai.
+          </p>
+        </td></tr>
+
+        <!-- Footer -->
+        <tr><td style="background:#F8FAFC;padding:16px 32px;border-top:1px solid #E2E8F0">
+          <p style="margin:0;color:#94A3B8;font-size:11px;text-align:center">
+            GestionPark · contact@gestionpark.fr<br>
+            Vous recevez cet email car vous venez de créer un compte sur gestionpark.fr.
+          </p>
+        </td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body></html>`,
+  });
+}
+
 export async function envoyerEmailResetMotDePasse(destinataire: string, lien: string): Promise<void> {
   if (!process.env.RESEND_API_KEY) {
     throw new EmailNonConfigure("RESEND_API_KEY absente.");

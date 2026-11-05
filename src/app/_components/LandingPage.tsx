@@ -36,6 +36,12 @@ export function LandingPage() {
         </div>
         <div className="flex items-center gap-3">
           <Link
+            href="/tarifs"
+            className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+          >
+            Tarifs
+          </Link>
+          <Link
             href="/login"
             className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
           >
