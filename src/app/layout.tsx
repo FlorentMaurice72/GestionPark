@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 import { Footer } from "@/components/Footer";
+import { CrispChat } from "@/components/CrispChat";
 
 export const metadata: Metadata = {
   title: "GestionPark",
@@ -32,6 +33,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <div className="flex-1">{children}</div>
         <Footer />
+        <CrispChat />
       </body>
     </html>
   );
