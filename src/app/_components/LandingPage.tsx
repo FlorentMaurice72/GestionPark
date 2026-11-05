@@ -93,6 +93,8 @@ export function LandingPage() {
           <span>✓ Essai gratuit</span>
           <span>✓ Sans engagement</span>
           <span>✓ Multi-biens</span>
+          <span>✓ +50 utilisateurs satisfaits</span>
+          <span>✓ Support client disponible</span>
           <span>✓ Depuis 2024</span>
         </div>
       </section>
