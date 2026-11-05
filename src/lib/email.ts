@@ -135,6 +135,38 @@ export async function envoyerEmailBienvenue(destinataire: string): Promise<void>
   });
 }
 
+export async function envoyerEmailQuittance(
+  destinataire: string,
+  opts: {
+    locataireNom: string;
+    mois: number;
+    annee: number;
+    pdfBuffer: Buffer;
+    filename: string;
+    bailleurNom?: string | null;
+    bailleurEmail: string;
+  }
+): Promise<void> {
+  if (!process.env.RESEND_API_KEY) throw new EmailNonConfigure("RESEND_API_KEY absente.");
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const moisLabel = new Date(opts.annee, opts.mois - 1).toLocaleString("fr-FR", { month: "long" });
+  const subject = `Quittance de loyer — ${moisLabel} ${opts.annee}`;
+  const html = `
+    <p>Bonjour ${opts.locataireNom},</p>
+    <p>Veuillez trouver ci-joint votre quittance de loyer pour le mois de <strong>${moisLabel} ${opts.annee}</strong>.</p>
+    <br>
+    <p>${opts.bailleurNom ?? opts.bailleurEmail}</p>
+  `;
+  await resend.emails.send({
+    from: EMAIL_FROM,
+    to: destinataire,
+    subject,
+    html,
+    text: html.replace(/<[^>]+>/g, ""),
+    attachments: [{ filename: opts.filename, content: opts.pdfBuffer }],
+  });
+}
+
 export async function envoyerEmailResetMotDePasse(destinataire: string, lien: string): Promise<void> {
   if (!process.env.RESEND_API_KEY) {
     throw new EmailNonConfigure("RESEND_API_KEY absente.");

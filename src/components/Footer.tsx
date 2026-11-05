@@ -3,6 +3,12 @@ import Link from "next/link";
 export function Footer() {
   return (
     <footer className="flex flex-wrap justify-center gap-4 border-t border-neutral-200 bg-white px-6 py-3 text-xs text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
+      <Link href="/blog" className="hover:text-neutral-900 dark:hover:text-neutral-100">
+        Blog
+      </Link>
+      <Link href="/parrainage" className="hover:text-neutral-900 dark:hover:text-neutral-100">
+        Parrainage
+      </Link>
       <Link href="/mentions-legales" className="hover:text-neutral-900 dark:hover:text-neutral-100">
         Mentions légales
       </Link>

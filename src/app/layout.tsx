@@ -17,6 +17,7 @@ const lato = Lato({
 import { Footer } from "@/components/Footer";
 import { CrispChat } from "@/components/CrispChat";
 import { CookieBanner } from "@/components/CookieBanner";
+import { PlausibleAnalytics } from "@/components/PlausibleAnalytics";
 
 const SITE_URL = process.env.NEXT_PUBLIC_URL ?? "https://gestionpark.fr";
 
@@ -78,6 +79,7 @@ export default function RootLayout({
         <Footer />
         <CrispChat />
         <CookieBanner />
+        <PlausibleAnalytics />
       </body>
     </html>
   );
