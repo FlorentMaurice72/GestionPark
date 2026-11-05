@@ -35,7 +35,7 @@ export default async function LocatairesPage({ searchParams }: { searchParams: P
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
       <AppNavWrapper />
       <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-4 dark:border-neutral-800 dark:bg-neutral-900">
-        <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Mes Locataires</h1>
+        <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Mes locataires</h1>
         <div className="flex items-center gap-4">
           <Link
             href="/locataires/nouveau"

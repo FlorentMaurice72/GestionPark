@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 const LIENS = [
-  { href: "/loyers", label: "Loyers & Paiements" },
-  { href: "/biens", label: "Mes Biens" },
-  { href: "/locataires", label: "Mes Locataires" },
+  { href: "/loyers", label: "Gestion locative" },
+  { href: "/biens", label: "Mes biens immobiliers" },
+  { href: "/locataires", label: "Mes locataires" },
   { href: "/finances", label: "Finances & Documents" },
 ];
 

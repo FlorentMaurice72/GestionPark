@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { getLoyersPageData } from "@/lib/loyers/data";
+import { getEcheancierData } from "@/lib/echeancier/data";
 import type { StatutPaiement } from "@/lib/paiements";
 import { AppNavWrapper } from "@/components/AppNavWrapper";
 import { DeconnexionButton } from "@/components/DeconnexionButton";
@@ -9,6 +10,8 @@ import { FiltresBar } from "./_components/FiltresBar";
 import { IndicateursCards } from "./_components/IndicateursCards";
 import { LoyersTable } from "./_components/LoyersTable";
 import { RelancesGroupeesModal } from "./_components/RelancesGroupeesModal";
+import { OngletsGestionLocative } from "./_components/OngletsGestionLocative";
+import { EcheancierSection } from "@/app/echeancier/_components/EcheancierSection";
 
 interface SearchParams {
   vue?: string;
@@ -17,6 +20,7 @@ interface SearchParams {
   locataire?: string;
   box?: string;
   statut?: string;
+  onglet?: string;
 }
 
 const STATUTS_VALIDES: StatutPaiement[] = ["impaye", "impaye_partiel", "paye", "trop_percu"];
@@ -43,6 +47,7 @@ export default async function LoyersPage({
 
   const params = await searchParams;
   const today = new Date();
+  const ongletActif = params.onglet === "echeancier" ? "echeancier" : "paiements";
 
   const bienId = parseId(params.vue);
   const mois = (() => {
@@ -57,45 +62,80 @@ export default async function LoyersPage({
   const boxId = parseId(params.box);
   const statut = parseStatut(params.statut);
 
-  const data = await getLoyersPageData({ bienId, mois, annee, locataireId, boxId, statut }, userId);
+  const [data, echeancierData] = await Promise.all([
+    ongletActif === "paiements"
+      ? getLoyersPageData({ bienId, mois, annee, locataireId, boxId, statut }, userId)
+      : null,
+    ongletActif === "echeancier" ? getEcheancierData(userId) : null,
+  ]);
 
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
       <AppNavWrapper />
       <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-4 dark:border-neutral-800 dark:bg-neutral-900">
-        <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Loyers &amp; Paiements</h1>
+        <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Gestion locative</h1>
         <div className="flex items-center gap-4">
-          <Link
-            href="/loyers/import"
-            className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
-          >
-            Importer un relevé bancaire
-          </Link>
+          {ongletActif === "paiements" && (
+            <Link
+              href="/loyers/import"
+              className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
+            >
+              Importer un relevé bancaire
+            </Link>
+          )}
           <DeconnexionButton />
         </div>
       </header>
 
       <main className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-6">
-        <FiltresBar
-          biens={data.biens}
-          locatairesDisponibles={data.locatairesDisponibles}
-          boxesDisponibles={data.boxesDisponibles}
-          anneesDisponibles={data.anneesDisponibles}
-          bienId={bienId}
-          mois={mois}
-          annee={annee}
-          locataireId={locataireId}
-          boxId={boxId}
-          statut={statut}
-        />
+        <OngletsGestionLocative ongletActif={ongletActif} />
 
-        <IndicateursCards indicateurs={data.indicateurs} />
+        {ongletActif === "paiements" && data && (
+          <>
+            <FiltresBar
+              biens={data.biens}
+              locatairesDisponibles={data.locatairesDisponibles}
+              boxesDisponibles={data.boxesDisponibles}
+              anneesDisponibles={data.anneesDisponibles}
+              bienId={bienId}
+              mois={mois}
+              annee={annee}
+              locataireId={locataireId}
+              boxId={boxId}
+              statut={statut}
+            />
 
-        <div className="flex justify-end">
-          <RelancesGroupeesModal lignesImpayees={data.lignesImpayees} mois={mois} annee={annee} />
-        </div>
+            <IndicateursCards indicateurs={data.indicateurs} />
 
-        <LoyersTable lignes={data.lignes} afficherColonneBien={bienId === null} mois={mois} annee={annee} />
+            <div className="flex justify-end">
+              <RelancesGroupeesModal lignesImpayees={data.lignesImpayees} mois={mois} annee={annee} />
+            </div>
+
+            <LoyersTable lignes={data.lignes} afficherColonneBien={bienId === null} mois={mois} annee={annee} />
+          </>
+        )}
+
+        {ongletActif === "echeancier" && echeancierData && (
+          <>
+            {echeancierData.total === 0 && (
+              <div className="rounded-lg border border-neutral-200 bg-white px-6 py-12 text-center dark:border-neutral-800 dark:bg-neutral-900">
+                <p className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Aucune échéance à venir</p>
+                <p className="mt-1 text-xs text-neutral-400">
+                  Les relances impayées, avis de loyer et fins de bail apparaissent ici.
+                </p>
+              </div>
+            )}
+            {echeancierData.ceMoisCi.length > 0 && (
+              <EcheancierSection titre="Ce mois-ci" echeances={echeancierData.ceMoisCi} />
+            )}
+            {echeancierData.leMoisProchain.length > 0 && (
+              <EcheancierSection titre="Le mois prochain" echeances={echeancierData.leMoisProchain} />
+            )}
+            {echeancierData.plusTard.length > 0 && (
+              <EcheancierSection titre="Plus tard" echeances={echeancierData.plusTard} />
+            )}
+          </>
+        )}
       </main>
     </div>
   );
