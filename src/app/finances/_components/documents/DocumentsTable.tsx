@@ -47,7 +47,7 @@ export function DocumentsTable({ documents }: { documents: DocumentListItem[] })
               <td className="px-4 py-3">{doc.locataireNom ?? "—"}</td>
               <td className="px-4 py-3">{doc.chargeMontant !== null ? formaterMontant(doc.chargeMontant) : "—"}</td>
               <td className="px-4 py-3">
-                <LigneDocumentActions id={doc.id} nomFichier={doc.nomFichier} contenuTexte={doc.contenuTexte} />
+                <LigneDocumentActions id={doc.id} nomFichier={doc.nomFichier} contenuTexte={doc.contenuTexte} aUnFichierReel={doc.aUnFichierReel} />
               </td>
             </tr>
           ))}

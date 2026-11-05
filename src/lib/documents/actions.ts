@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { TYPES_DOCUMENT, type TypeDocument } from "./types";
 import { genererLettreConge, genererLettreRelanceAR } from "./lettres";
+import { supprimerFichier } from "@/lib/supabase-storage";
 
 export interface ActionState {
   success: boolean;
@@ -36,9 +37,12 @@ export async function creerDocument(_prevState: ActionState, formData: FormData)
   const bien = await prisma.bien.findUnique({ where: { id: bienId } });
   if (!bien) return { success: false, error: "Bien introuvable." };
 
+  const fileIdBrut = String(formData.get("fileId") ?? "").trim();
+  const fileId = fileIdBrut || "-";
+
   await prisma.document.create({
     data: {
-      fileId: "-",
+      fileId,
       nomFichier,
       type,
       description,
@@ -61,6 +65,14 @@ export async function supprimerDocument(_prevState: ActionState, formData: FormD
   if (!document) return { success: false, error: "Document introuvable." };
 
   await prisma.document.delete({ where: { id } });
+
+  if (document.fileId !== "-") {
+    try {
+      await supprimerFichier(document.fileId);
+    } catch {
+      // suppression Supabase non bloquante : le document DB est déjà supprimé
+    }
+  }
 
   revalidatePath("/finances");
 

@@ -9,10 +9,12 @@ export function LigneDocumentActions({
   id,
   nomFichier,
   contenuTexte,
+  aUnFichierReel,
 }: {
   id: number;
   nomFichier: string;
   contenuTexte: string | null;
+  aUnFichierReel: boolean;
 }) {
   const [voirTexte, setVoirTexte] = useState(false);
   const [confirmationSuppression, setConfirmationSuppression] = useState(false);
@@ -20,7 +22,16 @@ export function LigneDocumentActions({
 
   return (
     <div className="flex items-center justify-end gap-2">
-      {contenuTexte ? (
+      {aUnFichierReel ? (
+        <a
+          href={`/api/documents/${id}/download`}
+          target="_blank"
+          rel="noreferrer"
+          className="rounded-md border border-neutral-300 px-2 py-1 text-xs font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
+        >
+          Télécharger
+        </a>
+      ) : contenuTexte ? (
         <button
           type="button"
           onClick={() => setVoirTexte(true)}
