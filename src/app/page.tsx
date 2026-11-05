@@ -9,6 +9,7 @@ import { KPICard } from "./_components/KPICard";
 import { ImportTimeline } from "./_components/ImportTimeline";
 import { ActionsUrgentes } from "./_components/ActionsUrgentes";
 import { GraphiqueLoyers12Mois } from "./_components/GraphiqueLoyers12Mois";
+import { GraphiqueTauxOccupation } from "./_components/GraphiqueTauxOccupation";
 import { AccesRapides } from "./_components/AccesRapides";
 import { OnboardingGuide } from "./_components/OnboardingGuide";
 import { ProchainesEcheances } from "./_components/ProchainesEcheances";
@@ -71,10 +72,11 @@ export default async function DashboardPage() {
             valeur={formaterPourcentage(data.kpiOccupation.tauxOccupation)}
             sousLabel={`${data.kpiOccupation.boxesLoues} / ${data.kpiOccupation.boxesTotal} boxes loués`}
             href="/biens"
+            progress={data.kpiOccupation.tauxOccupation ?? 0}
           />
 
           <KPICard
-            label="Loyers encaissés"
+            label="Loyers encaissés (mois)"
             valeur={data.kpiLoyersEncaisses !== null ? formaterMontant(data.kpiLoyersEncaisses) : "—"}
             href="/loyers"
             indisponible={
@@ -88,6 +90,7 @@ export default async function DashboardPage() {
             label="Impayés"
             valeur={data.kpiImpayes !== null ? String(data.kpiImpayes) : "—"}
             href="/loyers?statut=impaye"
+            accent={data.kpiImpayes !== null && data.kpiImpayes > 0 ? "danger" : undefined}
             indisponible={
               data.kpiImpayes === null
                 ? { message: messageImportRequis, hrefAction: "/loyers/import", labelAction: "Importer le CSV" }
@@ -112,6 +115,12 @@ export default async function DashboardPage() {
         <ProchainesEcheances echeances={prochainesEcheances} />
 
         <GraphiqueLoyers12Mois points={data.historique} annee={data.annee} />
+
+        <GraphiqueTauxOccupation
+          points={data.historique}
+          boxesTotal={data.kpiOccupation.boxesTotal}
+          annee={data.annee}
+        />
 
         <AccesRapides />
       </main>

@@ -15,6 +15,7 @@ export interface PointHistorique {
   attendu: number;
   tauxRecouvrement: number | null;
   nombreImpayes: number;
+  locationsActivesCount: number;
 }
 
 function finDeMois(annee: number, mois: number): Date {
@@ -68,6 +69,7 @@ export function calculerHistorique12Mois(
       attendu,
       tauxRecouvrement: attendu > 0 ? encaisse / attendu : null,
       nombreImpayes,
+      locationsActivesCount: locationsActives.length,
     };
   });
 }

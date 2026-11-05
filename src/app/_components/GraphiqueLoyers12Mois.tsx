@@ -34,6 +34,7 @@ export function GraphiqueLoyers12Mois({ points, annee }: { points: PointHistoriq
   const y = (valeur: number) => MARGE.haut + HAUTEUR_TRACE - (valeur / echelleMax) * HAUTEUR_TRACE;
 
   const pointsEncaisse = points.map((p, i) => ({ x: x(i), y: y(p.encaisse) }));
+  const pointsAttendu = points.map((p, i) => ({ x: x(i), y: y(p.attendu) }));
   const aireEncaisse = `${construireChemin(pointsEncaisse)} L ${x(points.length - 1)} ${y(0)} L ${x(0)} ${y(0)} Z`;
 
   const paliers = [0, 0.25, 0.5, 0.75, 1].map((f) => f * echelleMax);
@@ -45,10 +46,16 @@ export function GraphiqueLoyers12Mois({ points, annee }: { points: PointHistoriq
         <h3 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
           Loyers encaissés — {annee}
         </h3>
-        <span className="flex items-center gap-1.5 text-xs text-neutral-600 dark:text-neutral-300">
-          <span className="h-2 w-2 rounded-full bg-[#2a78d6] dark:bg-[#3987e5]" />
-          Loyers encaissés
-        </span>
+        <div className="flex items-center gap-4 text-xs text-neutral-600 dark:text-neutral-300">
+          <span className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-[#2a78d6] dark:bg-[#3987e5]" />
+            Encaissé
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-px w-5 border-t-2 border-dashed border-neutral-400 dark:border-neutral-500" />
+            Attendu
+          </span>
+        </div>
       </div>
 
       <div className="relative rounded-lg border border-neutral-200 bg-white p-2 dark:border-neutral-800 dark:bg-neutral-900">
@@ -81,6 +88,16 @@ export function GraphiqueLoyers12Mois({ points, annee }: { points: PointHistoriq
           ))}
 
           <path d={aireEncaisse} className="fill-[#2a78d6] dark:fill-[#3987e5]" opacity={0.1} />
+
+          <path
+            d={construireChemin(pointsAttendu)}
+            fill="none"
+            className="stroke-neutral-400 dark:stroke-neutral-500"
+            strokeWidth={1.5}
+            strokeDasharray="6 4"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
 
           <path
             d={construireChemin(pointsEncaisse)}
