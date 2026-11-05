@@ -87,6 +87,7 @@ export function LandingPage() {
           <span>✓ Essai gratuit</span>
           <span>✓ Sans engagement</span>
           <span>✓ Multi-biens</span>
+          <span>✓ Depuis 2024</span>
         </div>
       </section>
 
