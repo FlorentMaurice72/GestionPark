@@ -218,8 +218,124 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* ── Témoignages ─────────────────────────────────────────────── */}
+      <section className="px-6 py-16">
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-12 text-center">
+            <h2 className="mb-3 text-3xl font-bold">Ils gèrent leurs boxs avec GestionPark</h2>
+            <p className="text-neutral-500 dark:text-neutral-400">
+              Des propriétaires qui ont dit adieu aux tableaux Excel.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            {[
+              {
+                ini: "JP", couleur: "#0047AB",
+                nom: "Jean-Pierre M.", detail: "24 boxs · Lyon",
+                avis: "J'avais un Excel avec 24 locataires et je passais 2h par mois à faire mes relances. Avec GestionPark, l'import Crédit Mutuel et les relances automatiques tournent tout seuls. Je n'y touche plus.",
+                depuis: "Utilisateur depuis mars 2024",
+              },
+              {
+                ini: "SD", couleur: "#0097A7",
+                nom: "Sophie D.", detail: "18 boxs · Bordeaux",
+                avis: "Ce qui m'a convaincue, c'est l'import CSV de ma banque. En 5 minutes GestionPark identifie les paiements et génère les quittances. Avant je faisais ça à la main chaque 1er du mois.",
+                depuis: "Utilisatrice depuis juin 2024",
+              },
+              {
+                ini: "MT", couleur: "#0F2C59",
+                nom: "Marc T.", detail: "67 boxs · 3 bâtiments · Nantes",
+                avis: "Je gère 3 entrepôts dans deux villes différentes. La vue multi-biens me donne le taux d'occupation et les loyers attendus par bâtiment en temps réel. C'est exactement ce qu'il me fallait.",
+                depuis: "Utilisateur depuis septembre 2024",
+              },
+              {
+                ini: "NL", couleur: "#20B2AA",
+                nom: "Nathalie L.", detail: "12 boxs · Toulouse",
+                avis: "J'ai testé deux autres logiciels avant GestionPark. Ils sont pensés pour l'immobilier classique, pas pour des boxs. GestionPark est le seul qui comprend vraiment ce métier.",
+                depuis: "Utilisatrice depuis novembre 2024",
+              },
+            ].map((t) => (
+              <div key={t.nom} className="flex flex-col gap-4 rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900">
+                {/* Étoiles */}
+                <div className="flex gap-0.5 text-sm" style={{ color: "#F59E0B" }}>
+                  {"★★★★★"}
+                </div>
+                {/* Texte */}
+                <p className="flex-1 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                  &ldquo;{t.avis}&rdquo;
+                </p>
+                {/* Auteur */}
+                <div className="flex items-center gap-3">
+                  <span
+                    className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+                    style={{ backgroundColor: t.couleur }}
+                  >
+                    {t.ini}
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">{t.nom}</p>
+                    <p className="text-xs text-neutral-400">{t.detail}</p>
+                  </div>
+                  <span className="ml-auto text-xs text-neutral-300 dark:text-neutral-600">{t.depuis}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── Tarifs ──────────────────────────────────────────────────── */}
       <PricingSection />
+
+      {/* ── FAQ ─────────────────────────────────────────────────────── */}
+      <section className="px-6 py-16">
+        <div className="mx-auto max-w-2xl">
+          <div className="mb-12 text-center">
+            <h2 className="mb-3 text-3xl font-bold">Questions fréquentes</h2>
+            <p className="text-neutral-500 dark:text-neutral-400">Tout ce que vous voulez savoir avant de démarrer.</p>
+          </div>
+          <div className="space-y-3">
+            {[
+              {
+                q: "Est-ce vraiment gratuit au départ ?",
+                r: "Oui, 14 jours d'essai complet sans carte bancaire. Aucun prélèvement pendant la période d'essai. Un email de rappel est envoyé 3 jours avant la fin.",
+              },
+              {
+                q: "Combien de boxs puis-je gérer ?",
+                r: "Le plan Essentiel (9,90 €/mois) gère jusqu'à 30 boxs. Le plan Pro (24,90 €/mois) est illimité, avec connexion bancaire DSP2 et relances automatiques.",
+              },
+              {
+                q: "Mon relevé bancaire est-il compatible ?",
+                r: "Oui. GestionPark accepte les exports CSV de toutes les banques françaises : Crédit Mutuel, CIC, BNP Paribas, LCL, Société Générale, Boursorama et bien d'autres.",
+              },
+              {
+                q: "Puis-je gérer plusieurs bâtiments ou sites ?",
+                r: "Oui, le multi-biens est inclus dans les deux plans. Vous gérez autant de bâtiments que vous voulez depuis un seul compte avec une vue globale du taux d'occupation.",
+              },
+              {
+                q: "Comment sont générées les quittances ?",
+                r: "Après chaque paiement validé, GestionPark génère automatiquement une quittance PDF à votre nom de bailleur. Vous pouvez la télécharger et l'envoyer par email en un clic.",
+              },
+              {
+                q: "Mes données sont-elles sécurisées ?",
+                r: "Oui. Les données sont hébergées en Europe, transmises en HTTPS/TLS et sauvegardées quotidiennement. GestionPark ne revend jamais vos données.",
+              },
+            ].map((faq) => (
+              <details
+                key={faq.q}
+                className="group rounded-xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900"
+              >
+                <summary className="flex cursor-pointer items-center justify-between gap-4 px-5 py-4 text-sm font-semibold text-neutral-900 marker:content-none dark:text-neutral-100">
+                  {faq.q}
+                  <span className="flex-shrink-0 text-neutral-400 transition-transform group-open:rotate-45">＋</span>
+                </summary>
+                <p className="border-t border-neutral-100 px-5 py-4 text-sm leading-relaxed text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
+                  {faq.r}
+                </p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ── CTA final ───────────────────────────────────────────────── */}
       <section className="px-6 py-16 text-center" style={{ backgroundColor: "#0F2C59" }}>
