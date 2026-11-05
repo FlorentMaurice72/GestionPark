@@ -27,6 +27,17 @@ export default async function GuidePage() {
             title="Guide de démarrage GestionPark"
           />
         </div>
+        <p className="text-center text-xs text-neutral-500 dark:text-neutral-400">
+          L&apos;animation ne s&apos;affiche pas ?{" "}
+          <a
+            href="/videos/anim-onboarding.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-neutral-700 dark:hover:text-neutral-200"
+          >
+            Ouvrir en plein écran
+          </a>
+        </p>
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">

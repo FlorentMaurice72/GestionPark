@@ -24,7 +24,7 @@ export function DemoModal() {
 
       {open && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4"
           onClick={() => setOpen(false)}
         >
           <div
@@ -43,6 +43,17 @@ export function DemoModal() {
               allow="autoplay"
               title="Démo GestionPark"
             />
+            <p className="mt-2 text-center text-xs text-white/40">
+              L&apos;animation ne s&apos;affiche pas ?{" "}
+              <a
+                href="/videos/anim-marketing.html"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-white/70"
+              >
+                Ouvrir en plein écran
+              </a>
+            </p>
           </div>
         </div>
       )}

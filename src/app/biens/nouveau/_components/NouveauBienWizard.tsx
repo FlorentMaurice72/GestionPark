@@ -426,7 +426,7 @@ export function NouveauBienWizard() {
           <button
             type="button"
             onClick={suivant}
-            className="rounded-md bg-neutral-900 px-5 py-2 text-sm font-medium text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
+            className="rounded-md bg-brand px-5 py-2 text-sm font-medium text-white hover:bg-brand-dk"
           >
             Suivant →
           </button>
@@ -435,7 +435,7 @@ export function NouveauBienWizard() {
             type="button"
             onClick={soumettre}
             disabled={enCours}
-            className="rounded-md bg-neutral-900 px-5 py-2 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900"
+            className="rounded-md bg-brand px-5 py-2 text-sm font-medium text-white hover:bg-brand-dk disabled:opacity-50"
           >
             {enCours ? "Création…" : "Créer le bien →"}
           </button>

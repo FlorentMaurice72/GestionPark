@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Montserrat, Lato } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
+  weight: ["400", "600", "700", "800", "900"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const lato = Lato({
+  variable: "--font-lato",
   subsets: ["latin"],
+  weight: ["300", "400", "700"],
 });
 
 import { Footer } from "@/components/Footer";
@@ -28,7 +30,7 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${montserrat.variable} ${lato.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <div className="flex-1">{children}</div>
