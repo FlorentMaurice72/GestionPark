@@ -1,4 +1,7 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Mentions légales" };
 
 export default function MentionsLegalesPage() {
   return (
@@ -9,43 +12,71 @@ export default function MentionsLegalesPage() {
         </Link>
       </p>
 
-      <h1 className="mb-6 text-xl font-semibold text-neutral-900 dark:text-neutral-100">Mentions légales</h1>
+      <h1 className="mb-2 text-2xl font-bold text-neutral-900 dark:text-neutral-100">Mentions légales</h1>
+      <p className="mb-8 text-xs text-neutral-400">Dernière mise à jour : janvier 2025</p>
 
-      <div className="space-y-6 text-sm text-neutral-700 dark:text-neutral-300">
+      <div className="space-y-8 text-sm text-neutral-700 dark:text-neutral-300">
+
         <section>
-          <h2 className="mb-2 font-semibold text-neutral-900 dark:text-neutral-100">Éditeur du site</h2>
+          <h2 className="mb-3 text-base font-semibold text-neutral-900 dark:text-neutral-100">1. Éditeur du site</h2>
           <p>
-            [À COMPLÉTER] — Nom / raison sociale : [À COMPLÉTER]
-            <br />
-            Adresse : [À COMPLÉTER]
-            <br />
-            SIRET (le cas échéant) : [À COMPLÉTER]
-            <br />
-            Email de contact : [À COMPLÉTER]
+            <strong>Raison sociale :</strong> [À COMPLÉTER — Nom / Société]<br />
+            <strong>Statut juridique :</strong> [À COMPLÉTER — Auto-entrepreneur, SAS, SARL…]<br />
+            <strong>Adresse :</strong> [À COMPLÉTER]<br />
+            <strong>SIRET :</strong> [À COMPLÉTER]<br />
+            <strong>Email :</strong> contact@gestionpark.fr
           </p>
         </section>
 
         <section>
-          <h2 className="mb-2 font-semibold text-neutral-900 dark:text-neutral-100">Directeur de la publication</h2>
-          <p>[À COMPLÉTER]</p>
+          <h2 className="mb-3 text-base font-semibold text-neutral-900 dark:text-neutral-100">2. Directeur de la publication</h2>
+          <p>Florent Maurice, en qualité de responsable du service GestionPark.</p>
         </section>
 
         <section>
-          <h2 className="mb-2 font-semibold text-neutral-900 dark:text-neutral-100">Hébergement</h2>
+          <h2 className="mb-3 text-base font-semibold text-neutral-900 dark:text-neutral-100">3. Hébergement</h2>
           <p>
-            Application hébergée par Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis.
-            <br />
-            Base de données hébergée par Supabase Inc. (infrastructure PostgreSQL).
+            L&apos;application est hébergée par :<br />
+            <strong>Vercel Inc.</strong> — 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis — <a href="https://vercel.com" className="underline">vercel.com</a><br /><br />
+            La base de données est hébergée par :<br />
+            <strong>Supabase Inc.</strong> — infrastructure PostgreSQL — <a href="https://supabase.com" className="underline">supabase.com</a>
           </p>
         </section>
 
         <section>
-          <h2 className="mb-2 font-semibold text-neutral-900 dark:text-neutral-100">Accès à l&apos;application</h2>
+          <h2 className="mb-3 text-base font-semibold text-neutral-900 dark:text-neutral-100">4. Propriété intellectuelle</h2>
           <p>
-            Cette application est un outil de gestion interne à usage professionnel, non accessible au public.
-            L&apos;accès est réservé aux administrateurs disposant d&apos;un compte.
+            L&apos;ensemble des contenus du site (textes, graphismes, logo, code source) est protégé par le droit d&apos;auteur.
+            Toute reproduction ou diffusion sans autorisation préalable est interdite.
           </p>
         </section>
+
+        <section>
+          <h2 className="mb-3 text-base font-semibold text-neutral-900 dark:text-neutral-100">5. Données personnelles</h2>
+          <p>
+            Pour toute information sur le traitement de vos données personnelles, consultez notre{" "}
+            <Link href="/confidentialite" className="underline hover:text-neutral-900 dark:hover:text-neutral-100">
+              Politique de confidentialité
+            </Link>.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="mb-3 text-base font-semibold text-neutral-900 dark:text-neutral-100">6. Cookies</h2>
+          <p>
+            Ce site utilise des cookies fonctionnels (support client via Crisp). Votre consentement est demandé
+            lors de votre première visite. Vous pouvez le retirer à tout moment en vidant les données de votre
+            navigateur pour ce site.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="mb-3 text-base font-semibold text-neutral-900 dark:text-neutral-100">7. Loi applicable</h2>
+          <p>
+            Le présent site est soumis au droit français. En cas de litige, les tribunaux français seront seuls compétents.
+          </p>
+        </section>
+
       </div>
     </div>
   );
