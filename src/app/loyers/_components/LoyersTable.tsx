@@ -4,6 +4,7 @@ import { StatutBadge, ImpayesCumulesBadge } from "./StatutBadge";
 import { PaiementModal } from "./PaiementModal";
 import { RelanceModal } from "./RelanceModal";
 import { BoutonAvisLoyer } from "./BoutonAvisLoyer";
+import { BoutonQuittance } from "./BoutonQuittance";
 
 interface Props {
   lignes: LigneLoyer[];
@@ -83,13 +84,7 @@ export function LoyersTable({ lignes, afficherColonneBien, mois, annee }: Props)
               )}
               <BoutonAvisLoyer locationId={ligne.locationId} mois={mois} annee={annee} />
               {ligne.montantRecu > 0 && (
-                <a
-                  href={`/api/quittance/${ligne.locationId}/${mois}/${annee}`}
-                  download
-                  className="rounded-md border border-neutral-300 px-2 py-1 text-xs font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
-                >
-                  Quittance
-                </a>
+                <BoutonQuittance locationId={ligne.locationId} mois={mois} annee={annee} />
               )}
             </div>
           </div>
@@ -155,13 +150,7 @@ export function LoyersTable({ lignes, afficherColonneBien, mois, annee }: Props)
                     )}
                     <BoutonAvisLoyer locationId={ligne.locationId} mois={mois} annee={annee} />
                     {ligne.montantRecu > 0 && (
-                      <a
-                        href={`/api/quittance/${ligne.locationId}/${mois}/${annee}`}
-                        download
-                        className="rounded-md border border-neutral-300 px-2 py-1 text-xs font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
-                      >
-                        Quittance
-                      </a>
+                      <BoutonQuittance locationId={ligne.locationId} mois={mois} annee={annee} />
                     )}
                   </div>
                 </td>

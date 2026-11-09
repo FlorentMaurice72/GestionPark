@@ -1,6 +1,7 @@
 "use client";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { envoyerAvisLoyer, type EnvoyerAvisState } from "@/lib/loyers/avis-actions";
+import { useToast } from "@/components/Toast";
 
 const INIT: EnvoyerAvisState = { success: false };
 
@@ -14,6 +15,13 @@ export function BoutonAvisLoyer({
   annee: number;
 }) {
   const [etat, formAction, enCours] = useActionState(envoyerAvisLoyer, INIT);
+  const { addToast } = useToast();
+
+  useEffect(() => {
+    if (etat.success) addToast("Avis de loyer envoyé.", "success");
+    else if (etat.error) addToast(etat.error, "error");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [etat]);
 
   return (
     <form action={formAction} className="inline">
@@ -28,7 +36,6 @@ export function BoutonAvisLoyer({
       >
         {etat.success ? "✓ Envoyé" : enCours ? "…" : "Avis loyer"}
       </button>
-      {etat.error && <span className="ml-1 text-xs text-red-600">{etat.error}</span>}
     </form>
   );
 }
