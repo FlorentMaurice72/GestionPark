@@ -42,6 +42,12 @@ export function LandingPage() {
             Tarifs
           </Link>
           <Link
+            href="/demo"
+            className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+          >
+            Démo
+          </Link>
+          <Link
             href="/login"
             className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
           >
@@ -82,11 +88,10 @@ export function LandingPage() {
             Créer mon compte gratuitement
           </Link>
           <Link
-            href="/videos/anim-marketing.html"
-            target="_blank"
+            href="/demo"
             className="flex items-center gap-2 rounded-md border border-neutral-300 px-6 py-3 text-sm font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900"
           >
-            <span style={{ color: "#0097A7" }}>▶</span> Voir la démo (1 min)
+            <span style={{ color: "#0097A7" }}>▶</span> Essayer la démo →
           </Link>
         </div>
         <div className="mt-6 flex flex-wrap justify-center gap-6 text-xs text-neutral-400">
@@ -146,6 +151,73 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* ── Aperçu du tableau de bord ─────────────────────────────── */}
+      <section className="py-6 pb-16 overflow-hidden">
+        <div className="mx-auto max-w-5xl px-6">
+          <p className="text-center text-xs font-semibold uppercase tracking-widest text-neutral-400 mb-6">
+            Aperçu du tableau de bord
+          </p>
+          <div className="rounded-xl border border-neutral-200 shadow-2xl dark:border-neutral-700 overflow-hidden" style={{ background: "#f8fafc" }}>
+            <div className="flex items-center gap-2 border-b border-neutral-200 bg-neutral-100 px-4 py-2 dark:border-neutral-700 dark:bg-neutral-800">
+              <div className="flex gap-1.5">
+                <div className="h-3 w-3 rounded-full bg-red-400" />
+                <div className="h-3 w-3 rounded-full bg-yellow-400" />
+                <div className="h-3 w-3 rounded-full bg-green-400" />
+              </div>
+              <div className="mx-auto flex items-center gap-2 rounded-md bg-white border border-neutral-200 px-3 py-1 text-xs text-neutral-400 dark:bg-neutral-900 dark:border-neutral-700" style={{ minWidth: 200, maxWidth: 300 }}>
+                <span style={{ color: "#0097A7" }}>🔒</span> gestionpark.fr/dashboard
+              </div>
+            </div>
+            <div className="flex" style={{ minHeight: 320 }}>
+              <div className="hidden sm:flex flex-col items-center gap-1 border-r border-neutral-200 bg-white px-3 py-4 dark:border-neutral-700 dark:bg-neutral-900" style={{ width: 56 }}>
+                {[
+                  { icon: "⊞", active: true },
+                  { icon: "◈", active: false },
+                  { icon: "◉", active: false },
+                  { icon: "⊕", active: false },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg text-sm ${item.active ? "text-white" : "text-neutral-400"}`}
+                    style={item.active ? { backgroundColor: "#0047AB" } : {}}
+                  >
+                    {item.icon}
+                  </div>
+                ))}
+              </div>
+              <div className="flex-1 overflow-hidden p-4 sm:p-5" style={{ background: "#f8fafc" }}>
+                <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  {[
+                    { label: "Taux d'occupation", val: "88 %", sub: "14 / 16 boxes", color: "#0047AB" },
+                    { label: "Loyers encaissés", val: "7 240 €", sub: "ce mois", color: "#0097A7" },
+                    { label: "Impayés", val: "2", sub: "à relancer", color: "#EF4444" },
+                    { label: "Locataires actifs", val: "14", sub: "en cours", color: "#0F2C59" },
+                  ].map((kpi) => (
+                    <div key={kpi.label} className="rounded-lg border border-neutral-200 bg-white p-3 shadow-sm dark:border-neutral-700 dark:bg-neutral-900">
+                      <p className="mb-1 text-[10px] text-neutral-400">{kpi.label}</p>
+                      <p className="text-lg font-bold" style={{ color: kpi.color }}>{kpi.val}</p>
+                      <p className="text-[10px] text-neutral-400">{kpi.sub}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="rounded-lg border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-700 dark:bg-neutral-900">
+                  <p className="mb-3 text-xs font-semibold text-neutral-600 dark:text-neutral-300">Loyers encaissés — 12 derniers mois</p>
+                  <div className="flex items-end gap-1 h-16">
+                    {[65, 72, 68, 70, 75, 73, 80, 85, 83, 88, 90, 88].map((h, i) => (
+                      <div key={i} className="flex-1 rounded-t-sm" style={{ height: `${h}%`, backgroundColor: i === 11 ? "#0047AB" : "#0097A7", opacity: i === 11 ? 1 : 0.6 }} />
+                    ))}
+                  </div>
+                  <div className="mt-1 flex justify-between text-[9px] text-neutral-300">
+                    <span>Déc</span><span>Jan</span><span>Fév</span><span>Mar</span><span>Avr</span><span>Mai</span>
+                    <span>Jun</span><span>Jul</span><span>Aoû</span><span>Sep</span><span>Oct</span><span className="font-bold" style={{ color: "#0047AB" }}>Nov</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Fonctionnalités ─────────────────────────────────────────── */}
       <section id="fonctionnalites" className="px-6 py-16">
         <div className="mx-auto max-w-5xl">
@@ -159,23 +231,33 @@ export function LandingPage() {
             {[
               {
                 icon: "⊞",
-                titre: "Gestion Multi-Biens",
-                desc: "Gérez plusieurs bâtiments avec leurs boxs depuis un seul compte. Vue globale du taux d'occupation et des revenus.",
+                titre: "Tableau de bord multi-biens",
+                desc: "Vue globale en temps réel : taux d'occupation, loyers encaissés, impayés du mois et rentabilité par bâtiment sur 12 mois.",
               },
               {
                 icon: "⟳",
-                titre: "Import CSV Bancaire",
-                desc: "Importez votre relevé Crédit Mutuel ou autre banque. GestionPark identifie automatiquement les loyers reçus.",
+                titre: "Import CSV bancaire",
+                desc: "Collez votre relevé Crédit Mutuel, BNP, LCL ou Société Générale. GestionPark identifie automatiquement les loyers et les affecte au bon locataire.",
               },
               {
                 icon: "◎",
-                titre: "Suivi des Paiements",
-                desc: "Visualisez en un coup d'œil qui a payé, qui est en retard, et quel montant est attendu ce mois-ci.",
+                titre: "Suivi des paiements & impayés",
+                desc: "Chaque mois, visualisez d'un coup d'œil qui a payé, qui est en retard. Relancez par email ou SMS directement depuis l'interface.",
               },
               {
                 icon: "△",
-                titre: "Locataires & Documents",
-                desc: "Fiches locataires complètes avec historique, baux, quittances et pièces justificatives centralisés.",
+                titre: "Locataires & documents",
+                desc: "Fiches locataires avec historique complet, baux, pièces justificatives et quittances PDF générées automatiquement après chaque paiement.",
+              },
+              {
+                icon: "✦",
+                titre: "Révision de loyer (IRL)",
+                desc: "GestionPark suit les dates de révision IRL de chaque bail et envoie un email automatique aux locataires 30 jours avant l'échéance.",
+              },
+              {
+                icon: "◑",
+                titre: "Rentabilité & statistiques",
+                desc: "Pour chaque bien : loyers mensuels, charges, résultat net, et évolution sur 12 mois. Des chiffres clairs pour prendre les bonnes décisions.",
               },
             ].map((f) => (
               <div
@@ -326,6 +408,14 @@ export function LandingPage() {
               {
                 q: "Mes données sont-elles sécurisées ?",
                 r: "Oui. Les données sont hébergées en Europe, transmises en HTTPS/TLS et sauvegardées quotidiennement. GestionPark ne revend jamais vos données.",
+              },
+              {
+                q: "Y a-t-il une démo sans inscription ?",
+                r: "Oui ! Vous pouvez accéder à un compte démo pré-rempli avec de vraies données fictives pour tester toutes les fonctionnalités. Cliquez sur \"Essayer la démo\" en haut de page.",
+              },
+              {
+                q: "Puis-je annuler à tout moment ?",
+                r: "Oui, sans frais ni préavis. Résiliez en un clic depuis votre espace facturation. Vos données restent accessibles 30 jours après la résiliation.",
               },
             ].map((faq) => (
               <details
