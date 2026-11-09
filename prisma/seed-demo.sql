@@ -71,12 +71,17 @@ BEGIN
   -- ── Bien ─────────────────────────────────────────────────────
   INSERT INTO biens (
     nom, type_bien, adresse_complete,
-    taxe_fonciere, assurance, mensualite_emprunt,
-    valeur_estimee, statut, nombre_boxes, utilisateur_id
+    nombre_boxes, taxe_fonciere, assurance,
+    montant_emprunt, mensualite_emprunt, taux_emprunt,
+    date_debut_emprunt, duree_emprunt,
+    valeur_estimee, statut, utilisateur_id
   ) VALUES (
     'Entrepôt Lyon Nord', 'entrepot',
     '45 rue Garibaldi, 69003 Lyon',
-    1200.00, 350.00, 650.00, 280000.00, 'actif', 10, v_admin_id
+    10, 1200.00, 350.00,
+    150000.00, 650.00, 2.100,
+    '2020-01-01', 240,
+    280000.00, 'actif', v_admin_id
   ) RETURNING id INTO v_bien_id;
 
   -- ── Boxes (10 : 8 loués, 2 disponibles) ──────────────────────
