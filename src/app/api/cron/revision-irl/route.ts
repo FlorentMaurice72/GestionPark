@@ -16,7 +16,6 @@ export async function GET(req: Request) {
     where: {
       statut: "actif",
       dateRevisionIRL: { gte: dans29Jours, lte: dans31Jours },
-      locataire: { email: { not: null } },
     },
     include: {
       locataire: { select: { nom: true, prenom: true, email: true } },
