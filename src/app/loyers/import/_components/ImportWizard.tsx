@@ -38,6 +38,7 @@ export function ImportWizard({ presets: presetsProp, locations }: Props) {
   const [etape, setEtape] = useState<Etape>(etatInitial().etape);
   const [mois, setMois] = useState(etatInitial().mois);
   const [annee, setAnnee] = useState(etatInitial().annee);
+  const [moisDetecte, setMoisDetecte] = useState(false);
   const [presetId, setPresetId] = useState<number | null>(presetsProp.length === 1 ? presetsProp[0].id : null);
   const [fichier, setFichier] = useState<File | null>(null);
   const [erreurTraitement, setErreurTraitement] = useState<string | null>(null);
@@ -48,6 +49,49 @@ export function ImportWizard({ presets: presetsProp, locations }: Props) {
   const [erreurImport, setErreurImport] = useState<string | null>(null);
   const [enCoursImport, setEnCoursImport] = useState(false);
   const [resultat, setResultat] = useState<ResultatImportAffichage | null>(null);
+
+  // Détection automatique du mois dès que fichier + préréglage sont disponibles
+  useEffect(() => {
+    if (!fichier || presetId === null) return;
+    const preset = presets.find((p) => p.id === presetId);
+    if (!preset) return;
+
+    let annule = false;
+    (async () => {
+      try {
+        const buffer = await fichier.arrayBuffer();
+        const texte = new TextDecoder("iso-8859-1").decode(buffer);
+        const { transactions } = extraireTransactions(texte, preset);
+        if (annule || transactions.length === 0) return;
+
+        // Comptage par mois/année
+        const counts = new Map<string, { mois: number; annee: number; count: number }>();
+        for (const t of transactions) {
+          const m = t.date.getUTCMonth() + 1;
+          const a = t.date.getUTCFullYear();
+          const key = `${a}-${m}`;
+          const entry = counts.get(key);
+          if (entry) entry.count++;
+          else counts.set(key, { mois: m, annee: a, count: 1 });
+        }
+
+        let best = { mois: 1, annee: new Date().getUTCFullYear(), count: 0 };
+        for (const v of counts.values()) {
+          if (v.count > best.count) best = v;
+        }
+
+        if (annule) return;
+        setMois(best.mois);
+        setAnnee(best.annee);
+        setMoisDetecte(true);
+      } catch {
+        // silence — l'utilisateur peut saisir manuellement
+      }
+    })();
+
+    return () => { annule = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fichier, presetId]);
 
   useEffect(() => {
     if (etape !== "traitement") return;
@@ -183,6 +227,7 @@ export function ImportWizard({ presets: presetsProp, locations }: Props) {
     setEtape(initial.etape);
     setMois(initial.mois);
     setAnnee(initial.annee);
+    setMoisDetecte(false);
     setPresetId(presets.length === 1 ? presets[0].id : null);
     setFichier(initial.fichier);
     setErreurTraitement(null);
@@ -201,13 +246,14 @@ export function ImportWizard({ presets: presetsProp, locations }: Props) {
           presets={presets}
           mois={mois}
           annee={annee}
+          moisDetecte={moisDetecte}
           presetId={presetId}
           fichier={fichier}
           erreur={erreurTraitement}
-          onChangeMois={setMois}
-          onChangeAnnee={setAnnee}
+          onChangeMois={(m) => { setMois(m); setMoisDetecte(false); }}
+          onChangeAnnee={(a) => { setAnnee(a); setMoisDetecte(false); }}
           onChangePreset={setPresetId}
-          onChangeFichier={setFichier}
+          onChangeFichier={(f) => { setFichier(f); setMoisDetecte(false); }}
           onValider={() => {
             setErreurTraitement(null);
             setEtape("traitement");

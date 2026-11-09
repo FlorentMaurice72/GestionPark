@@ -9,6 +9,7 @@ interface Props {
   presets: PresetOption[];
   mois: number;
   annee: number;
+  moisDetecte?: boolean;
   presetId: number | null;
   fichier: File | null;
   erreur: string | null;
@@ -24,6 +25,7 @@ export function EtapeSelection({
   presets,
   mois,
   annee,
+  moisDetecte,
   presetId,
   fichier,
   erreur,
@@ -46,9 +48,16 @@ export function EtapeSelection({
       <div className="rounded-lg border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-              Mois concerné
-            </label>
+            <div className="mb-1 flex items-center gap-2">
+              <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                Mois concerné
+              </label>
+              {moisDetecte && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-950 dark:text-green-300">
+                  ✓ Détecté automatiquement
+                </span>
+              )}
+            </div>
             <select
               value={mois}
               onChange={(e) => onChangeMois(Number(e.target.value))}
