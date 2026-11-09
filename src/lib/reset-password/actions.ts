@@ -44,9 +44,14 @@ export async function demanderResetMotDePasse(
       await envoyerEmailResetMotDePasse(admin.email, `${origine}/login/reinitialiser?token=${token}`);
     } catch (error) {
       if (error instanceof EmailNonConfigure) {
-        return { success: false, error: "L'envoi d'email n'est pas configuré. Contactez l'administrateur technique." };
+        // Email non configuré : le token est en base, l'admin peut utiliser
+        // le lien directement depuis le Dashboard (Supabase → admins.reset_token).
+        console.error("[reset-password] Email non configuré :", error);
+      } else {
+        // Erreur Resend (domaine non vérifié, quota, etc.) : on logue mais on
+        // ne crashe pas — le token est valide en base pendant 1h.
+        console.error("[reset-password] Erreur d'envoi email :", error);
       }
-      throw error;
     }
   }
 
