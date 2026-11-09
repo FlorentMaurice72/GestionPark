@@ -32,12 +32,22 @@ export async function AppNavWrapper() {
     </form>
   );
 
+  const isDemo = session?.user?.email === "demo@gestionpark.fr";
+
   return (
-    <AppNav
-      nombreUrgentes={nombreUrgentes}
-      nombreImpayesMois={nombreImpayesMois}
-      userEmail={session?.user?.email ?? ""}
-      signOutForm={signOutForm}
-    />
+    <>
+      {isDemo && (
+        <div className="flex items-center justify-center gap-2 bg-amber-50 px-4 py-2 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+          <span>⚠</span>
+          <span>Compte démo — données fictives, réinitialisées toutes les 2h</span>
+        </div>
+      )}
+      <AppNav
+        nombreUrgentes={nombreUrgentes}
+        nombreImpayesMois={nombreImpayesMois}
+        userEmail={session?.user?.email ?? ""}
+        signOutForm={signOutForm}
+      />
+    </>
   );
 }

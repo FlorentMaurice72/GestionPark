@@ -12,7 +12,12 @@ const EMAIL_FROM = process.env.EMAIL_FROM ?? "GestionPark <onboarding@resend.dev
 
 export class EmailNonConfigure extends Error {}
 
+function isDemoAddress(email: string): boolean {
+  return email === "demo@gestionpark.fr" || email.endsWith("@example.com");
+}
+
 export async function envoyerEmailRelance(destinataire: string, contenu: string): Promise<void> {
+  if (isDemoAddress(destinataire)) return;
   if (!process.env.RESEND_API_KEY) {
     throw new EmailNonConfigure("RESEND_API_KEY absente.");
   }
@@ -40,6 +45,7 @@ export async function envoyerEmailAvisLoyer(
     bailleurEmail: string;
   }
 ): Promise<void> {
+  if (isDemoAddress(destinataire)) return;
   if (!process.env.RESEND_API_KEY) throw new EmailNonConfigure("RESEND_API_KEY absente.");
   const resend = new Resend(process.env.RESEND_API_KEY);
   const moisLabel = new Date(opts.annee, opts.mois - 1).toLocaleString("fr-FR", { month: "long" });
@@ -56,6 +62,7 @@ export async function envoyerEmailAvisLoyer(
 }
 
 export async function envoyerEmailBienvenue(destinataire: string): Promise<void> {
+  if (isDemoAddress(destinataire)) return;
   if (!process.env.RESEND_API_KEY) return; /* non-bloquant si pas configuré */
   const resend = new Resend(process.env.RESEND_API_KEY);
   const siteUrl = process.env.NEXT_PUBLIC_URL ?? "https://gestionpark.fr";
@@ -147,6 +154,7 @@ export async function envoyerEmailQuittance(
     bailleurEmail: string;
   }
 ): Promise<void> {
+  if (isDemoAddress(destinataire)) return;
   if (!process.env.RESEND_API_KEY) throw new EmailNonConfigure("RESEND_API_KEY absente.");
   const resend = new Resend(process.env.RESEND_API_KEY);
   const moisLabel = new Date(opts.annee, opts.mois - 1).toLocaleString("fr-FR", { month: "long" });
@@ -171,6 +179,7 @@ export async function envoyerEmailRappelEssai(
   destinataire: string,
   opts: { joursRestants: number }
 ): Promise<void> {
+  if (isDemoAddress(destinataire)) return;
   if (!process.env.RESEND_API_KEY) return;
   const resend = new Resend(process.env.RESEND_API_KEY);
   const siteUrl = process.env.NEXT_PUBLIC_URL ?? "https://gestionpark.fr";
@@ -232,6 +241,7 @@ export async function envoyerEmailRevisionIRL(
     bailleurNom?: string | null;
   }
 ): Promise<void> {
+  if (isDemoAddress(destinataire)) return;
   if (!process.env.RESEND_API_KEY) return;
   const resend = new Resend(process.env.RESEND_API_KEY);
   const dateLabel = new Date(opts.dateRevision).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
@@ -255,6 +265,7 @@ export async function envoyerEmailRevisionIRL(
 }
 
 export async function envoyerEmailResetMotDePasse(destinataire: string, lien: string): Promise<void> {
+  if (isDemoAddress(destinataire)) return;
   if (!process.env.RESEND_API_KEY) {
     throw new EmailNonConfigure("RESEND_API_KEY absente.");
   }
