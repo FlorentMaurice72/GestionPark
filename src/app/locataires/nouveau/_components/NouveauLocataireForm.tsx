@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useCallback } from "react";
 import { creerLocataire, type ActionState } from "@/lib/locataires/actions";
 import type { BoxVacantOption } from "@/lib/locataires/data";
 
@@ -18,24 +18,45 @@ type TypeLocataire = "particulier" | "societe" | "association";
 export function NouveauLocataireForm({ boxesVacants }: { boxesVacants: BoxVacantOption[] }) {
   const [etat, formAction, enCours] = useActionState(creerLocataire, ETAT_INITIAL);
   const [type, setType] = useState<TypeLocataire>("particulier");
+  const [selectedBoxIds, setSelectedBoxIds] = useState<number[]>([]);
+
+  const toggleBox = useCallback((id: number, checked: boolean) => {
+    setSelectedBoxIds((prev) => checked ? [...prev, id] : prev.filter((x) => x !== id));
+  }, []);
 
   return (
     <form action={formAction} className="flex flex-col gap-6">
       <fieldset className="rounded-lg border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
-        <legend className="px-1 text-sm font-semibold text-neutral-900 dark:text-neutral-100">Box</legend>
+        <legend className="px-1 text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+          Box{selectedBoxIds.length > 1 ? `es (${selectedBoxIds.length} sélectionnés)` : ""}
+        </legend>
         {boxesVacants.length === 0 ? (
           <p className="text-sm text-neutral-500">Aucun box vacant disponible actuellement.</p>
         ) : (
-          <div>
-            <label className="mb-1 block text-xs font-medium text-neutral-500">Box vacant</label>
-            <select name="boxId" required className={champClasses}>
-              <option value="">— Sélectionner —</option>
+          <div className="flex flex-col gap-2">
+            <p className="text-xs text-neutral-500">
+              Sélectionnez un ou plusieurs boxes à associer à ce locataire.
+            </p>
+            <div className="flex flex-col gap-1.5">
               {boxesVacants.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.label}
-                </option>
+                <label
+                  key={b.id}
+                  className="flex cursor-pointer items-center gap-3 rounded-md border border-neutral-200 px-3 py-2 hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800/50"
+                >
+                  <input
+                    type="checkbox"
+                    name="boxId"
+                    value={b.id}
+                    onChange={(e) => toggleBox(b.id, e.target.checked)}
+                    className="h-4 w-4 accent-brand"
+                  />
+                  <span className="text-sm">{b.label}</span>
+                </label>
               ))}
-            </select>
+            </div>
+            {selectedBoxIds.length === 0 && (
+              <p className="text-xs text-amber-600 dark:text-amber-400">Sélectionnez au moins un box.</p>
+            )}
           </div>
         )}
       </fieldset>
@@ -117,7 +138,9 @@ export function NouveauLocataireForm({ boxesVacants }: { boxesVacants: BoxVacant
             <input name="dateEntree" type="date" defaultValue={todayISO()} required className={champClasses} />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-neutral-500">Loyer (€)</label>
+            <label className="mb-1 block text-xs font-medium text-neutral-500">
+              Loyer (€){selectedBoxIds.length > 1 ? " — par box" : ""}
+            </label>
             <input name="loyerActuel" type="number" step="0.01" min="0.01" required className={champClasses} />
           </div>
           <div>
@@ -129,6 +152,11 @@ export function NouveauLocataireForm({ boxesVacants }: { boxesVacants: BoxVacant
             <input name="dateRevisionIRL" type="date" className={champClasses} />
           </div>
         </div>
+        {selectedBoxIds.length > 1 && (
+          <p className="mt-2 text-xs text-neutral-500">
+            Ce loyer sera appliqué à chacun des {selectedBoxIds.length} boxes sélectionnés. Modifiable individuellement sur la fiche locataire.
+          </p>
+        )}
       </fieldset>
 
       {etat.error && <p className="text-sm text-red-600 dark:text-red-400">{etat.error}</p>}
@@ -136,7 +164,7 @@ export function NouveauLocataireForm({ boxesVacants }: { boxesVacants: BoxVacant
       <div className="flex justify-end gap-2">
         <button
           type="submit"
-          disabled={enCours || boxesVacants.length === 0}
+          disabled={enCours || boxesVacants.length === 0 || selectedBoxIds.length === 0}
           className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dk disabled:opacity-50"
         >
           {enCours ? "Enregistrement…" : "Enregistrer"}

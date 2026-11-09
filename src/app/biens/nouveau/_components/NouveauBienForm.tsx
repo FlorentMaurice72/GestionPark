@@ -49,8 +49,14 @@ export function NouveauBienForm() {
           <Champ label="Taux emprunt (%)">
             <input name="tauxEmprunt" type="number" step="0.001" min="0" required className={champClasses} />
           </Champ>
-          <Champ label="Durée emprunt (mois)">
-            <input name="dureeEmprunt" type="number" step="1" min="1" required className={champClasses} />
+          <Champ label="Durée emprunt">
+            <div className="flex gap-1">
+              <input name="dureeEmprunt" type="number" step="1" min="1" required className="flex-1 rounded-md border border-neutral-300 px-2 py-1.5 text-sm dark:border-neutral-700 dark:bg-neutral-800" />
+              <select name="dureeEmpruntUnite" className="rounded-md border border-neutral-300 px-2 py-1.5 text-sm dark:border-neutral-700 dark:bg-neutral-800">
+                <option value="mois">mois</option>
+                <option value="annees">ans</option>
+              </select>
+            </div>
           </Champ>
           <Champ label="Date de début d'emprunt">
             <input name="dateDebutEmprunt" type="date" defaultValue={todayISO()} required className={champClasses} />

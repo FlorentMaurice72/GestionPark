@@ -76,11 +76,14 @@ export async function creerBien(_prevState: ActionState, formData: FormData): Pr
   const dateDebutEmpruntRaw = String(formData.get("dateDebutEmprunt") ?? "").trim();
   const dureeEmpruntRaw = String(formData.get("dureeEmprunt") ?? "").trim();
 
+  const dureeEmpruntUnite = String(formData.get("dureeEmpruntUnite") ?? "mois");
   const montantEmprunt = montantEmpruntRaw ? Number(montantEmpruntRaw) : null;
   const mensualiteEmprunt = mensualiteEmpruntRaw ? Number(mensualiteEmpruntRaw) : null;
   const tauxEmprunt = tauxEmpruntRaw ? Number(tauxEmpruntRaw) : null;
   const dateDebutEmprunt = dateDebutEmpruntRaw || null;
-  const dureeEmprunt = dureeEmpruntRaw ? Number(dureeEmpruntRaw) : null;
+  const dureeEmprunt = dureeEmpruntRaw
+    ? Math.round(Number(dureeEmpruntRaw) * (dureeEmpruntUnite === "annees" ? 12 : 1))
+    : null;
 
   if (!nom) return { success: false, error: "Nom du bien requis." };
   if (!typeBien) return { success: false, error: "Type de bien requis." };
@@ -212,11 +215,14 @@ export async function modifierBien(_prevState: ActionState, formData: FormData):
   const dateDebutEmpruntRaw2 = String(formData.get("dateDebutEmprunt") ?? "").trim();
   const dureeEmpruntRaw2 = String(formData.get("dureeEmprunt") ?? "").trim();
 
+  const dureeEmpruntUnite2 = String(formData.get("dureeEmpruntUnite") ?? "mois");
   const montantEmprunt = montantEmpruntRaw2 ? Number(montantEmpruntRaw2) : null;
   const mensualiteEmprunt = mensualiteEmpruntRaw2 ? Number(mensualiteEmpruntRaw2) : null;
   const tauxEmprunt = tauxEmpruntRaw2 ? Number(tauxEmpruntRaw2) : null;
   const dateDebutEmprunt = dateDebutEmpruntRaw2 || null;
-  const dureeEmprunt = dureeEmpruntRaw2 ? Number(dureeEmpruntRaw2) : null;
+  const dureeEmprunt = dureeEmpruntRaw2
+    ? Math.round(Number(dureeEmpruntRaw2) * (dureeEmpruntUnite2 === "annees" ? 12 : 1))
+    : null;
 
   if (!Number.isInteger(id) || id <= 0) return { success: false, error: "Bien invalide." };
   if (!nom) return { success: false, error: "Nom du bien requis." };

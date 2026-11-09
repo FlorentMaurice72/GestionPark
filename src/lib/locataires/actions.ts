@@ -18,7 +18,7 @@ function valeurOuTiret(formData: FormData, champ: string): string {
 }
 
 export async function creerLocataire(_prevState: ActionState, formData: FormData): Promise<ActionState> {
-  const boxId = Number(formData.get("boxId"));
+  const boxIds = formData.getAll("boxId").map(Number).filter((id) => Number.isInteger(id) && id > 0);
   const nom = String(formData.get("nom") ?? "").trim();
   const prenom = String(formData.get("prenom") ?? "").trim();
   const societe = String(formData.get("societe") ?? "").trim() || null;
@@ -27,7 +27,7 @@ export async function creerLocataire(_prevState: ActionState, formData: FormData
   const loyerActuel = Number(formData.get("loyerActuel"));
   const depotGarantie = Number(formData.get("depotGarantie"));
 
-  if (!Number.isInteger(boxId) || boxId <= 0) return { success: false, error: "Box invalide." };
+  if (boxIds.length === 0) return { success: false, error: "Sélectionnez au moins un box." };
   if (!nom) return { success: false, error: "Nom requis." };
   if (!prenom) return { success: false, error: "Prénom requis." };
   if (typeof dateEntree !== "string" || !dateEntree) return { success: false, error: "Date d'entrée invalide." };
@@ -40,9 +40,37 @@ export async function creerLocataire(_prevState: ActionState, formData: FormData
   if (!session?.user?.id) return { success: false, error: "Non authentifié." };
   const userId = parseInt(session.user.id);
 
-  const box = await prisma.box.findUnique({ where: { id: boxId }, include: { bien: { select: { utilisateurId: true } } } });
-  if (!box || box.bien.utilisateurId !== userId) return { success: false, error: "Box introuvable." };
-  if (box.statut !== "vacant") return { success: false, error: "Ce box n'est plus vacant." };
+  const boxes = await prisma.box.findMany({
+    where: { id: { in: boxIds } },
+    include: { bien: { select: { utilisateurId: true } } },
+  });
+  if (boxes.length !== boxIds.length) return { success: false, error: "Un ou plusieurs boxes introuvables." };
+  if (boxes.some((b) => b.bien.utilisateurId !== userId)) return { success: false, error: "Box non autorisé." };
+  const boxOccupe = boxes.find((b) => b.statut !== "vacant");
+  if (boxOccupe) return { success: false, error: `Le box ${boxOccupe.numero} n'est plus vacant.` };
+
+  const bool = (key: string, def: boolean) => {
+    const v = formData.get(key);
+    if (v === null) return def;
+    return v === "true" || v === "1";
+  };
+  const dateRevisionIRL = (() => {
+    const v = formData.get("dateRevisionIRL");
+    return typeof v === "string" && v ? new Date(v) : null;
+  })();
+  const locationData = {
+    dateEntree: new Date(dateEntree),
+    loyerActuel,
+    depotGarantie,
+    renouvellementAuto: bool("renouvellementAuto", true),
+    typeBail: String(formData.get("typeBail") ?? "bail_box") || "bail_box",
+    termeLoyerType: String(formData.get("termeLoyerType") ?? "a_echoir") || "a_echoir",
+    moyenPaiement: String(formData.get("moyenPaiement") ?? "virement") || "virement",
+    relanceActive: bool("relanceActive", true),
+    avisLoyerAuto: bool("avisLoyerAuto", true),
+    quittanceAuto: bool("quittanceAuto", true),
+    dateRevisionIRL,
+  };
 
   const locataire = await prisma.$transaction(async (tx) => {
     const nouveauLocataire = await tx.locataire.create({
@@ -60,31 +88,12 @@ export async function creerLocataire(_prevState: ActionState, formData: FormData
       },
     });
 
-    const bool = (key: string, def: boolean) => {
-      const v = formData.get(key);
-      if (v === null) return def;
-      return v === "true" || v === "1";
-    };
-
-    await tx.location.create({
-      data: {
-        boxId,
-        locataireId: nouveauLocataire.id,
-        dateEntree: new Date(dateEntree),
-        loyerActuel,
-        depotGarantie,
-        renouvellementAuto: bool("renouvellementAuto", true),
-        typeBail: String(formData.get("typeBail") ?? "bail_box") || "bail_box",
-        termeLoyerType: String(formData.get("termeLoyerType") ?? "a_echoir") || "a_echoir",
-        moyenPaiement: String(formData.get("moyenPaiement") ?? "virement") || "virement",
-        relanceActive: bool("relanceActive", true),
-        avisLoyerAuto: bool("avisLoyerAuto", true),
-        quittanceAuto: bool("quittanceAuto", true),
-        dateRevisionIRL: (() => { const v = formData.get("dateRevisionIRL"); return typeof v === "string" && v ? new Date(v) : null; })(),
-      },
-    });
-
-    await tx.box.update({ where: { id: boxId }, data: { statut: "loué" } });
+    for (const boxId of boxIds) {
+      await tx.location.create({
+        data: { boxId, locataireId: nouveauLocataire.id, ...locationData },
+      });
+      await tx.box.update({ where: { id: boxId }, data: { statut: "loué" } });
+    }
 
     return nouveauLocataire;
   });

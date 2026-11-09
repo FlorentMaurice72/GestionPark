@@ -92,15 +92,21 @@ export function ModifierBienForm({ bien }: { bien: BienDetail }) {
               className={champClasses}
             />
           </Champ>
-          <Champ label="Durée emprunt (mois, optionnel)">
-            <input
-              name="dureeEmprunt"
-              type="number"
-              step="1"
-              min="1"
-              defaultValue={bien.dureeEmprunt ?? ""}
-              className={champClasses}
-            />
+          <Champ label="Durée emprunt (optionnel)">
+            <div className="flex gap-1">
+              <input
+                name="dureeEmprunt"
+                type="number"
+                step="1"
+                min="1"
+                defaultValue={bien.dureeEmprunt ?? ""}
+                className="flex-1 rounded-md border border-neutral-300 px-2 py-1.5 text-sm dark:border-neutral-700 dark:bg-neutral-800"
+              />
+              <select name="dureeEmpruntUnite" className="rounded-md border border-neutral-300 px-2 py-1.5 text-sm dark:border-neutral-700 dark:bg-neutral-800">
+                <option value="mois">mois</option>
+                <option value="annees">ans</option>
+              </select>
+            </div>
           </Champ>
           <Champ label="Date de début d'emprunt (optionnel)">
             <input
