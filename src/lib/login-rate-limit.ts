@@ -12,7 +12,10 @@ export class TropDeTentatives extends CredentialsSignin {
   code = "trop-de-tentatives";
 }
 
+const DEMO_EMAIL = "demo@gestionpark.fr";
+
 export async function verifierRateLimit(email: string): Promise<void> {
+  if (email === DEMO_EMAIL) return;
   const depuis = new Date(Date.now() - FENETRE_MS);
   const echecsRecents = await prisma.tentativeConnexion.count({
     where: { email, reussie: false, createdAt: { gte: depuis } },
