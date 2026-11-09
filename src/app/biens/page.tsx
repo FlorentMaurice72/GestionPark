@@ -13,25 +13,31 @@ export default async function BiensPage() {
   const biens = await getBiensPageData(userId);
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
+    <div className="min-h-screen bg-neutral-50 pb-16 dark:bg-neutral-950 md:pb-0">
       <AppNavWrapper />
-      <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-4 dark:border-neutral-800 dark:bg-neutral-900">
+      <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-4 py-4 dark:border-neutral-800 dark:bg-neutral-900 sm:px-6">
         <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Mes biens immobiliers</h1>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <Link
             href="/biens/nouveau"
             className="rounded-md bg-brand px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-dk"
           >
-            Ajouter un bien
+            + Ajouter
           </Link>
-          <DeconnexionButton />
+          <div className="hidden md:block"><DeconnexionButton /></div>
         </div>
       </header>
 
-      <main className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-6">
+      <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6">
         {biens.length === 0 ? (
-          <div className="rounded-lg border border-neutral-200 bg-white p-8 text-center text-sm text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900">
-            Aucun bien enregistré pour le moment.
+          <div className="rounded-lg border border-neutral-200 bg-white p-8 text-center dark:border-neutral-800 dark:bg-neutral-900">
+            <p className="text-sm text-neutral-500">Aucun bien enregistré pour le moment.</p>
+            <Link
+              href="/biens/nouveau"
+              className="mt-4 inline-block rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dk"
+            >
+              Ajouter mon premier bien →
+            </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

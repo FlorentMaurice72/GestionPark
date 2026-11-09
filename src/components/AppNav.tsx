@@ -14,6 +14,73 @@ const ONGLETS = [
   { href: "/guide",      label: "Guide" },
 ];
 
+const TABS_BOTTOM = [
+  { href: "/",           label: "Accueil" },
+  { href: "/loyers",     label: "Loyers" },
+  { href: "/biens",      label: "Biens" },
+  { href: "/locataires", label: "Locataires" },
+];
+
+const PLUS_ITEMS = [
+  { href: "/alertes",  label: "🔔 Alertes" },
+  { href: "/finances", label: "📊 Finances" },
+  { href: "/guide",    label: "📖 Guide" },
+  { href: "/profil",   label: "⚙️ Mon compte" },
+];
+
+// ── SVG icons ────────────────────────────────────────────────────────────────
+
+function IconHome({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+      <polyline points="9 22 9 12 15 12 15 22" />
+    </svg>
+  );
+}
+
+function IconMoney({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="6" width="20" height="12" rx="2" />
+      <circle cx="12" cy="12" r="2" />
+      <path d="M6 12h.01M18 12h.01" />
+    </svg>
+  );
+}
+
+function IconBuilding({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="1" />
+      <path d="M3 9h18M9 21V9" />
+    </svg>
+  );
+}
+
+function IconPeople({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  );
+}
+
+function IconGrid({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="7" />
+      <rect x="14" y="3" width="7" height="7" />
+      <rect x="3" y="14" width="7" height="7" />
+      <rect x="14" y="14" width="7" height="7" />
+    </svg>
+  );
+}
+
+// ── Shared Logo ───────────────────────────────────────────────────────────────
+
 function Logo() {
   return (
     <Link href="/" className="mr-2 flex flex-shrink-0 items-center gap-2 py-3">
@@ -95,7 +162,6 @@ function UserMenu({
 
   return (
     <div ref={ref} className="relative ml-2 flex-shrink-0">
-      {/* Bouton déclencheur */}
       <button
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="true"
@@ -117,11 +183,8 @@ function UserMenu({
         </svg>
       </button>
 
-      {/* Panneau déroulant */}
       {open && (
         <div className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-2xl dark:border-neutral-700 dark:bg-neutral-900">
-
-          {/* En-tête */}
           <div className="flex items-center gap-3 border-b border-neutral-100 px-4 py-3 dark:border-neutral-800">
             <span
               className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
@@ -134,14 +197,12 @@ function UserMenu({
             </span>
           </div>
 
-          {/* Groupe 1 — compte */}
           <div className="py-1">
             <MenuItem href="/profil?onglet=compte"       icon="⚙️" label="Paramètres du compte" onClick={() => setOpen(false)} />
             <MenuItem href="/profil?onglet=compte"       icon="🏢" label="Ma structure"          onClick={() => setOpen(false)} />
             <MenuItem href="/profil?onglet=facturation"  icon="💳" label="Abonnement"            onClick={() => setOpen(false)} />
           </div>
 
-          {/* Groupe 2 — aide */}
           <div className="border-t border-neutral-100 py-1 dark:border-neutral-800">
             <MenuItem href="#" icon="🌐" label="Communauté" onClick={() => setOpen(false)} />
             <button
@@ -159,7 +220,6 @@ function UserMenu({
             </button>
           </div>
 
-          {/* Groupe 3 — déconnexion */}
           <div className="border-t border-neutral-100 py-1 dark:border-neutral-800">
             <div onClick={() => setOpen(false)}>
               {signOutForm}
@@ -170,6 +230,48 @@ function UserMenu({
     </div>
   );
 }
+
+// ── Mobile "Plus" drawer ──────────────────────────────────────────────────────
+
+function MobilePlusDrawer({
+  open,
+  onClose,
+  signOutForm,
+}: {
+  open: boolean;
+  onClose: () => void;
+  signOutForm?: React.ReactNode;
+}) {
+  if (!open) return null;
+  return (
+    <>
+      <div
+        className="fixed inset-0 z-40 bg-black/30 md:hidden"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      <div className="fixed bottom-16 left-0 right-0 z-50 rounded-t-2xl border-t border-neutral-200 bg-white pb-safe dark:border-neutral-700 dark:bg-neutral-900 md:hidden">
+        <div className="flex flex-col py-2">
+          {PLUS_ITEMS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={onClose}
+              className="flex items-center px-5 py-3.5 text-sm font-medium text-neutral-700 hover:bg-neutral-50 dark:text-neutral-200 dark:hover:bg-neutral-800"
+            >
+              {item.label}
+            </Link>
+          ))}
+          <div className="mx-5 mt-1 border-t border-neutral-100 pt-1 dark:border-neutral-800">
+            <div onClick={onClose}>{signOutForm}</div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ── Main component ────────────────────────────────────────────────────────────
 
 export function AppNav({
   nombreUrgentes = 0,
@@ -183,45 +285,114 @@ export function AppNav({
   signOutForm?: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const [plusOpen, setPlusOpen] = useState(false);
+
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
+
+  const plusIsActive = PLUS_ITEMS.some((item) => isActive(item.href));
 
   return (
-    <nav className="flex items-center gap-1 border-b border-neutral-200 bg-white px-4 dark:border-neutral-800 dark:bg-neutral-900">
-      <Logo />
-      <div className="flex flex-1 items-center gap-1 overflow-x-auto">
-        {ONGLETS.map((onglet) => {
-          const actif =
-            onglet.href === "/"
-              ? pathname === "/"
-              : pathname === onglet.href || pathname.startsWith(`${onglet.href}/`);
+    <>
+      {/* ── Desktop top nav ── */}
+      <nav className="flex items-center gap-1 border-b border-neutral-200 bg-white px-4 dark:border-neutral-800 dark:bg-neutral-900">
+        <Logo />
+        <div className="hidden flex-1 items-center gap-1 overflow-x-auto md:flex">
+          {ONGLETS.map((onglet) => {
+            const actif = isActive(onglet.href);
+            return (
+              <Link
+                key={onglet.href}
+                href={onglet.href}
+                className={`flex-shrink-0 border-b-2 px-2 py-3 text-sm font-medium transition-colors ${
+                  actif
+                    ? "border-brand text-brand dark:border-canard dark:text-canard"
+                    : "border-transparent text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100"
+                }`}
+              >
+                {onglet.label}
+                {onglet.href === "/alertes" && nombreUrgentes > 0 && (
+                  <span className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white">
+                    {nombreUrgentes > 99 ? "99+" : nombreUrgentes}
+                  </span>
+                )}
+                {onglet.href === "/loyers" && nombreImpayesMois > 0 && (
+                  <span className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-orange-500 px-1 text-[10px] font-bold text-white">
+                    {nombreImpayesMois > 99 ? "99+" : nombreImpayesMois}
+                  </span>
+                )}
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* User menu — visible on all screen sizes */}
+        {signOutForm !== undefined && (
+          <UserMenu userEmail={userEmail} signOutForm={signOutForm} />
+        )}
+      </nav>
+
+      {/* ── Mobile bottom tab bar ── */}
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-30 flex border-t border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900 md:hidden"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      >
+        {TABS_BOTTOM.map((tab) => {
+          const actif = isActive(tab.href);
+          const Icon =
+            tab.href === "/" ? IconHome :
+            tab.href === "/loyers" ? IconMoney :
+            tab.href === "/biens" ? IconBuilding :
+            IconPeople;
           return (
             <Link
-              key={onglet.href}
-              href={onglet.href}
-              className={`flex-shrink-0 border-b-2 px-2 py-3 text-sm font-medium transition-colors ${
+              key={tab.href}
+              href={tab.href}
+              className={`relative flex flex-1 flex-col items-center justify-center gap-0.5 py-2.5 text-[10px] font-medium transition-colors ${
                 actif
-                  ? "border-brand text-brand dark:border-canard dark:text-canard"
-                  : "border-transparent text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100"
+                  ? "text-brand dark:text-canard"
+                  : "text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200"
               }`}
             >
-              {onglet.label}
-              {onglet.href === "/alertes" && nombreUrgentes > 0 && (
-                <span className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white">
-                  {nombreUrgentes > 99 ? "99+" : nombreUrgentes}
-                </span>
-              )}
-              {onglet.href === "/loyers" && nombreImpayesMois > 0 && (
-                <span className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-orange-500 px-1 text-[10px] font-bold text-white">
-                  {nombreImpayesMois > 99 ? "99+" : nombreImpayesMois}
+              <Icon className="h-5 w-5" />
+              {tab.label}
+              {tab.href === "/loyers" && nombreImpayesMois > 0 && (
+                <span className="absolute right-[calc(50%-16px)] top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-orange-500 px-1 text-[9px] font-bold text-white">
+                  {nombreImpayesMois > 9 ? "9+" : nombreImpayesMois}
                 </span>
               )}
             </Link>
           );
         })}
-      </div>
 
-      {signOutForm !== undefined && (
-        <UserMenu userEmail={userEmail} signOutForm={signOutForm} />
-      )}
-    </nav>
+        {/* Plus button */}
+        <button
+          onClick={() => setPlusOpen((v) => !v)}
+          className={`flex flex-1 flex-col items-center justify-center gap-0.5 py-2.5 text-[10px] font-medium transition-colors ${
+            plusIsActive || plusOpen
+              ? "text-brand dark:text-canard"
+              : "text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200"
+          }`}
+        >
+          <IconGrid className="h-5 w-5" />
+          Plus
+          {nombreUrgentes > 0 && (
+            <span className="absolute right-[calc(10%-8px)] top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[9px] font-bold text-white">
+              {nombreUrgentes > 9 ? "9+" : nombreUrgentes}
+            </span>
+          )}
+        </button>
+      </nav>
+
+      {/* Plus drawer */}
+      <MobilePlusDrawer
+        open={plusOpen}
+        onClose={() => setPlusOpen(false)}
+        signOutForm={signOutForm}
+      />
+
+      {/* Spacer so page content isn't hidden behind fixed bottom nav on mobile */}
+      <div className="h-16 md:hidden" aria-hidden="true" />
+    </>
   );
 }

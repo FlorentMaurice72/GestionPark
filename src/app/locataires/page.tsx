@@ -32,22 +32,22 @@ export default async function LocatairesPage({ searchParams }: { searchParams: P
   const data = await getLocatairesPageData({ statut, bienId, recherche: recherche || null }, userId);
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
+    <div className="min-h-screen bg-neutral-50 pb-16 dark:bg-neutral-950 md:pb-0">
       <AppNavWrapper />
-      <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-4 dark:border-neutral-800 dark:bg-neutral-900">
+      <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-4 py-4 dark:border-neutral-800 dark:bg-neutral-900 sm:px-6">
         <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Mes locataires</h1>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <Link
             href="/locataires/nouveau"
             className="rounded-md bg-brand px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-dk"
           >
-            Ajouter un locataire
+            + Ajouter
           </Link>
-          <DeconnexionButton />
+          <div className="hidden md:block"><DeconnexionButton /></div>
         </div>
       </header>
 
-      <main className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-6">
+      <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6">
         <FiltresLocataires biens={data.biens} statut={statut} bienId={bienId} recherche={recherche} />
         <LocatairesTable locataires={data.locataires} />
       </main>

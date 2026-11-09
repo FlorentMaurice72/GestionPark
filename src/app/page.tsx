@@ -47,20 +47,20 @@ export default async function DashboardPage() {
   const messageImportRequis = `Import CSV nécessaire pour ce mois`;
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
+    <div className="min-h-screen bg-neutral-50 pb-16 dark:bg-neutral-950 md:pb-0">
       <AppNavWrapper />
-      <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-4 dark:border-neutral-800 dark:bg-neutral-900">
+      <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-4 py-4 dark:border-neutral-800 dark:bg-neutral-900 sm:px-6">
         <div>
           <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Dashboard</h1>
           <p className="text-xs text-neutral-500">{capitaliser(formatteurDate.format(data.aujourdHui))}</p>
         </div>
         <div className="flex items-center gap-4">
           <NotificationBell notifications={data.notifications} />
-          <DeconnexionButton />
+          <div className="hidden md:block"><DeconnexionButton /></div>
         </div>
       </header>
 
-      <main className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-6">
+      <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6">
         <OnboardingGuide
           biensDone={data.kpiOccupation.boxesTotal > 0}
           locatairesDone={data.kpiLocatairesActifs > 0}

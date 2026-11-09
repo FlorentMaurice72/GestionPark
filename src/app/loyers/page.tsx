@@ -70,24 +70,25 @@ export default async function LoyersPage({
   ]);
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950">
+    <div className="min-h-screen bg-neutral-50 pb-16 dark:bg-neutral-950 md:pb-0">
       <AppNavWrapper />
-      <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-6 py-4 dark:border-neutral-800 dark:bg-neutral-900">
+      <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-4 py-4 dark:border-neutral-800 dark:bg-neutral-900 sm:px-6">
         <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Gestion locative</h1>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {ongletActif === "paiements" && (
             <Link
               href="/loyers/import"
               className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
             >
-              Importer un relevé bancaire
+              <span className="hidden sm:inline">Importer un relevé bancaire</span>
+              <span className="sm:hidden">Importer</span>
             </Link>
           )}
-          <DeconnexionButton />
+          <div className="hidden md:block"><DeconnexionButton /></div>
         </div>
       </header>
 
-      <main className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-6">
+      <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6">
         <OngletsGestionLocative ongletActif={ongletActif} />
 
         {ongletActif === "paiements" && data && (
