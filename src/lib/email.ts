@@ -220,6 +220,40 @@ export async function envoyerEmailRappelEssai(
   });
 }
 
+export async function envoyerEmailRevisionIRL(
+  destinataire: string,
+  opts: {
+    locataireNom: string;
+    locatairePrenom: string;
+    bienNom: string;
+    boxNumero: string;
+    dateRevision: Date;
+    loyerActuel: number;
+    bailleurNom?: string | null;
+  }
+): Promise<void> {
+  if (!process.env.RESEND_API_KEY) return;
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const dateLabel = new Date(opts.dateRevision).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
+  const loyerLabel = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(opts.loyerActuel);
+  const subject = `Révision de votre loyer — ${dateLabel}`;
+  const html = `
+    <p>Bonjour ${opts.locatairePrenom} ${opts.locataireNom},</p>
+    <p>Nous vous informons que votre loyer pour le box <strong>${opts.boxNumero}</strong> (${opts.bienNom}) fera l'objet d'une révision annuelle à compter du <strong>${dateLabel}</strong>, conformément à l'Indice de Référence des Loyers (IRL).</p>
+    <p>Votre loyer actuel est de <strong>${loyerLabel}/mois</strong>.</p>
+    <p>Vous recevrez prochainement le détail du montant révisé.</p>
+    <br>
+    <p>${opts.bailleurNom ?? "Votre bailleur"}</p>
+  `;
+  await resend.emails.send({
+    from: EMAIL_FROM,
+    to: destinataire,
+    subject,
+    html,
+    text: html.replace(/<[^>]+>/g, ""),
+  });
+}
+
 export async function envoyerEmailResetMotDePasse(destinataire: string, lien: string): Promise<void> {
   if (!process.env.RESEND_API_KEY) {
     throw new EmailNonConfigure("RESEND_API_KEY absente.");

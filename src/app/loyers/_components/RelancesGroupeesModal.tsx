@@ -41,28 +41,49 @@ function preparerLigne(ligne: LigneLoyer, mois: number, annee: number): LigneAEn
   };
 }
 
+async function appellerRelance(item: LigneAEnvoyer): Promise<boolean> {
+  const formData = new FormData();
+  formData.set("locationId", String(item.ligne.locationId));
+  formData.set("canal", item.canal);
+  formData.set("contenuTexte", item.texte);
+  const resultat = await creerRelance({ success: false }, formData);
+  return resultat.success;
+}
+
 export function RelancesGroupeesModal({ lignesImpayees, mois, annee }: Props) {
   const [ouvert, setOuvert] = useState(false);
-  const [copiees, setCopiees] = useState<Set<number>>(new Set());
+  const [traitees, setTraitees] = useState<Set<number>>(new Set());
+  const [enCoursGlobal, setEnCoursGlobal] = useState(false);
 
   if (lignesImpayees.length === 0) return null;
 
-  async function copier(item: LigneAEnvoyer) {
-    try {
-      await navigator.clipboard.writeText(item.texte);
-    } catch {
-      // Presse-papier indisponible — on enregistre quand même la relance.
-    }
+  const toutesLesLignes = lignesImpayees.map((l) => preparerLigne(l, mois, annee));
+  const lignesEmail = toutesLesLignes.filter((i) => i.canal === "email");
+  const emailsNonEnvoyes = lignesEmail.filter((i) => !traitees.has(i.ligne.locationId));
 
-    const formData = new FormData();
-    formData.set("locationId", String(item.ligne.locationId));
-    formData.set("canal", item.canal);
-    formData.set("contenuTexte", item.texte);
-
-    const resultat = await creerRelance({ success: false }, formData);
-    if (resultat.success) {
-      setCopiees((prev) => new Set(prev).add(item.ligne.locationId));
+  async function envoyerOuCopier(item: LigneAEnvoyer) {
+    if (item.canal === "sms") {
+      try {
+        await navigator.clipboard.writeText(item.texte);
+      } catch {
+        // clipboard unavailable
+      }
     }
+    const ok = await appellerRelance(item);
+    if (ok) {
+      setTraitees((prev) => new Set(prev).add(item.ligne.locationId));
+    }
+  }
+
+  async function envoyerTousLesEmails() {
+    setEnCoursGlobal(true);
+    for (const item of emailsNonEnvoyes) {
+      const ok = await appellerRelance(item);
+      if (ok) {
+        setTraitees((prev) => new Set(prev).add(item.ligne.locationId));
+      }
+    }
+    setEnCoursGlobal(false);
   }
 
   return (
@@ -88,39 +109,42 @@ export function RelancesGroupeesModal({ lignesImpayees, mois, annee }: Props) {
               Relances à envoyer — {NOMS_MOIS[mois - 1]} {annee}
             </h2>
             <p className="mb-4 text-xs text-neutral-500">
-              Copiez le texte de chaque locataire et collez-le dans votre client SMS/email.
+              Cliquez pour envoyer l&apos;email ou copier le SMS selon le canal de chaque locataire.
             </p>
 
             <div className="flex-1 space-y-3 overflow-y-auto">
-              {lignesImpayees.map((ligne) => {
-                const item = preparerLigne(ligne, mois, annee);
-                const estCopiee = copiees.has(ligne.locationId);
+              {toutesLesLignes.map((item) => {
+                const estTraitee = traitees.has(item.ligne.locationId);
+                const estEmail = item.canal === "email";
 
                 return (
                   <div
-                    key={ligne.locationId}
+                    key={item.ligne.locationId}
                     className="rounded-md border border-neutral-200 p-3 dark:border-neutral-800"
                   >
                     <div className="mb-2 flex items-start justify-between gap-3">
                       <div>
                         <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">
-                          {ligne.locataireNom} {ligne.locatairePrenom} · Box {ligne.boxNumero}
+                          {item.ligne.locataireNom} {item.ligne.locatairePrenom} · Box {item.ligne.boxNumero}
                         </p>
                         <p className="text-xs text-neutral-500">
-                          {item.canal === "sms" ? "SMS" : "Email"} · {item.contact} · Dû{" "}
-                          {formaterMontant(Math.max(ligne.loyerActuel - ligne.montantRecu, 0))}
+                          {estEmail ? "Email" : "SMS"} · {item.contact} · Dû{" "}
+                          {formaterMontant(Math.max(item.ligne.loyerActuel - item.ligne.montantRecu, 0))}
                         </p>
                       </div>
                       <button
                         type="button"
-                        onClick={() => copier(item)}
-                        className={`shrink-0 rounded-md px-3 py-1.5 text-xs font-medium ${
-                          estCopiee
+                        onClick={() => envoyerOuCopier(item)}
+                        disabled={estTraitee || enCoursGlobal}
+                        className={`shrink-0 rounded-md px-3 py-1.5 text-xs font-medium disabled:opacity-50 ${
+                          estTraitee
                             ? "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300"
                             : "bg-neutral-900 text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900"
                         }`}
                       >
-                        {estCopiee ? "Copié ✓" : "Copier le texte"}
+                        {estTraitee
+                          ? estEmail ? "Envoyé ✓" : "Copié ✓"
+                          : estEmail ? "Envoyer l'email" : "Copier le SMS"}
                       </button>
                     </div>
                     <textarea
@@ -134,7 +158,19 @@ export function RelancesGroupeesModal({ lignesImpayees, mois, annee }: Props) {
               })}
             </div>
 
-            <div className="flex justify-end pt-4">
+            <div className="flex items-center justify-end gap-3 pt-4">
+              {emailsNonEnvoyes.length > 0 && (
+                <button
+                  type="button"
+                  onClick={envoyerTousLesEmails}
+                  disabled={enCoursGlobal}
+                  className="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {enCoursGlobal
+                    ? "Envoi en cours…"
+                    : `Envoyer ${emailsNonEnvoyes.length} email${emailsNonEnvoyes.length > 1 ? "s" : ""}`}
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => setOuvert(false)}

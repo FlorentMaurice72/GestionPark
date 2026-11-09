@@ -3,6 +3,7 @@
     { "path": "/api/cron/relances", "schedule": "0 8 5 * *" },
     { "path": "/api/cron/avis-loyer", "schedule": "0 8 25 * *" },
     { "path": "/api/cron/quittances", "schedule": "0 8 1 * *" },
-    { "path": "/api/cron/rappel-essai", "schedule": "0 9 * * *" }
+    { "path": "/api/cron/rappel-essai", "schedule": "0 9 * * *" },
+    { "path": "/api/cron/revision-irl", "schedule": "0 8 * * *" }
   ]
 }
