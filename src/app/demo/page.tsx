@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useTransition } from "react";
+import { useState, useTransition } from "react";
 import Link from "next/link";
 import { connexionDemo } from "@/lib/demo/actions";
 
@@ -22,12 +22,17 @@ function LogoSVG({ size = 28 }: { size?: number }) {
 
 export default function DemoPage() {
   const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    startTransition(() => {
-      connexionDemo();
+  function handleDemo() {
+    setError(null);
+    startTransition(async () => {
+      const result = await connexionDemo();
+      if (!result.success) {
+        setError(result.error);
+      }
     });
-  }, []);
+  }
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-neutral-50 px-4 dark:bg-neutral-950">
@@ -55,7 +60,20 @@ export default function DemoPage() {
           Vous allez accéder à un tableau de bord pré-rempli avec de vraies données fictives.
         </p>
 
-        {pending ? (
+        {error ? (
+          <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
+            {error === "demo_not_configured" ? (
+              <>
+                La démo n&apos;est pas encore disponible.{" "}
+                <Link href="/signup" className="font-medium underline">
+                  Créez votre compte gratuit →
+                </Link>
+              </>
+            ) : (
+              "Une erreur est survenue. Veuillez réessayer."
+            )}
+          </div>
+        ) : pending ? (
           <div className="flex items-center justify-center gap-2 text-sm text-neutral-500">
             <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
               <circle
@@ -75,15 +93,13 @@ export default function DemoPage() {
             Connexion en cours…
           </div>
         ) : (
-          <form action={connexionDemo}>
-            <button
-              type="submit"
-              className="w-full rounded-md px-4 py-2.5 text-sm font-medium text-white hover:opacity-90"
-              style={{ backgroundColor: "#0047AB" }}
-            >
-              Accéder à la démo →
-            </button>
-          </form>
+          <button
+            onClick={handleDemo}
+            className="w-full rounded-md px-4 py-2.5 text-sm font-medium text-white hover:opacity-90"
+            style={{ backgroundColor: "#0047AB" }}
+          >
+            Accéder à la démo →
+          </button>
         )}
 
         <p className="mt-4 text-xs text-neutral-400">
