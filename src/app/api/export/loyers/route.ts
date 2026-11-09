@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: Request) {
   const session = await auth();
   if (!session?.user?.id) {
@@ -11,7 +13,9 @@ export async function GET(req: Request) {
   const userId = parseInt(session.user.id);
   const url = new URL(req.url);
   const anneeParam = url.searchParams.get("annee");
+  const bienIdParam = url.searchParams.get("bienId");
   const annee = anneeParam ? parseInt(anneeParam) : new Date().getFullYear();
+  const bienId = bienIdParam ? parseInt(bienIdParam) : null;
 
   if (isNaN(annee) || annee < 2000 || annee > 2100) {
     return NextResponse.json({ error: "Année invalide" }, { status: 400 });
@@ -20,7 +24,12 @@ export async function GET(req: Request) {
   const paiements = await prisma.paiement.findMany({
     where: {
       annee,
-      location: { box: { bien: { utilisateurId: userId } } },
+      location: {
+        box: {
+          bien: { utilisateurId: userId },
+          ...(bienId ? { bienId } : {}),
+        },
+      },
     },
     include: {
       location: {

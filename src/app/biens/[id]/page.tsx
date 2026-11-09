@@ -8,6 +8,7 @@ import { formaterMontant } from "@/lib/format";
 import { AjouterBoxesModal } from "./_components/AjouterBoxesModal";
 import { SupprimerBoxButton } from "./_components/SupprimerBoxButton";
 import { SupprimerBienSection } from "./_components/SupprimerBienSection";
+import { ExportCSVButton } from "@/app/loyers/_components/ExportCSVButton";
 
 export default async function BienDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
@@ -31,7 +32,8 @@ export default async function BienDetailPage({ params }: { params: Promise<{ id:
           </Link>
           <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">{bien.nom}</h1>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <ExportCSVButton annee={new Date().getFullYear()} bienId={bien.id} />
           <Link
             href={`/biens/${bien.id}/modifier`}
             className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"

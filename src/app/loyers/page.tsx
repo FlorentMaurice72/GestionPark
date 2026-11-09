@@ -11,6 +11,7 @@ import { IndicateursCards } from "./_components/IndicateursCards";
 import { LoyersTable } from "./_components/LoyersTable";
 import { RelancesGroupeesModal } from "./_components/RelancesGroupeesModal";
 import { OngletsGestionLocative } from "./_components/OngletsGestionLocative";
+import { ExportCSVButton } from "./_components/ExportCSVButton";
 import { EcheancierSection } from "@/app/echeancier/_components/EcheancierSection";
 
 interface SearchParams {
@@ -74,15 +75,18 @@ export default async function LoyersPage({
       <AppNavWrapper />
       <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-4 py-4 dark:border-neutral-800 dark:bg-neutral-900 sm:px-6">
         <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Gestion locative</h1>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {ongletActif === "paiements" && (
-            <Link
-              href="/loyers/import"
-              className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
-            >
-              <span className="hidden sm:inline">Importer un relevé bancaire</span>
-              <span className="sm:hidden">Importer</span>
-            </Link>
+            <>
+              <ExportCSVButton annee={annee} bienId={bienId} />
+              <Link
+                href="/loyers/import"
+                className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
+              >
+                <span className="hidden sm:inline">Importer un relevé bancaire</span>
+                <span className="sm:hidden">Importer</span>
+              </Link>
+            </>
           )}
           <div className="hidden md:block"><DeconnexionButton /></div>
         </div>
