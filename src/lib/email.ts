@@ -167,6 +167,59 @@ export async function envoyerEmailQuittance(
   });
 }
 
+export async function envoyerEmailRappelEssai(
+  destinataire: string,
+  opts: { joursRestants: number }
+): Promise<void> {
+  if (!process.env.RESEND_API_KEY) return;
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const siteUrl = process.env.NEXT_PUBLIC_URL ?? "https://gestionpark.fr";
+  const j = opts.joursRestants;
+  await resend.emails.send({
+    from: EMAIL_FROM,
+    to: destinataire,
+    subject: `Votre essai GestionPark se termine dans ${j} jour${j > 1 ? "s" : ""}`,
+    html: `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#F4F8FF;font-family:Arial,sans-serif">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F4F8FF;padding:32px 16px">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08)">
+        <tr><td style="background:#0047AB;padding:28px 32px">
+          <p style="margin:0;color:#ffffff;font-size:20px;font-weight:700;letter-spacing:1px">GESTIONPARK</p>
+          <p style="margin:6px 0 0;color:rgba(255,255,255,.75);font-size:13px">Logiciel de gestion de boxs de stockage</p>
+        </td></tr>
+        <tr><td style="padding:32px">
+          <h1 style="margin:0 0 8px;font-size:22px;color:#0F2C59">Votre essai se termine bientôt ⏰</h1>
+          <p style="margin:0 0 20px;color:#64748B;font-size:14px;line-height:1.6">
+            Il vous reste <strong>${j} jour${j > 1 ? "s" : ""}</strong> sur votre période d'essai gratuit. Pour continuer à gérer vos boxes sans interruption, activez votre abonnement.
+          </p>
+          <table cellpadding="0" cellspacing="0" style="margin:0 0 24px">
+            <tr><td style="border-radius:8px;background:#0047AB">
+              <a href="${siteUrl}/abonnement" style="display:inline-block;padding:14px 28px;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none">
+                Activer mon abonnement →
+              </a>
+            </td></tr>
+          </table>
+          <p style="margin:0 0 8px;color:#64748B;font-size:13px;line-height:1.6">
+            <strong>Rappel :</strong> toutes vos données (biens, locataires, historique) sont conservées lors du passage à l'abonnement.
+          </p>
+          <p style="margin:0;color:#94A3B8;font-size:12px">
+            Des questions ? Répondez à cet email ou ouvrez le chat depuis l'application.
+          </p>
+        </td></tr>
+        <tr><td style="background:#F8FAFC;padding:16px 32px;border-top:1px solid #E2E8F0">
+          <p style="margin:0;color:#94A3B8;font-size:11px;text-align:center">
+            GestionPark · contact@gestionpark.fr
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`,
+  });
+}
+
 export async function envoyerEmailResetMotDePasse(destinataire: string, lien: string): Promise<void> {
   if (!process.env.RESEND_API_KEY) {
     throw new EmailNonConfigure("RESEND_API_KEY absente.");

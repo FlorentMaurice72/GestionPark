@@ -1,8 +1,13 @@
+import { randomBytes } from "crypto";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
 import { envoyerEmailBienvenue } from "@/lib/email";
+
+function genererCodeParrainage(): string {
+  return randomBytes(4).toString("hex").toUpperCase();
+}
 
 async function inscrire(formData: FormData) {
   "use server";
@@ -10,6 +15,7 @@ async function inscrire(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
   const confirmation = String(formData.get("confirmation") ?? "");
+  const refCode = String(formData.get("ref") ?? "").trim().toUpperCase() || null;
 
   if (!email) redirect("/signup?error=email-requis");
   if (password.length < 8) redirect("/signup?error=mdp-trop-court");
@@ -27,7 +33,25 @@ async function inscrire(formData: FormData) {
   try {
     const passwordHash = await hashPassword(password);
     const trialEndsAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
-    await prisma.admin.create({ data: { email, passwordHash, trialEndsAt } });
+
+    // Résoudre le parrain si un code de parrainage est fourni
+    let referredById: number | null = null;
+    if (refCode) {
+      const parrain = await prisma.admin.findUnique({ where: { referralCode: refCode }, select: { id: true } });
+      if (parrain) referredById = parrain.id;
+    }
+
+    // Générer un code unique (retry si collision, très improbable)
+    let referralCode: string | null = null;
+    for (let i = 0; i < 5; i++) {
+      const candidat = genererCodeParrainage();
+      const existe = await prisma.admin.findUnique({ where: { referralCode: candidat } });
+      if (!existe) { referralCode = candidat; break; }
+    }
+
+    await prisma.admin.create({
+      data: { email, passwordHash, trialEndsAt, referralCode, ...(referredById ? { referredById } : {}) },
+    });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     redirect(`/signup?error=db&detail=${encodeURIComponent(msg.slice(0, 200))}`);
@@ -42,11 +66,11 @@ async function inscrire(formData: FormData) {
 export default async function SignupPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; detail?: string }>;
+  searchParams: Promise<{ error?: string; detail?: string; ref?: string }>;
 }) {
   // detail déstructuré plus haut dans messages
 
-  const { error, detail } = await searchParams;
+  const { error, detail, ref } = await searchParams;
 
   const messages: Record<string, string> = {
     "email-requis": "L'adresse email est requise.",
@@ -66,7 +90,13 @@ export default async function SignupPage({
           Gérez vos boxes en libre-service.
         </p>
 
+        {ref && (
+          <div className="mb-4 rounded-lg bg-green-50 px-3 py-2 text-xs text-green-700 dark:bg-green-950 dark:text-green-300">
+            🎁 Vous avez été parrainé — votre essai inclut 1 mois offert supplémentaire.
+          </div>
+        )}
         <form action={inscrire} className="space-y-4">
+          {ref && <input type="hidden" name="ref" value={ref} />}
           <div>
             <label
               htmlFor="email"

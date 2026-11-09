@@ -1,12 +1,49 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Programme de parrainage — GestionPark",
   description: "Parrainez un ami propriétaire de boxs et recevez 1 mois offert. Sans limite de parrainages.",
 };
 
-export default function ParrainagePage() {
+function CopyScript() {
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `
+          document.querySelectorAll('.copy-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+              var text = btn.getAttribute('data-copy');
+              if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(function() {
+                  var orig = btn.textContent;
+                  btn.textContent = 'Copié !';
+                  setTimeout(function() { btn.textContent = orig; }, 1500);
+                });
+              }
+            });
+          });
+        `,
+      }}
+    />
+  );
+}
+
+export default async function ParrainagePage() {
+  const session = await auth();
+  let referralCode: string | null = null;
+  if (session?.user?.id) {
+    const admin = await prisma.admin.findUnique({
+      where: { id: parseInt(session.user.id) },
+      select: { referralCode: true },
+    });
+    referralCode = admin?.referralCode ?? null;
+  }
+  const siteUrl = process.env.NEXT_PUBLIC_URL ?? "https://gestionpark.fr";
+  const lienParrainage = referralCode ? `${siteUrl}/signup?ref=${referralCode}` : null;
+
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 px-4 py-16">
       <div className="mx-auto max-w-2xl">
@@ -56,21 +93,47 @@ export default function ParrainagePage() {
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="rounded-xl border border-neutral-200 bg-white p-6 text-center dark:border-neutral-800 dark:bg-neutral-900">
-          <p className="mb-2 text-sm text-neutral-500 dark:text-neutral-400">
-            Le programme de parrainage sera disponible très prochainement.
-          </p>
-          <p className="mb-6 text-sm text-neutral-500 dark:text-neutral-400">
-            En attendant, vous pouvez envoyer votre lien d&apos;inscription directement :
-          </p>
-          <code className="block rounded-lg bg-neutral-100 dark:bg-neutral-800 px-4 py-3 text-sm text-neutral-700 dark:text-neutral-300 mb-4">
-            https://gestionpark.fr/signup
-          </code>
-          <p className="text-xs text-neutral-400">
-            Votre code personnel sera généré après le lancement officiel du programme.
-          </p>
-        </div>
+        {/* Code personnel ou CTA connexion */}
+        {lienParrainage ? (
+          <div className="rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900">
+            <h2 className="mb-4 text-base font-semibold text-neutral-900 dark:text-neutral-100">
+              Votre lien de parrainage
+            </h2>
+            <p className="mb-3 text-sm text-neutral-500 dark:text-neutral-400">
+              Partagez ce lien à vos contacts propriétaires de boxs :
+            </p>
+            <div className="mb-3 flex items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-50 px-4 py-3 dark:border-neutral-700 dark:bg-neutral-800">
+              <code className="flex-1 truncate text-sm text-neutral-700 dark:text-neutral-300">
+                {lienParrainage}
+              </code>
+              <button
+                type="button"
+                onClick={undefined}
+                data-copy={lienParrainage}
+                className="copy-btn flex-shrink-0 rounded-md bg-neutral-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-neutral-700 dark:bg-neutral-100 dark:text-neutral-900"
+              >
+                Copier
+              </button>
+            </div>
+            <p className="text-xs text-neutral-400">
+              Code personnel : <strong className="text-neutral-600 dark:text-neutral-300">{referralCode}</strong>
+            </p>
+            <CopyScript />
+          </div>
+        ) : (
+          <div className="rounded-xl border border-neutral-200 bg-white p-6 text-center dark:border-neutral-800 dark:bg-neutral-900">
+            <p className="mb-4 text-sm text-neutral-500 dark:text-neutral-400">
+              Connectez-vous pour obtenir votre lien de parrainage personnel.
+            </p>
+            <Link
+              href="/login"
+              className="inline-flex items-center rounded-lg px-5 py-2.5 text-sm font-semibold text-white"
+              style={{ backgroundColor: "#0047AB" }}
+            >
+              Se connecter →
+            </Link>
+          </div>
+        )}
 
         {/* FAQ */}
         <div className="mt-10">

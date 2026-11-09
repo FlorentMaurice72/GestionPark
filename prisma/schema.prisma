@@ -208,6 +208,8 @@ model Admin {
   subscriptionCurrentPeriodEnd  DateTime? @map("subscription_current_period_end")
   nomBailleur                   String?   @map("nom_bailleur")
   adresseBailleur               String?   @map("adresse_bailleur")
+  referralCode                  String?   @unique @map("referral_code")
+  referredById                  Int?      @map("referred_by_id")
 
   biens                      Bien[]
   locataires                 Locataire[]

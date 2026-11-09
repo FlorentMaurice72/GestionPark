@@ -173,10 +173,12 @@ function UserMenu({
 
 export function AppNav({
   nombreUrgentes = 0,
+  nombreImpayesMois = 0,
   userEmail = "",
   signOutForm,
 }: {
   nombreUrgentes?: number;
+  nombreImpayesMois?: number;
   userEmail?: string;
   signOutForm?: React.ReactNode;
 }) {
@@ -205,6 +207,11 @@ export function AppNav({
               {onglet.href === "/alertes" && nombreUrgentes > 0 && (
                 <span className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white">
                   {nombreUrgentes > 99 ? "99+" : nombreUrgentes}
+                </span>
+              )}
+              {onglet.href === "/loyers" && nombreImpayesMois > 0 && (
+                <span className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-orange-500 px-1 text-[10px] font-bold text-white">
+                  {nombreImpayesMois > 99 ? "99+" : nombreImpayesMois}
                 </span>
               )}
             </Link>

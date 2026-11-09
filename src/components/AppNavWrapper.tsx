@@ -1,12 +1,18 @@
 import { auth, signOut } from "@/lib/auth";
 import { getNombreAlertesUrgentes } from "@/lib/alertes/data";
+import { getNombreImpayesMoisActuel } from "@/lib/loyers/data";
 import { AppNav } from "./AppNav";
 
 export async function AppNavWrapper() {
   const session = await auth();
   let nombreUrgentes = 0;
+  let nombreImpayesMois = 0;
   if (session?.user?.id) {
-    nombreUrgentes = await getNombreAlertesUrgentes(parseInt(session.user.id));
+    const userId = parseInt(session.user.id);
+    [nombreUrgentes, nombreImpayesMois] = await Promise.all([
+      getNombreAlertesUrgentes(userId),
+      getNombreImpayesMoisActuel(userId),
+    ]);
   }
 
   const signOutForm = (
@@ -29,6 +35,7 @@ export async function AppNavWrapper() {
   return (
     <AppNav
       nombreUrgentes={nombreUrgentes}
+      nombreImpayesMois={nombreImpayesMois}
       userEmail={session?.user?.email ?? ""}
       signOutForm={signOutForm}
     />

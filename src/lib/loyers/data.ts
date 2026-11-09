@@ -57,6 +57,19 @@ export interface LoyersFiltres {
   statut: StatutPaiement | null;
 }
 
+export async function getNombreImpayesMoisActuel(userId: number): Promise<number> {
+  const aujourd = new Date();
+  const mois = aujourd.getMonth() + 1;
+  const annee = aujourd.getFullYear();
+  return prisma.location.count({
+    where: {
+      statut: "actif",
+      box: { bien: { utilisateurId: userId } },
+      paiements: { none: { mois, annee } },
+    },
+  });
+}
+
 export async function getLoyersPageData(filtres: LoyersFiltres, userId: number): Promise<LoyersPageData> {
   const [biens, locationsActives, bornesAnnees] = await Promise.all([
     prisma.bien.findMany({
