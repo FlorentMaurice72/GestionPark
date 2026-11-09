@@ -6,9 +6,34 @@ import type Stripe from "stripe";
 export const runtime = "nodejs";
 
 // Webhook Stripe — événements traités :
-//   checkout.session.completed       → abonnement créé après paiement
+//   checkout.session.completed       → abonnement créé + crédit parrainage parrain
 //   customer.subscription.updated    → changement de statut
 //   customer.subscription.deleted    → résiliation
+
+async function crediterParrain(filleulAdminId: number): Promise<void> {
+  const filleul = await prisma.admin.findUnique({
+    where: { id: filleulAdminId },
+    select: { referredById: true },
+  });
+  if (!filleul?.referredById) return;
+
+  const parrain = await prisma.admin.findUnique({
+    where: { id: filleul.referredById },
+    select: { stripeSubscriptionId: true, stripeCustomerId: true },
+  });
+  if (!parrain?.stripeSubscriptionId) return;
+
+  // Crée un coupon 100 % pendant 1 mois et l'applique à l'abonnement du parrain.
+  const coupon = await stripe.coupons.create({
+    percent_off: 100,
+    duration: "once",
+    name: "1 mois offert — parrainage",
+    max_redemptions: 1,
+  });
+  await stripe.subscriptions.update(parrain.stripeSubscriptionId, {
+    discounts: [{ coupon: coupon.id }],
+  });
+}
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
@@ -33,8 +58,9 @@ export async function POST(req: NextRequest) {
 
       const plan = sub.metadata?.plan ?? "essentiel";
       const periodEnd = (sub as unknown as { current_period_end?: number }).current_period_end;
+      const numericAdminId = parseInt(adminId);
       await prisma.admin.update({
-        where: { id: parseInt(adminId) },
+        where: { id: numericAdminId },
         data: {
           stripeSubscriptionId: sub.id,
           subscriptionStatus: sub.status,
@@ -42,6 +68,8 @@ export async function POST(req: NextRequest) {
           subscriptionCurrentPeriodEnd: periodEnd ? new Date(periodEnd * 1000) : null,
         },
       });
+      // Crédite le parrain si le filleul vient de souscrire.
+      await crediterParrain(numericAdminId).catch(() => {});
       break;
     }
 
