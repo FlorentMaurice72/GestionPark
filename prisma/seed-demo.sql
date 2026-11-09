@@ -118,16 +118,16 @@ BEGIN
 
     -- Mois en cours : 6/8 ont payé (impayés visibles)
     IF i <= 6 THEN
-      INSERT INTO paiements (location_id, mois, annee, montant, source)
-      VALUES (v_location_id, v_mois, v_annee, loyers[i], 'import_csv');
+      INSERT INTO paiements (location_id, mois, annee, montant, date_paiement, mode, source)
+      VALUES (v_location_id, v_mois, v_annee, loyers[i], CURRENT_DATE, 'virement', 'import_csv');
     END IF;
 
     -- Mois précédents : tous ont payé
-    INSERT INTO paiements (location_id, mois, annee, montant, source) VALUES (v_location_id, mois_m1, annee_m1, loyers[i], 'import_csv');
-    INSERT INTO paiements (location_id, mois, annee, montant, source) VALUES (v_location_id, mois_m2, annee_m2, loyers[i], 'import_csv');
-    INSERT INTO paiements (location_id, mois, annee, montant, source) VALUES (v_location_id, mois_m3, annee_m3, loyers[i], 'import_csv');
-    INSERT INTO paiements (location_id, mois, annee, montant, source) VALUES (v_location_id, mois_m4, annee_m4, loyers[i], 'import_csv');
-    INSERT INTO paiements (location_id, mois, annee, montant, source) VALUES (v_location_id, mois_m5, annee_m5, loyers[i], 'import_csv');
+    INSERT INTO paiements (location_id, mois, annee, montant, date_paiement, mode, source) VALUES (v_location_id, mois_m1, annee_m1, loyers[i], (CURRENT_DATE - INTERVAL '1 month')::DATE, 'virement', 'import_csv');
+    INSERT INTO paiements (location_id, mois, annee, montant, date_paiement, mode, source) VALUES (v_location_id, mois_m2, annee_m2, loyers[i], (CURRENT_DATE - INTERVAL '2 months')::DATE, 'virement', 'import_csv');
+    INSERT INTO paiements (location_id, mois, annee, montant, date_paiement, mode, source) VALUES (v_location_id, mois_m3, annee_m3, loyers[i], (CURRENT_DATE - INTERVAL '3 months')::DATE, 'virement', 'import_csv');
+    INSERT INTO paiements (location_id, mois, annee, montant, date_paiement, mode, source) VALUES (v_location_id, mois_m4, annee_m4, loyers[i], (CURRENT_DATE - INTERVAL '4 months')::DATE, 'virement', 'import_csv');
+    INSERT INTO paiements (location_id, mois, annee, montant, date_paiement, mode, source) VALUES (v_location_id, mois_m5, annee_m5, loyers[i], (CURRENT_DATE - INTERVAL '5 months')::DATE, 'virement', 'import_csv');
 
   END LOOP;
 
