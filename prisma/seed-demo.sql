@@ -24,6 +24,7 @@ DECLARE
     'emma.thomas@example.com','julien.petit@example.com','sophie.robert@example.com',
     'pierre.simon@example.com','clara.laurent@example.com'
   ];
+  adresses  TEXT[] := ARRAY['12 rue de la Paix','5 avenue Foch','8 rue du Général','3 place Bellecour','22 rue Molière','14 cours Gambetta','7 impasse des Lilas','18 rue Victor Hugo'];
   loyers    DECIMAL[] := ARRAY[120,135,150,165,140,155,130,145];
 
   mois_m1   INT;  annee_m1  INT;
@@ -96,8 +97,8 @@ BEGIN
 
   -- ── Locataires ───────────────────────────────────────────────
   FOR i IN 1..8 LOOP
-    INSERT INTO locataires (nom, prenom, email, telephone, statut, utilisateur_id)
-    VALUES (noms[i], prenoms[i], emails[i], '060' || i || '345678', 'actif', v_admin_id)
+    INSERT INTO locataires (nom, prenom, email, telephone, adresse, ville, code_postal, statut, utilisateur_id)
+    VALUES (noms[i], prenoms[i], emails[i], '060' || i || '345678', adresses[i], 'Lyon', '6900' || i, 'actif', v_admin_id)
     RETURNING id INTO v_lid;
     v_loc_ids := array_append(v_loc_ids, v_lid);
   END LOOP;
