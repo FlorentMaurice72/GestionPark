@@ -3,6 +3,7 @@ import { getBiensPageData } from "@/lib/biens/data";
 import { getLoyersPageData } from "@/lib/loyers/data";
 import { cleMois } from "@/lib/paiements";
 import { calculerHistorique12Mois, type PointHistorique } from "./calculs";
+import { getRentabiliteParBien, type RentabiliteItem } from "./rentabilite";
 
 export interface KPIOccupation {
   tauxOccupation: number | null;
@@ -38,6 +39,7 @@ export interface DashboardPageData {
   nombreNonIdentifiees: number;
   historique: PointHistorique[];
   notifications: Notification[];
+  rentabiliteParBien: RentabiliteItem[];
 }
 
 export async function getDashboardPageData(userId: number): Promise<DashboardPageData> {
@@ -45,7 +47,7 @@ export async function getDashboardPageData(userId: number): Promise<DashboardPag
   const mois = aujourdHui.getUTCMonth() + 1;
   const annee = aujourdHui.getUTCFullYear();
 
-  const [biens, loyersDuMois, kpiLocatairesActifs, dernierImportRow, nombreNonIdentifiees, toutesLesLocations, paiementsAnnee] =
+  const [biens, loyersDuMois, kpiLocatairesActifs, dernierImportRow, nombreNonIdentifiees, toutesLesLocations, paiementsAnnee, rentabiliteParBien] =
     await Promise.all([
       getBiensPageData(userId),
       getLoyersPageData({ bienId: null, mois, annee, locataireId: null, boxId: null, statut: null }, userId),
@@ -64,6 +66,7 @@ export async function getDashboardPageData(userId: number): Promise<DashboardPag
         where: { annee, location: { box: { bien: { utilisateurId: userId } } } },
         select: { locationId: true, mois: true, montant: true },
       }),
+      getRentabiliteParBien(userId),
     ]);
 
   const boxesLoues = biens.reduce((acc, b) => acc + b.nombreBoxesLoues, 0);
@@ -146,5 +149,6 @@ export async function getDashboardPageData(userId: number): Promise<DashboardPag
     nombreNonIdentifiees,
     historique,
     notifications,
+    rentabiliteParBien,
   };
 }

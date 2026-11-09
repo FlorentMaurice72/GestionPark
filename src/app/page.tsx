@@ -10,6 +10,7 @@ import { ImportTimeline } from "./_components/ImportTimeline";
 import { ActionsUrgentes } from "./_components/ActionsUrgentes";
 import { GraphiqueLoyers12Mois } from "./_components/GraphiqueLoyers12Mois";
 import { GraphiqueTauxOccupation } from "./_components/GraphiqueTauxOccupation";
+import { RentabiliteParBien } from "./_components/RentabiliteParBien";
 import { AccesRapides } from "./_components/AccesRapides";
 import { OnboardingGuide } from "./_components/OnboardingGuide";
 import { ProchainesEcheances } from "./_components/ProchainesEcheances";
@@ -115,6 +116,8 @@ export default async function DashboardPage() {
         <ProchainesEcheances echeances={prochainesEcheances} />
 
         <GraphiqueLoyers12Mois points={data.historique} annee={data.annee} />
+
+        <RentabiliteParBien biens={data.rentabiliteParBien} />
 
         <GraphiqueTauxOccupation
           points={data.historique}
