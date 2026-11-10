@@ -134,7 +134,7 @@ export default async function LocataireDetailPage({ params }: { params: Promise<
                 />
                 {loc.dateRevisionIRL && (
                   <KPITile
-                    label="Révision IRL"
+                    label={`Révision ${loc.indiceRevision ?? "ICC"}`}
                     valeur={formaterDate(loc.dateRevisionIRL)}
                     sous="Date de révision du loyer"
                   />

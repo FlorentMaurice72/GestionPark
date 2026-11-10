@@ -148,8 +148,16 @@ export function NouveauLocataireForm({ boxesVacants }: { boxesVacants: BoxVacant
             <input name="depotGarantie" type="number" step="0.01" min="0" required className={champClasses} />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-neutral-500">Date de révision IRL (optionnel)</label>
+            <label className="mb-1 block text-xs font-medium text-neutral-500">Date de révision (optionnel)</label>
             <input name="dateRevisionIRL" type="date" className={champClasses} />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-neutral-500">Indice de révision</label>
+            <select name="indiceRevision" defaultValue="ICC" className={champClasses}>
+              <option value="ICC">ICC — Boxes / commercial</option>
+              <option value="IRL">IRL — Logement</option>
+              <option value="fixe">Fixe — Sans révision</option>
+            </select>
           </div>
         </div>
         {selectedBoxIds.length > 1 && (

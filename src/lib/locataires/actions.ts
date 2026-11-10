@@ -58,6 +58,8 @@ export async function creerLocataire(_prevState: ActionState, formData: FormData
     const v = formData.get("dateRevisionIRL");
     return typeof v === "string" && v ? new Date(v) : null;
   })();
+  const indiceRevisionRaw = String(formData.get("indiceRevision") ?? "ICC").trim();
+  const indiceRevision = ["IRL", "ICC", "fixe"].includes(indiceRevisionRaw) ? indiceRevisionRaw : "ICC";
   const locationData = {
     dateEntree: new Date(dateEntree),
     loyerActuel,
@@ -70,6 +72,7 @@ export async function creerLocataire(_prevState: ActionState, formData: FormData
     avisLoyerAuto: bool("avisLoyerAuto", true),
     quittanceAuto: bool("quittanceAuto", true),
     dateRevisionIRL,
+    indiceRevision,
   };
 
   const locataire = await prisma.$transaction(async (tx) => {

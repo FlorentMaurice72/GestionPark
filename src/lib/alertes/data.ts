@@ -95,7 +95,7 @@ export async function getAlertesData(userId: number): Promise<{
         const nom = `${loc.locataire.prenom} ${loc.locataire.nom}`;
         items.push({
           id: `system-irl-${loc.id}`,
-          titre: `Révision IRL — ${nom}`,
+          titre: `Révision ${loc.indiceRevision ?? "ICC"} — ${nom}`,
           description: `${loc.box.bien.nom} · Box ${loc.box.numero} · révision le ${rev.toLocaleDateString("fr-FR")}`,
           dateEcheance: rev,
           statut: rev <= aujourd ? "due" : "a_venir",

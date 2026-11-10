@@ -16,6 +16,7 @@ export async function GET(req: Request) {
     where: {
       statut: "actif",
       dateRevisionIRL: { gte: dans29Jours, lte: dans31Jours },
+      indiceRevision: { not: "fixe" },
     },
     include: {
       locataire: { select: { nom: true, prenom: true, email: true } },
@@ -42,6 +43,7 @@ export async function GET(req: Request) {
         dateRevision: loc.dateRevisionIRL!,
         loyerActuel: loc.loyerActuel.toNumber(),
         bailleurNom: loc.box.bien.admin.nomBailleur ?? null,
+        indiceRevision: loc.indiceRevision,
       });
       envoyes++;
     } catch {

@@ -119,6 +119,8 @@ model Location {
   statut         String    @default("actif")
   dateFin        DateTime? @map("date_fin") @db.Date
   dateRevisionIRL DateTime? @map("date_revision_irl") @db.Date
+  // "IRL" (logement) | "ICC" (commercial/box) | "fixe" (sans révision)
+  indiceRevision  String    @default("ICC") @map("indice_revision")
   createdAt      DateTime  @default(now()) @map("created_at")
   // Libellés de référence configurés manuellement pour le matching à l'import CSV.
   // Prisma n'autorise pas les listes scalaires optionnelles : un tableau vide

@@ -239,6 +239,7 @@ export async function envoyerEmailRevisionIRL(
     dateRevision: Date;
     loyerActuel: number;
     bailleurNom?: string | null;
+    indiceRevision?: string;
   }
 ): Promise<void> {
   if (isDemoAddress(destinataire)) return;
@@ -246,10 +247,15 @@ export async function envoyerEmailRevisionIRL(
   const resend = new Resend(process.env.RESEND_API_KEY);
   const dateLabel = new Date(opts.dateRevision).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
   const loyerLabel = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(opts.loyerActuel);
+  const indiceLabel = opts.indiceRevision === "IRL"
+    ? "l'Indice de Référence des Loyers (IRL)"
+    : opts.indiceRevision === "fixe"
+    ? "un loyer fixe (sans indexation)"
+    : "l'Indice du Coût de la Construction (ICC)";
   const subject = `Révision de votre loyer — ${dateLabel}`;
   const html = `
     <p>Bonjour ${opts.locatairePrenom} ${opts.locataireNom},</p>
-    <p>Nous vous informons que votre loyer pour le box <strong>${opts.boxNumero}</strong> (${opts.bienNom}) fera l'objet d'une révision annuelle à compter du <strong>${dateLabel}</strong>, conformément à l'Indice de Référence des Loyers (IRL).</p>
+    <p>Nous vous informons que votre loyer pour le box <strong>${opts.boxNumero}</strong> (${opts.bienNom}) fera l'objet d'une révision annuelle à compter du <strong>${dateLabel}</strong>, conformément à ${indiceLabel}.</p>
     <p>Votre loyer actuel est de <strong>${loyerLabel}/mois</strong>.</p>
     <p>Vous recevrez prochainement le détail du montant révisé.</p>
     <br>

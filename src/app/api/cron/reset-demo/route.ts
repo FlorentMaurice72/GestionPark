@@ -116,37 +116,32 @@ export async function GET(req: Request) {
       },
     });
 
-    // Mois en cours : 6/8 ont payé
-    if (i < 6) {
-      await prisma.paiement.create({
-        data: {
-          locationId: location.id,
-          mois: moisActuel,
-          annee: anneeActuelle,
-          montant: loyer,
-          datePaiement: new Date(),
-          mode: "virement",
-          source: "import_csv",
-        },
-      });
-    }
-
-    // 5 mois précédents : tous payés
-    for (let n = 1; n <= 5; n++) {
-      const { mois, annee } = moisPrecedent(moisActuel, anneeActuelle, n);
-      const datePaie = new Date(maintenant);
-      datePaie.setMonth(datePaie.getMonth() - n);
-      await prisma.paiement.create({
-        data: {
-          locationId: location.id,
-          mois,
-          annee,
-          montant: loyer,
-          datePaiement: datePaie,
-          mode: "virement",
-          source: "import_csv",
-        },
-      });
+    // Tous les mois depuis la date d'entrée jusqu'au mois en cours inclus.
+    // i=6 : impayé les 2 derniers mois   i=7 : impayé le mois en cours seulement.
+    let m = dateEntree.getUTCMonth() + 1;
+    let a = dateEntree.getUTCFullYear();
+    while (a < anneeActuelle || (a === anneeActuelle && m <= moisActuel)) {
+      const isCurrent = m === moisActuel && a === anneeActuelle;
+      const isPrevious = m === moisActuel - 1 && a === anneeActuelle || (moisActuel === 1 && m === 12 && a === anneeActuelle - 1);
+      const skip = (i === 6 && (isCurrent || isPrevious)) || (i === 7 && isCurrent);
+      if (!skip) {
+        const monthsBack = (anneeActuelle - a) * 12 + (moisActuel - m);
+        const datePaie = new Date(maintenant);
+        datePaie.setMonth(datePaie.getMonth() - monthsBack);
+        await prisma.paiement.create({
+          data: {
+            locationId: location.id,
+            mois: m,
+            annee: a,
+            montant: loyer,
+            datePaiement: datePaie,
+            mode: "virement",
+            source: "import_csv",
+          },
+        });
+      }
+      m++;
+      if (m > 12) { m = 1; a++; }
     }
   }
 

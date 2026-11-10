@@ -72,7 +72,7 @@ const COMPARAISON: { categorie: string; items: { label: string; essentiel: Valeu
       { label: "Fiches locataires complètes", essentiel: true, pro: true },
       { label: "Quittances PDF automatiques", essentiel: true, pro: true },
       { label: "Envoi email des quittances", essentiel: true, pro: true },
-      { label: "Révision IRL automatique", essentiel: true, pro: true },
+      { label: "Révision loyer automatique (IRL / ICC)", essentiel: true, pro: true },
       { label: "Historique complet des locations", essentiel: true, pro: true },
       { label: "Stockage de documents (baux, pièces)", essentiel: true, pro: true },
     ],
