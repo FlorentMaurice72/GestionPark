@@ -17,12 +17,6 @@ const ADRESSES = [
 ];
 const LOYERS = [120, 135, 150, 165, 140, 155, 130, 145];
 
-function moisPrecedent(mois: number, annee: number, n: number): { mois: number; annee: number } {
-  let m = mois - n;
-  let a = annee;
-  while (m <= 0) { m += 12; a--; }
-  return { mois: m, annee: a };
-}
 
 export async function GET(req: Request) {
   if (req.headers.get("authorization") !== `Bearer ${process.env.CRON_SECRET}`) {
