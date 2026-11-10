@@ -209,8 +209,8 @@ function UserMenu({
               type="button"
               onClick={() => {
                 setOpen(false);
-                if (typeof window !== "undefined" && (window as any).$crisp) {
-                  (window as any).$crisp.push(["do", "chat:open"]);
+                if (typeof window !== "undefined" && (window as { $crisp?: { push: (a: unknown[]) => void } }).$crisp) {
+                  (window as { $crisp?: { push: (a: unknown[]) => void } }).$crisp!.push(["do", "chat:open"]);
                 }
               }}
               className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50 dark:text-neutral-300 dark:hover:bg-neutral-800"

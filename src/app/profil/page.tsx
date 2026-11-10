@@ -66,8 +66,9 @@ export default async function ProfilPage({
 
   const { onglet = "compte" } = await searchParams;
 
+  const now = new Date();
   const joursEssaiRestants = admin.trialEndsAt
-    ? Math.max(0, Math.ceil((new Date(admin.trialEndsAt).getTime() - Date.now()) / 86400000))
+    ? Math.max(0, Math.ceil((new Date(admin.trialEndsAt).getTime() - now.getTime()) / 86400000))
     : null;
 
   return (

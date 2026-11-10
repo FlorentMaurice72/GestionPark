@@ -34,7 +34,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     );
   }
 
-  const ext = fichier.name.split(".").pop() ?? "bin";
   const timestamp = Date.now();
   const nomNettoye = fichier.name
     .replace(/[^a-zA-Z0-9._-]/g, "_")

@@ -17,7 +17,7 @@ export const stripe = new Proxy({} as Stripe, {
   get(_target, prop, receiver) {
     const instance = getInstance();
     const value = Reflect.get(instance, prop, receiver);
-    return typeof value === "function" ? (value as Function).bind(instance) : value;
+    return typeof value === "function" ? (value as (...args: unknown[]) => unknown).bind(instance) : value;
   },
 });
 
