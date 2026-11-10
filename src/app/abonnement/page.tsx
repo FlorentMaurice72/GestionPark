@@ -51,22 +51,34 @@ export default function AbonnementPage() {
 
   async function lancerCheckout() {
     setLoading("checkout");
-    const res = await fetch("/api/stripe/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ plan, periode }),
-    });
-    const data = await res.json();
-    if (data.url) window.location.href = data.url;
-    else { setMsg("Erreur lors de la création de la session."); setLoading(null); }
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan, periode }),
+      });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+      else setMsg(data.error ?? "Erreur lors de la création de la session.");
+    } catch {
+      setMsg("Erreur réseau. Veuillez réessayer.");
+    } finally {
+      setLoading(null);
+    }
   }
 
   async function ouvrirPortail() {
     setLoading("portal");
-    const res = await fetch("/api/stripe/portal", { method: "POST" });
-    const data = await res.json();
-    if (data.url) window.location.href = data.url;
-    else { setMsg("Aucun abonnement actif."); setLoading(null); }
+    try {
+      const res = await fetch("/api/stripe/portal", { method: "POST" });
+      const data = await res.json();
+      if (data.url) window.location.href = data.url;
+      else setMsg(data.error ?? "Aucun abonnement actif.");
+    } catch {
+      setMsg("Erreur réseau. Veuillez réessayer.");
+    } finally {
+      setLoading(null);
+    }
   }
 
   const infoPlan = PLANS[plan];

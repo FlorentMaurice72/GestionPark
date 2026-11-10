@@ -50,7 +50,14 @@ async function inscrire(formData: FormData) {
     }
 
     await prisma.admin.create({
-      data: { email, passwordHash, trialEndsAt, referralCode, ...(referredById ? { referredById } : {}) },
+      data: {
+        email,
+        passwordHash,
+        trialEndsAt,
+        subscriptionStatus: "trialing",
+        referralCode,
+        ...(referredById ? { referredById } : {}),
+      },
     });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
