@@ -141,6 +141,17 @@ export default async function LocataireDetailPage({ params }: { params: Promise<
                 )}
               </div>
 
+              {/* Télécharger le bail */}
+              <div className="flex justify-end">
+                <a
+                  href={`/api/bail/${loc.id}`}
+                  download
+                  className="inline-flex items-center gap-1.5 rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
+                >
+                  <span>↓</span> Télécharger le bail
+                </a>
+              </div>
+
               {/* Grille mensuelle */}
               <EtatLoyerMensuel paiementsParMois={loc.paiementsParMois} loyerActuel={loc.loyerActuel} />
 
