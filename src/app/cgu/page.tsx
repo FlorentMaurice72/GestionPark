@@ -15,7 +15,7 @@ export default function CguPage() {
       <h1 className="mb-2 text-2xl font-bold text-neutral-900 dark:text-neutral-100">
         Conditions Générales d&apos;Utilisation et de Vente
       </h1>
-      <p className="mb-8 text-xs text-neutral-400">En vigueur depuis le 1er janvier 2025</p>
+      <p className="mb-8 text-xs text-neutral-400">En vigueur depuis le 1er novembre 2026</p>
 
       <div className="space-y-8 text-sm text-neutral-700 dark:text-neutral-300">
 
@@ -23,8 +23,8 @@ export default function CguPage() {
           <h2 className="mb-3 text-base font-semibold text-neutral-900 dark:text-neutral-100">1. Objet</h2>
           <p>
             Les présentes Conditions Générales d&apos;Utilisation et de Vente (CGU/CGV) régissent l&apos;accès et
-            l&apos;utilisation du service GestionPark (ci-après « le Service »), logiciel SaaS de gestion locative
-            de boxs de stockage, édité par Florent Maurice (ci-après « l&apos;Éditeur »).
+            l&apos;utilisation du service GestionPark (ci-après « le Service »), application SaaS de gestion locative
+            de boxs de stockage, éditée par Florent Maurice (ci-après « l&apos;Éditeur »).
           </p>
           <p className="mt-2">
             L&apos;utilisation du Service implique l&apos;acceptation pleine et entière des présentes CGU/CGV.
@@ -34,7 +34,7 @@ export default function CguPage() {
         <section>
           <h2 className="mb-3 text-base font-semibold text-neutral-900 dark:text-neutral-100">2. Description du service</h2>
           <p>
-            GestionPark est un logiciel accessible via navigateur web, conçu pour aider les propriétaires de boxs
+            GestionPark est une application accessible via navigateur web, conçue pour aider les propriétaires de boxs
             de stockage à gérer leurs locations, paiements, locataires et documents. Le Service comprend notamment :
           </p>
           <ul className="mt-2 list-disc space-y-1 pl-5">

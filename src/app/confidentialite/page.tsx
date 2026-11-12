@@ -15,7 +15,7 @@ export default function ConfidentialitePage() {
       <h1 className="mb-2 text-2xl font-bold text-neutral-900 dark:text-neutral-100">
         Politique de confidentialité
       </h1>
-      <p className="mb-8 text-xs text-neutral-400">Dernière mise à jour : janvier 2025</p>
+      <p className="mb-8 text-xs text-neutral-400">Dernière mise à jour : novembre 2026</p>
 
       <div className="space-y-8 text-sm text-neutral-700 dark:text-neutral-300">
 

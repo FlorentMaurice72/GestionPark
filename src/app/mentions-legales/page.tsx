@@ -13,7 +13,7 @@ export default function MentionsLegalesPage() {
       </p>
 
       <h1 className="mb-2 text-2xl font-bold text-neutral-900 dark:text-neutral-100">Mentions légales</h1>
-      <p className="mb-8 text-xs text-neutral-400">Dernière mise à jour : novembre 2025</p>
+      <p className="mb-8 text-xs text-neutral-400">Dernière mise à jour : novembre 2026</p>
 
       <div className="space-y-8 text-sm text-neutral-700 dark:text-neutral-300">
 
@@ -22,7 +22,8 @@ export default function MentionsLegalesPage() {
           <p>
             <strong>Nom :</strong> Florent Maurice<br />
             <strong>Statut juridique :</strong> Entrepreneur individuel<br />
-            <strong>SIRET :</strong> En cours d&apos;immatriculation<br />
+            <strong>SIRET :</strong> [À compléter à l&apos;obtention]<br />
+            <strong>Adresse :</strong> [À compléter]<br />
             <strong>Email :</strong> contact@gestionpark.fr
           </p>
         </section>
