@@ -95,6 +95,8 @@ export function BailDocument(props: BailProps) {
   const indiceLabel = INDICE_LABELS[indiceRevision] ?? indiceRevision;
   const termeLabel = TERME_LABELS[termeLoyerType] ?? termeLoyerType;
   const moyenLabel = MOYEN_LABELS[moyenPaiement] ?? moyenPaiement;
+  const estProfessionnel = !!(locataireSociete);
+  const regimeLabel = estProfessionnel ? "BAIL PROFESSIONNEL" : "CONTRAT DE LOCATION";
   const locataireIdentite = locataireSociete
     ? `${locatairePrenom} ${locataireNom} (${locataireSociete})`
     : `${locatairePrenom} ${locataireNom}`;
@@ -104,7 +106,7 @@ export function BailDocument(props: BailProps) {
       <Page size="A4" style={s.page}>
 
         {/* En-tête */}
-        <Text style={s.titre}>CONTRAT DE LOCATION — {typeBailLabel.toUpperCase()}</Text>
+        <Text style={s.titre}>{regimeLabel} — {typeBailLabel.toUpperCase()}</Text>
         <Text style={s.sousTitre}>
           {bienNom} · Box {boxNumero} · Prise d&apos;effet le {fmtDate(dateEntree)}
         </Text>
