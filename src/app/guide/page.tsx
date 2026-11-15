@@ -20,7 +20,7 @@ const ETAPES = [
     details: [
       "Nom du bien (ex. : « Entrepôt Nord »)",
       "Adresse complète",
-      "Nombre de boxes et superficie",
+      "Nombre de boxs et superficie",
       "Charges annuelles : taxe foncière, assurance, emprunt",
     ],
   },
@@ -29,7 +29,7 @@ const ETAPES = [
     couleur: "#0097A7",
     titre: "Créez vos locataires",
     description:
-      "Pour chaque locataire, saisissez ses coordonnées, le ou les boxes occupés et le loyer mensuel.",
+      "Pour chaque locataire, saisissez ses coordonnées, le ou les boxs occupés et le loyer mensuel.",
     lien: "/locataires/nouveau",
     action: "Ajouter un locataire",
     details: [
@@ -88,7 +88,7 @@ export default async function GuidePage() {
             Guide de démarrage
           </h1>
           <p className="text-neutral-500 dark:text-neutral-400">
-            Configurez GestionPark en <strong className="text-neutral-900 dark:text-neutral-100">3 étapes</strong> et commencez à gérer vos boxes en libre-service.
+            Configurez GestionPark en <strong className="text-neutral-900 dark:text-neutral-100">3 étapes</strong> et commencez à gérer vos boxs en libre-service.
           </p>
         </div>
 

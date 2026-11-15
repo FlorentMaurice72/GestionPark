@@ -187,7 +187,7 @@ export function LandingPage() {
               <div className="flex-1 overflow-hidden p-4 sm:p-5" style={{ background: "#f8fafc" }}>
                 <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
                   {[
-                    { label: "Taux d'occupation", val: "88 %", sub: "14 / 16 boxes", color: "#0047AB" },
+                    { label: "Taux d'occupation", val: "88 %", sub: "14 / 16 boxs", color: "#0047AB" },
                     { label: "Loyers encaissés", val: "7 240 €", sub: "ce mois", color: "#0097A7" },
                     { label: "Impayés", val: "2", sub: "à relancer", color: "#EF4444" },
                     { label: "Locataires actifs", val: "14", sub: "en cours", color: "#0F2C59" },
@@ -251,7 +251,7 @@ export function LandingPage() {
               {
                 icon: "✦",
                 titre: "Révision de loyer (IRL / ICC)",
-                desc: "GestionPark suit les dates de révision de chaque bail — IRL pour les logements, ICC pour les boxes commerciaux — et envoie un rappel automatique 30 jours avant l'échéance.",
+                desc: "GestionPark suit les dates de révision de chaque bail — IRL pour les logements, ICC pour les boxs commerciaux — et envoie un rappel automatique 30 jours avant l'échéance.",
               },
               {
                 icon: "◑",

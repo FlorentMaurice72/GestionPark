@@ -15,7 +15,7 @@ function today(): string {
 type TypeBien = "boxes" | "garages" | "entrepot" | "autre";
 
 const TYPES_BIEN: { id: TypeBien; label: string; desc: string; icon: string }[] = [
-  { id: "boxes", label: "Boxes de stockage", desc: "Unités de self-stockage individuelles", icon: "⊞" },
+  { id: "boxes", label: "Boxs de stockage", desc: "Unités de self-stockage individuelles", icon: "⊞" },
   { id: "garages", label: "Garages", desc: "Garages individuels ou boxes voitures", icon: "⊡" },
   { id: "entrepot", label: "Entrepôt", desc: "Grand espace de stockage commercial", icon: "◫" },
   { id: "autre", label: "Autre", desc: "Tout autre type de bien locatif", icon: "◻" },
@@ -33,7 +33,6 @@ interface Champs {
   dateDebutEmprunt: string;
   dureeEmprunt: string;
   valeurEstimee: string;
-  prefixeBox: string;
   numeroDebut: string;
   nombreBoxes: string;
   suffixeBox: string;
@@ -52,14 +51,13 @@ const INITIAL: Champs = {
   dateDebutEmprunt: today(),
   dureeEmprunt: "0",
   valeurEstimee: "",
-  prefixeBox: "",
   numeroDebut: "1",
   nombreBoxes: "",
   suffixeBox: "",
   superficieBox: "",
 };
 
-const ETAPES = ["Type de bien", "Adresse", "Finances", "Boxes"];
+const ETAPES_BASE = ["Type de bien", "Adresse", "Finances"] as const;
 
 export function NouveauBienWizard() {
   const [etape, setEtape] = useState(0);
@@ -67,6 +65,11 @@ export function NouveauBienWizard() {
   const [erreur, setErreur] = useState<string | null>(null);
   const [enCours, setEnCours] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
+
+  const derniereEtapeLabel = champs.typeBien === "boxes" ? "Boxs" :
+    champs.typeBien === "garages" ? "Garages" :
+    champs.typeBien === "entrepot" ? "Espaces" : "Unités";
+  const ETAPES = [...ETAPES_BASE, derniereEtapeLabel];
 
   function maj(champ: keyof Champs, valeur: string) {
     setChamps((prev) => ({ ...prev, [champ]: valeur }));
@@ -94,7 +97,7 @@ export function NouveauBienWizard() {
     }
     if (etape === 3) {
       if (!champs.nombreBoxes || Number(champs.nombreBoxes) < 1) {
-        setErreur("Nombre de boxes requis.");
+        setErreur(champs.typeBien === "boxes" ? "Nombre de boxs requis." : "Nombre d'unités requis.");
         return false;
       }
       if (!champs.superficieBox || Number(champs.superficieBox) <= 0) {
@@ -133,7 +136,7 @@ export function NouveauBienWizard() {
     if (!n || n < 1) return null;
     const nums = [];
     for (let i = 0; i < Math.min(n, 4); i++) {
-      nums.push(`${champs.prefixeBox}${debut + i}${champs.suffixeBox}`);
+      nums.push(`${debut + i}${champs.suffixeBox}`);
     }
     if (n > 4) nums.push("…");
     return nums.join(", ");
@@ -266,7 +269,7 @@ export function NouveauBienWizard() {
                 <input
                   type="number"
                   min="0"
-                  step="0.01"
+                  step="1000"
                   value={champs.montantEmprunt}
                   onChange={(e) => maj("montantEmprunt", e.target.value)}
                   className={champClasses}
@@ -277,7 +280,7 @@ export function NouveauBienWizard() {
                 <input
                   type="number"
                   min="0"
-                  step="0.01"
+                  step="100"
                   value={champs.mensualiteEmprunt}
                   onChange={(e) => maj("mensualiteEmprunt", e.target.value)}
                   className={champClasses}
@@ -334,22 +337,13 @@ export function NouveauBienWizard() {
           <div className="flex flex-col gap-5">
             <div>
               <p className="mb-1 text-base font-semibold text-neutral-900 dark:text-neutral-100">
-                Configuration des boxes
+                {champs.typeBien === "boxes" ? "Configuration des boxs" : "Configuration du bien"}
               </p>
               <p className="text-sm text-neutral-500">
-                Les numéros sont générés automatiquement : préfixe + numéro + suffixe.
+                Les unités sont numérotées automatiquement : numéro + suffixe optionnel.
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-              <div>
-                <label className={labelClasses}>Préfixe</label>
-                <input
-                  value={champs.prefixeBox}
-                  onChange={(e) => maj("prefixeBox", e.target.value)}
-                  placeholder="ex. A"
-                  className={champClasses}
-                />
-              </div>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
               <div>
                 <label className={labelClasses}>N° de départ</label>
                 <input
@@ -362,7 +356,10 @@ export function NouveauBienWizard() {
                 />
               </div>
               <div>
-                <label className={labelClasses}>Nombre de boxes</label>
+                <label className={labelClasses}>
+                  {champs.typeBien === "boxes" ? "Nombre de boxs" :
+                   champs.typeBien === "garages" ? "Nombre de garages" : "Nombre d'unités"}
+                </label>
                 <input
                   type="number"
                   min="1"
@@ -384,7 +381,9 @@ export function NouveauBienWizard() {
               </div>
             </div>
             <div className="max-w-xs">
-              <label className={labelClasses}>Superficie par box (m²)</label>
+              <label className={labelClasses}>
+                {champs.typeBien === "boxes" ? "Superficie par box (m²)" : "Superficie par unité (m²)"}
+              </label>
               <input
                 type="number"
                 min="0.01"

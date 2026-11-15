@@ -72,7 +72,7 @@ export function NouveauBienForm() {
 
       <fieldset className="rounded-lg border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
         <legend className="px-1 text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-          Boxes initiaux
+          Boxs initiaux
         </legend>
         <p className="mb-3 text-xs text-neutral-500">
           Numérotation séquentielle : préfixe + numéro + suffixe (ex. &quot;1&quot; à &quot;22&quot;, ou
@@ -85,7 +85,7 @@ export function NouveauBienForm() {
           <Champ label="Numéro de départ">
             <input name="numeroDebut" type="number" step="1" min="0" defaultValue={1} required className={champClasses} />
           </Champ>
-          <Champ label="Nombre de boxes">
+          <Champ label="Nombre de boxs">
             <input name="nombreBoxes" type="number" step="1" min="1" required className={champClasses} />
           </Champ>
           <Champ label="Suffixe (optionnel)">

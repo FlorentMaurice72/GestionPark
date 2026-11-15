@@ -58,7 +58,7 @@ export default async function BienDetailPage({ params }: { params: Promise<{ id:
 
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-            Boxes ({bien.boxes.length})
+            Boxs ({bien.boxes.length})
           </h2>
           <AjouterBoxesModal bienId={bien.id} />
         </div>

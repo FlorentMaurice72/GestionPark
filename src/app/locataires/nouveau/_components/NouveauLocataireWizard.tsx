@@ -72,7 +72,7 @@ const ETAPES = ["Bail", "Locataire", "Location", "Loyer", "Automatisation"];
 const TYPES_BAIL = [
   { id: "bail_box", label: "Box de stockage" },
   { id: "bail_garage", label: "Garage" },
-  { id: "bail_commercial", label: "Commercial" },
+  { id: "bail_entrepot", label: "Entrepôt" },
   { id: "autre", label: "Autre" },
 ];
 
@@ -310,7 +310,7 @@ export function NouveauLocataireWizard({ boxesVacants }: { boxesVacants: BoxVaca
             <h2 className="text-base font-semibold text-neutral-900 dark:text-neutral-100">Choix du box</h2>
             {boxesVacants.length === 0 ? (
               <p className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-300">
-                Aucun box vacant disponible. Ajoutez d&apos;abord un bien avec des boxes.
+                Aucun box vacant disponible. Ajoutez d&apos;abord un bien avec des boxs.
               </p>
             ) : (
               <div className="grid gap-2 sm:grid-cols-2">

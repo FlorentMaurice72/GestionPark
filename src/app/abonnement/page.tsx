@@ -24,7 +24,7 @@ const PLANS = {
     prixMensuel: 24.9,
     prixAnnuel: 249,
     features: [
-      "Boxes illimités",
+      "Boxs illimités",
       "Connexion bancaire DSP2",
       "Rapprochement automatique",
       "Relances automatiques",

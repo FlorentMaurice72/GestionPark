@@ -7,11 +7,11 @@ const PLANS = [
   {
     id: "essentiel",
     nom: "Essentiel",
-    desc: "L'essentiel pour gérer vos boxes au quotidien.",
+    desc: "L'essentiel pour gérer vos boxs au quotidien.",
     prixMensuel: 9.9,
     prixAnnuel: 99,
     features: [
-      "Jusqu'à 30 boxes",
+      "Jusqu'à 30 boxs",
       "Suivi des paiements",
       "Quittances automatiques",
       "Dossiers locataires",
@@ -27,7 +27,7 @@ const PLANS = [
     prixMensuel: 24.9,
     prixAnnuel: 249,
     features: [
-      "Boxes illimités",
+      "Boxs illimités",
       "Tout de l'Essentiel, plus :",
       "Connexion bancaire DSP2",
       "Rapprochement automatique",

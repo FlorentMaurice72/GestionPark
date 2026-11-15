@@ -35,7 +35,7 @@ export function NouveauLocataireForm({ boxesVacants }: { boxesVacants: BoxVacant
         ) : (
           <div className="flex flex-col gap-2">
             <p className="text-xs text-neutral-500">
-              Sélectionnez un ou plusieurs boxes à associer à ce locataire.
+              Sélectionnez un ou plusieurs boxs à associer à ce locataire.
             </p>
             <div className="flex flex-col gap-1.5">
               {boxesVacants.map((b) => (
@@ -154,7 +154,7 @@ export function NouveauLocataireForm({ boxesVacants }: { boxesVacants: BoxVacant
           <div>
             <label className="mb-1 block text-xs font-medium text-neutral-500">Indice de révision</label>
             <select name="indiceRevision" defaultValue="ICC" className={champClasses}>
-              <option value="ICC">ICC — Boxes / commercial</option>
+              <option value="ICC">ICC — Boxs / commercial</option>
               <option value="IRL">IRL — Logement</option>
               <option value="fixe">Fixe — Sans révision</option>
             </select>
@@ -162,7 +162,7 @@ export function NouveauLocataireForm({ boxesVacants }: { boxesVacants: BoxVacant
         </div>
         {selectedBoxIds.length > 1 && (
           <p className="mt-2 text-xs text-neutral-500">
-            Ce loyer sera appliqué à chacun des {selectedBoxIds.length} boxes sélectionnés. Modifiable individuellement sur la fiche locataire.
+            Ce loyer sera appliqué à chacun des {selectedBoxIds.length} boxs sélectionnés. Modifiable individuellement sur la fiche locataire.
           </p>
         )}
       </fieldset>

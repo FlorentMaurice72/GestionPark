@@ -47,6 +47,7 @@ const INDICE_LABELS: Record<string, string> = {
 const TYPE_BAIL_LABELS: Record<string, string> = {
   bail_box: "Box de stockage",
   bail_garage: "Garage",
+  bail_entrepot: "Entrepôt",
   bail_commercial: "Local commercial",
 };
 

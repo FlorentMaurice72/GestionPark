@@ -23,7 +23,7 @@ export function AjouterBoxesModal({ bienId }: { bienId: number }) {
         onClick={() => setOuvert(true)}
         className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
       >
-        Ajouter des boxes
+        Ajouter des boxs
       </button>
 
       {ouvert && (
@@ -36,10 +36,10 @@ export function AjouterBoxesModal({ bienId }: { bienId: number }) {
             className="w-full max-w-lg rounded-lg bg-white p-6 shadow-lg dark:bg-neutral-900"
           >
             <h2 className="mb-1 text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-              Ajouter des boxes
+              Ajouter des boxs
             </h2>
             <p className="mb-4 text-xs text-neutral-500">
-              Numérotation séquentielle : préfixe + numéro + suffixe.
+              Numérotation séquentielle : numéro + suffixe optionnel.
             </p>
 
             <form action={formAction} className="space-y-3">
@@ -47,22 +47,18 @@ export function AjouterBoxesModal({ bienId }: { bienId: number }) {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-neutral-500">Préfixe (optionnel)</label>
-                  <input name="prefixeBox" className={champClasses} />
+                  <label className="mb-1 block text-xs font-medium text-neutral-500">Numéro de départ</label>
+                  <input name="numeroDebut" type="number" step="1" min="0" defaultValue={1} required className={champClasses} />
+                </div>
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-neutral-500">Nombre de boxs</label>
+                  <input name="nombreBoxes" type="number" step="1" min="1" defaultValue={1} required className={champClasses} />
                 </div>
                 <div>
                   <label className="mb-1 block text-xs font-medium text-neutral-500">Suffixe (optionnel)</label>
                   <input name="suffixeBox" className={champClasses} />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-neutral-500">Numéro de départ</label>
-                  <input name="numeroDebut" type="number" step="1" min="0" defaultValue={1} required className={champClasses} />
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs font-medium text-neutral-500">Nombre de boxes</label>
-                  <input name="nombreBoxes" type="number" step="1" min="1" required className={champClasses} />
-                </div>
-                <div className="col-span-2">
                   <label className="mb-1 block text-xs font-medium text-neutral-500">Superficie par box (m²)</label>
                   <input name="superficieBox" type="number" step="0.01" min="0.01" required className={champClasses} />
                 </div>

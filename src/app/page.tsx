@@ -71,7 +71,7 @@ export default async function DashboardPage() {
           <KPICard
             label="Taux d'occupation"
             valeur={formaterPourcentage(data.kpiOccupation.tauxOccupation)}
-            sousLabel={`${data.kpiOccupation.boxesLoues} / ${data.kpiOccupation.boxesTotal} boxes loués`}
+            sousLabel={`${data.kpiOccupation.boxesLoues} / ${data.kpiOccupation.boxesTotal} boxs loués`}
             href="/biens"
             progress={data.kpiOccupation.tauxOccupation ?? 0}
           />

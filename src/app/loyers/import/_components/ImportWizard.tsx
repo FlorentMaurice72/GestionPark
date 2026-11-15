@@ -60,7 +60,9 @@ export function ImportWizard({ presets: presetsProp, locations }: Props) {
     (async () => {
       try {
         const buffer = await fichier.arrayBuffer();
-        const texte = new TextDecoder("iso-8859-1").decode(buffer);
+        const bytes = new Uint8Array(buffer);
+        const hasUtf8Bom = bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF;
+        const texte = new TextDecoder(hasUtf8Bom ? "utf-8" : "iso-8859-1").decode(buffer);
         const { transactions } = extraireTransactions(texte, preset);
         if (annule || transactions.length === 0) return;
 
@@ -105,7 +107,9 @@ export function ImportWizard({ presets: presetsProp, locations }: Props) {
         }
 
         const buffer = await fichier.arrayBuffer();
-        const texte = new TextDecoder("iso-8859-1").decode(buffer);
+        const bytes2 = new Uint8Array(buffer);
+        const hasBom2 = bytes2[0] === 0xEF && bytes2[1] === 0xBB && bytes2[2] === 0xBF;
+        const texte = new TextDecoder(hasBom2 ? "utf-8" : "iso-8859-1").decode(buffer);
         const { transactions, erreurs } = extraireTransactions(texte, preset);
 
         const lignesCalculees: LigneImport[] = transactions.map((transaction) => {

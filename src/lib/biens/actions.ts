@@ -29,7 +29,7 @@ function extraireParametresBoxes(formData: FormData): ParametresBoxesForm | { er
     return { error: "Numéro de départ invalide." };
   }
   if (!Number.isInteger(nombreBoxes) || nombreBoxes < 1) {
-    return { error: "Nombre de boxes invalide." };
+    return { error: "Nombre de boxs invalide." };
   }
   if (!Number.isFinite(superficie) || superficie <= 0) {
     return { error: "Superficie invalide." };
@@ -114,7 +114,7 @@ export async function creerBien(_prevState: ActionState, formData: FormData): Pr
     const totalBoxes = await prisma.box.count({ where: { bien: { utilisateurId: userId } } });
     const newBoxCount = parametresBoxes.numeros.length;
     if (totalBoxes + newBoxCount > 30) {
-      return { success: false, error: `Plan Essentiel limité à 30 boxes (vous en avez ${totalBoxes}, vous essayez d'en ajouter ${newBoxCount}). Passez au plan Pro pour des boxes illimitées.` };
+      return { success: false, error: `Plan Essentiel limité à 30 boxs (vous en avez ${totalBoxes}, vous essayez d'en ajouter ${newBoxCount}, soit ${totalBoxes + newBoxCount} au total). Passez au plan Pro pour des boxs illimitées.` };
     }
   }
 
@@ -175,7 +175,7 @@ export async function ajouterBoxes(_prevState: ActionState, formData: FormData):
     const totalBoxes = await prisma.box.count({ where: { bien: { utilisateurId: userId } } });
     const newBoxCount = parametresBoxes.numeros.length;
     if (totalBoxes + newBoxCount > 30) {
-      return { success: false, error: `Plan Essentiel limité à 30 boxes (vous en avez ${totalBoxes}, vous essayez d'en ajouter ${newBoxCount}). Passez au plan Pro pour des boxes illimitées.` };
+      return { success: false, error: `Plan Essentiel limité à 30 boxs (vous en avez ${totalBoxes}, vous essayez d'en ajouter ${newBoxCount}, soit ${totalBoxes + newBoxCount} au total). Passez au plan Pro pour des boxs illimitées.` };
     }
   }
 

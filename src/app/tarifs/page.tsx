@@ -48,7 +48,7 @@ const COMPARAISON: { categorie: string; items: { label: string; essentiel: Valeu
   {
     categorie: "Gestion des biens",
     items: [
-      { label: "Nombre de boxes", essentiel: "Jusqu'à 30", pro: "Illimité" },
+      { label: "Nombre de boxs", essentiel: "Jusqu'à 30", pro: "Illimité" },
       { label: "Multi-biens / multi-bâtiments", essentiel: true, pro: true },
       { label: "Tableau de bord et KPIs", essentiel: true, pro: true },
       { label: "Rentabilité par bien (loyers/charges)", essentiel: true, pro: true },
@@ -101,7 +101,7 @@ const FAQ_TARIFS = [
     r: "Non. Les 14 jours d'essai sont 100 % gratuits, sans carte bancaire requise. Vous ne serez prélevé qu'à la fin de la période d'essai, si vous choisissez de continuer.",
   },
   {
-    q: "Que se passe-t-il si je dépasse 30 boxes avec l'Essentiel ?",
+    q: "Que se passe-t-il si je dépasse 30 boxs avec l'Essentiel ?",
     r: "Vous recevrez une notification et pourrez passer au Pro en un clic depuis votre espace. Vos données sont conservées et aucune migration n'est nécessaire.",
   },
   {

@@ -144,7 +144,7 @@ export function GraphiqueTauxOccupation({
                 {MOIS_ABREGES[pt.mois - 1]} {annee}
               </p>
               <p className="text-neutral-700 dark:text-neutral-200">
-                {pt.locationsActivesCount} / {boxesTotal} boxes loués
+                {pt.locationsActivesCount} / {boxesTotal} boxs loués
               </p>
               <p style={{ color: couleurBarre(taux) }} className="font-semibold">
                 {Math.round(taux * 100)} % d&apos;occupation

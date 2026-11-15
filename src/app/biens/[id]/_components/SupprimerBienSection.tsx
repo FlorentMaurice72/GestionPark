@@ -25,7 +25,7 @@ export function SupprimerBienSection({ bienId, nom }: { bienId: number; nom: str
     <div className="rounded-lg border border-red-300 bg-red-50 p-4 dark:border-red-900 dark:bg-red-900/10">
       <h3 className="text-sm font-semibold text-red-800 dark:text-red-300">Supprimer « {nom} »</h3>
       <p className="mt-2 text-sm text-red-700 dark:text-red-400">
-        Action irréversible : tous les boxes, locations, paiements, relances et documents liés à ce bien seront
+        Action irréversible : tous les boxs, locations, paiements, relances et documents liés à ce bien seront
         définitivement supprimés. Les locataires actuellement installés seront archivés.
       </p>
       <a

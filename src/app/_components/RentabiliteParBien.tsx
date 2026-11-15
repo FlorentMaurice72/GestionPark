@@ -50,7 +50,7 @@ export function RentabiliteParBien({ biens }: Props) {
               <div className="mb-2">
                 <div className="mb-1 flex justify-between text-xs text-neutral-500">
                   <span>
-                    {b.boxesLoues}/{b.boxesTotal} boxes
+                    {b.boxesLoues}/{b.boxesTotal} boxs
                   </span>
                   <span>{Math.round(taux * 100)} %</span>
                 </div>

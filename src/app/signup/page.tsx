@@ -94,7 +94,7 @@ export default async function SignupPage({
           GestionPark — Créer un compte
         </h1>
         <p className="mb-6 text-sm text-neutral-500 dark:text-neutral-400">
-          Gérez vos boxes en libre-service.
+          Gérez vos boxs en libre-service.
         </p>
 
         {ref && (
