@@ -238,6 +238,46 @@ export function BailDocument(props: BailProps) {
           Ce document ne constitue pas un acte notarié. Faire relire par un professionnel du droit si nécessaire.
         </Text>
       </Page>
+
+      {/* Page 2 — Signatures (coordonnées stables pour la signature électronique Universign) */}
+      <Page size="A4" style={s.page}>
+        <Text style={s.titre}>PAGE DE SIGNATURES</Text>
+        <Text style={{ ...s.p, textAlign: "center", color: "#555", marginBottom: 30 }}>
+          En signant ce document, les parties reconnaissent avoir lu et accepté{"\n"}
+          l&apos;intégralité des clauses du présent bail.
+        </Text>
+
+        <View style={s.separator} />
+
+        <View style={{ flexDirection: "row", gap: 30, marginTop: 40 }}>
+          <View style={{ flex: 1, borderWidth: 1, borderColor: "#d0d0d0", borderRadius: 4, padding: 16 }}>
+            <Text style={{ ...s.partiLabel, marginBottom: 8 }}>LE BAILLEUR</Text>
+            <Text style={s.bold}>{bailleurNom || "—"}</Text>
+            {bailleurAdresse ? <Text style={{ ...s.p, color: "#555" }}>{bailleurAdresse}</Text> : null}
+            <Text style={{ ...s.p, color: "#555" }}>{bailleurEmail}</Text>
+            <View style={{ marginTop: 50, borderTopWidth: 1, borderTopColor: "#555", paddingTop: 8 }}>
+              <Text style={{ fontSize: 8, color: "#aaa" }}>Signature bailleur :</Text>
+            </View>
+          </View>
+          <View style={{ flex: 1, borderWidth: 1, borderColor: "#d0d0d0", borderRadius: 4, padding: 16 }}>
+            <Text style={{ ...s.partiLabel, marginBottom: 8 }}>LE LOCATAIRE</Text>
+            <Text style={s.bold}>{locataireIdentite}</Text>
+            <Text style={{ ...s.p, color: "#555" }}>{locataireAdresse}</Text>
+            <Text style={{ ...s.p, color: "#555" }}>{locataireCodePostal} {locataireVille}</Text>
+            <View style={{ marginTop: 50, borderTopWidth: 1, borderTopColor: "#555", paddingTop: 8 }}>
+              <Text style={{ fontSize: 8, color: "#aaa" }}>Signature locataire :</Text>
+            </View>
+          </View>
+        </View>
+
+        <Text style={{ ...s.p, marginTop: 40, fontSize: 9, color: "#777", textAlign: "center" }}>
+          Fait en deux exemplaires originaux — généré le {new Date().toLocaleDateString("fr-FR")}
+        </Text>
+
+        <Text style={s.footer}>
+          Document généré par GestionPark · {bienNom} · Box {boxNumero}
+        </Text>
+      </Page>
     </Document>
   );
 }

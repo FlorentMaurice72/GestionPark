@@ -9,6 +9,7 @@ import { ArchiverButton } from "./_components/ArchiverButton";
 import { AnonymiserSection } from "./_components/AnonymiserSection";
 import { EtatLoyerMensuel } from "./_components/EtatLoyerMensuel";
 import { AutomatisationToggles } from "./_components/AutomatisationToggles";
+import { BailSignatureSection } from "./_components/BailSignatureSection";
 
 const TERME_LABELS: Record<string, string> = {
   a_echoir: "À échoir (début de mois)",
@@ -142,15 +143,16 @@ export default async function LocataireDetailPage({ params }: { params: Promise<
                 )}
               </div>
 
-              {/* Télécharger le bail */}
+              {/* Bail — téléchargement et/ou signature électronique */}
               <div className="flex justify-end">
-                <a
-                  href={`/api/bail/${loc.id}`}
-                  download
-                  className="inline-flex items-center gap-1.5 rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
-                >
-                  <span>↓</span> Télécharger le bail
-                </a>
+                <BailSignatureSection
+                  locationId={loc.id}
+                  locataireEmail={locataire.email}
+                  bailleurEmail={session.user!.email!}
+                  statutSignature={loc.bailStatutSignature ?? null}
+                  bailSigneUrl={loc.bailSigneUrl ?? null}
+                  bailBrouillonUrl={`/api/bail/${loc.id}`}
+                />
               </div>
 
               {/* Grille mensuelle */}

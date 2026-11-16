@@ -134,6 +134,10 @@ model Location {
   relanceActive      Boolean   @default(true) @map("relance_active")
   avisLoyerAuto      Boolean   @default(true) @map("avis_loyer_auto")
   quittanceAuto      Boolean   @default(true) @map("quittance_auto")
+  // Signature électronique (Universign)
+  bailTransactionId   String?   @map("bail_transaction_id")
+  bailStatutSignature String?   @map("bail_statut_signature") // null | "en_attente" | "signe" | "expire"
+  bailSigneUrl        String?   @map("bail_signe_url")
 
   // Cascade côté box : la suppression d'un bien entraîne celle de ses boxes,
   // qui doit pouvoir purger leur historique de location (cf. journal de

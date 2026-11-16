@@ -117,6 +117,8 @@ export interface LocationHistorique {
   relanceActive: boolean;
   avisLoyerAuto: boolean;
   quittanceAuto: boolean;
+  bailStatutSignature: string | null;
+  bailSigneUrl: string | null;
   totalEncaisse: number;
   totalAttendu: number;
   solde: number;
@@ -229,6 +231,8 @@ export async function getLocataireDetail(id: number, userId: number): Promise<Lo
       relanceActive: location.relanceActive,
       avisLoyerAuto: location.avisLoyerAuto,
       quittanceAuto: location.quittanceAuto,
+      bailStatutSignature: location.bailStatutSignature ?? null,
+      bailSigneUrl: location.bailSigneUrl ?? null,
       totalEncaisse,
       totalAttendu,
       solde,
