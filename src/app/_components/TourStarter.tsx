@@ -15,10 +15,14 @@ export function TourStarter({ isDemo, isNouveauCompte }: Props) {
   useEffect(() => {
     if (!isDemo && !isNouveauCompte) return;
     const demoCle = isDemo ? "demo-tour-vu" : "onboarding-tour-vu";
-    const demoDone = !!localStorage.getItem(demoCle);
+    // Demo uses sessionStorage (each new session shows DemoTour), real accounts use localStorage
+    const storage = isDemo ? sessionStorage : localStorage;
+    const demoDone = !!storage.getItem(demoCle);
     if (demoDone) {
+      // DemoTour already dismissed this session → start spotlight now
       startTourIfNeeded(isDemo, isNouveauCompte);
     }
+    // If DemoTour not dismissed yet, DemoTour.fermer() will call startTourIfNeeded
   }, [isDemo, isNouveauCompte]);
 
   return null;

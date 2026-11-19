@@ -70,21 +70,20 @@ body {
   border-top: none;
 }
 
-.gp-tour-popover .driver-popover-next-btn {
-  background: #0047AB;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 8px 16px;
-  font-size: 13px;
-  font-weight: 600;
-  font-family: var(--font-montserrat), 'Montserrat', sans-serif;
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-
-.gp-tour-popover .driver-popover-next-btn:hover {
-  opacity: 0.88;
+.gp-tour-popover .driver-popover-next-btn,
+.gp-tour-popover .driver-popover-next-btn:hover,
+.gp-tour-popover .driver-popover-next-btn:focus {
+  background: #0047AB !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 8px 16px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  font-family: var(--font-montserrat), 'Montserrat', sans-serif !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
 }
 
 .gp-tour-popover .driver-popover-close-btn {

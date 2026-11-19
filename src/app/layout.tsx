@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat, Lato } from "next/font/google";
 import "./globals.css";
+import "driver.js/dist/driver.css";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",

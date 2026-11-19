@@ -89,7 +89,6 @@ export function SpotlightTour() {
 
     async function run() {
       const { driver } = await import("driver.js");
-      await import("driver.js/dist/driver.css");
       if (cancelled) return;
 
       driverRef.current?.destroy();

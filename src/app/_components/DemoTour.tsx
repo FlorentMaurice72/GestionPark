@@ -159,16 +159,21 @@ export function DemoTour({ isDemo, isNouveauCompte = false }: Props) {
     setMounted(true);
     if (!isDemo && !isNouveauCompte) return;
     try {
-      if (!localStorage.getItem(cleStorage)) setVisible(true);
+      const storage = isDemo ? sessionStorage : localStorage;
+      if (!storage.getItem(cleStorage)) setVisible(true);
     } catch {
       setVisible(true);
     }
-  }, [isDemo, isNouveauCompte, cleStorage]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDemo, isNouveauCompte]);
 
   if (!mounted || !visible) return null;
 
   function fermer() {
-    try { localStorage.setItem(cleStorage, "1"); } catch {}
+    try {
+      const storage = isDemo ? sessionStorage : localStorage;
+      storage.setItem(cleStorage, "1");
+    } catch {}
     setVisible(false);
     // Start the interactive spotlight tour right after the overview modal
     startTourIfNeeded(isDemo, isNouveauCompte);
