@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { LandingPage } from "./_components/LandingPage";
 import { getDashboardPageData } from "@/lib/dashboard/data";
 import { AppNavWrapper } from "@/components/AppNavWrapper";
@@ -37,10 +38,14 @@ export default async function DashboardPage() {
   const userId = parseInt(session.user!.id!);
   const isDemo = session.user?.email === "demo@gestionpark.fr";
 
-  const [data, echeancierData] = await Promise.all([
+  const [data, echeancierData, admin] = await Promise.all([
     getDashboardPageData(userId),
     getEcheancierData(userId),
+    prisma.admin.findUnique({ where: { id: userId }, select: { createdAt: true } }),
   ]);
+
+  const compteAgeH = admin ? (Date.now() - admin.createdAt.getTime()) / 36e5 : 999;
+  const isNouveauCompte = !isDemo && compteAgeH < 48 && data.kpiOccupation.boxesTotal === 0;
 
   const prochainesEcheances = [
     ...echeancierData.ceMoisCi,
@@ -63,7 +68,7 @@ export default async function DashboardPage() {
         </div>
       </header>
 
-      <DemoTour isDemo={isDemo} />
+      <DemoTour isDemo={isDemo} isNouveauCompte={isNouveauCompte} />
 
       <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6">
         <OnboardingGuide

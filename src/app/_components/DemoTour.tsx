@@ -144,27 +144,30 @@ const ETAPES = [
 
 interface Props {
   isDemo: boolean;
+  isNouveauCompte?: boolean;
 }
 
-export function DemoTour({ isDemo }: Props) {
+export function DemoTour({ isDemo, isNouveauCompte = false }: Props) {
   const [etape, setEtape] = useState(0);
   const [visible, setVisible] = useState(false);
   const [mounted, setMounted] = useState(false);
 
+  const cleStorage = isDemo ? "demo-tour-vu" : "onboarding-tour-vu";
+
   useEffect(() => {
     setMounted(true);
-    if (!isDemo) return;
+    if (!isDemo && !isNouveauCompte) return;
     try {
-      if (!localStorage.getItem("demo-tour-vu")) setVisible(true);
+      if (!localStorage.getItem(cleStorage)) setVisible(true);
     } catch {
       setVisible(true);
     }
-  }, [isDemo]);
+  }, [isDemo, isNouveauCompte, cleStorage]);
 
   if (!mounted || !visible) return null;
 
   function fermer() {
-    try { localStorage.setItem("demo-tour-vu", "1"); } catch {}
+    try { localStorage.setItem(cleStorage, "1"); } catch {}
     setVisible(false);
   }
 
