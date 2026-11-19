@@ -37,9 +37,16 @@ const STEPS_BY_PATH: Record<string, StepDef> = {
   "/locataires": {
     tourStep: "btn-ajouter-loc",
     selector: "[data-tour='ajouter-locataire']",
-    title: "Dernière étape : votre locataire",
+    title: "Ajoutez votre premier locataire",
     desc: "Renseignez les coordonnées de votre locataire et attribuez-lui un box. Le bail est généré automatiquement.",
-    nextLabel: "C'est parti →",
+    nextLabel: "Créer le locataire →",
+  },
+  "/loyers/import": {
+    tourStep: "btn-importer-csv",
+    selector: "[data-tour='importer-csv']",
+    title: "Importez votre relevé bancaire",
+    desc: "Glissez votre fichier CSV bancaire ici. GestionPark reconnaît automatiquement chaque virement et l'associe au bon locataire.",
+    nextLabel: "Terminer la visite ✓",
   },
 };
 
@@ -51,12 +58,22 @@ const BIENID_STEP: StepDef = {
   nextLabel: "Ajouter des boxs →",
 };
 
+const LOCATAIREID_STEP: StepDef = {
+  tourStep: "btn-faire-signer",
+  selector: "[data-tour='faire-signer']",
+  title: "Faites signer le bail électroniquement",
+  desc: "Votre locataire est créé ! Envoyez le bail en signature électronique via YouSign. Bailleur et locataire signent depuis leur téléphone.",
+  nextLabel: "Découvrir l'import CSV →",
+};
+
 const ALL_STEPS: TourStep[] = [
   "nav-biens",
   "btn-ajouter-bien",
   "form-nouveau-bien",
   "btn-ajouter-box",
   "btn-ajouter-loc",
+  "btn-faire-signer",
+  "btn-importer-csv",
 ];
 
 export function SpotlightTour() {
@@ -79,7 +96,12 @@ export function SpotlightTour() {
     if (!currentStep || currentStep === "done") return;
 
     const isBienId = /^\/biens\/\d+$/.test(pathname);
-    const stepDef = isBienId ? BIENID_STEP : STEPS_BY_PATH[pathname];
+    const isLocataireId = /^\/locataires\/\d+$/.test(pathname);
+    const stepDef = isBienId
+      ? BIENID_STEP
+      : isLocataireId
+        ? LOCATAIREID_STEP
+        : STEPS_BY_PATH[pathname];
 
     if (!stepDef || stepDef.tourStep !== currentStep) return;
 
@@ -142,7 +164,9 @@ export function SpotlightTour() {
             const next = getTourStep();
             if (next === "btn-ajouter-bien") router.push("/biens");
             else if (next === "btn-ajouter-loc") router.push("/locataires");
-            // btn-ajouter-box: user submits the form → creerBien redirects to /biens/[id]
+            else if (next === "btn-importer-csv") router.push("/loyers/import");
+            // btn-ajouter-box: user submits form → creerBien redirects to /biens/[id]
+            // btn-faire-signer: user creates locataire → creerLocataire redirects to /locataires/[id]
           },
           onCloseClick: () => {
             dismissTour();

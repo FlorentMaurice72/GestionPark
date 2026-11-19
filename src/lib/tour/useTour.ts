@@ -6,6 +6,8 @@ export type TourStep =
   | "form-nouveau-bien"
   | "btn-ajouter-box"
   | "btn-ajouter-loc"
+  | "btn-faire-signer"
+  | "btn-importer-csv"
   | "done";
 
 const ORDRE: TourStep[] = [
@@ -14,6 +16,8 @@ const ORDRE: TourStep[] = [
   "form-nouveau-bien",
   "btn-ajouter-box",
   "btn-ajouter-loc",
+  "btn-faire-signer",
+  "btn-importer-csv",
   "done",
 ];
 

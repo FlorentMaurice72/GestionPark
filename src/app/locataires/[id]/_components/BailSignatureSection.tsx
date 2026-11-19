@@ -126,6 +126,7 @@ export function BailSignatureSection({
       <button
         onClick={handleDemarrer}
         disabled={loading}
+        data-tour="faire-signer"
         className="inline-flex items-center gap-1.5 rounded-md bg-neutral-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-neutral-700 disabled:opacity-50 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-neutral-300"
       >
         {loading ? "Envoi en cours…" : "✍ Faire signer électroniquement"}
