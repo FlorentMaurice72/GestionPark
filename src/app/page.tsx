@@ -15,6 +15,7 @@ import { AccesRapides } from "./_components/AccesRapides";
 import { OnboardingGuide } from "./_components/OnboardingGuide";
 import { ProchainesEcheances } from "./_components/ProchainesEcheances";
 import { getEcheancierData } from "@/lib/echeancier/data";
+import { DemoTour } from "./_components/DemoTour";
 
 const formatteurDate = new Intl.DateTimeFormat("fr-FR", {
   weekday: "long",
@@ -34,6 +35,8 @@ export default async function DashboardPage() {
   }
 
   const userId = parseInt(session.user!.id!);
+  const isDemo = session.user?.email === "demo@gestionpark.fr";
+
   const [data, echeancierData] = await Promise.all([
     getDashboardPageData(userId),
     getEcheancierData(userId),
@@ -59,6 +62,8 @@ export default async function DashboardPage() {
           <div className="hidden md:block"><DeconnexionButton /></div>
         </div>
       </header>
+
+      <DemoTour isDemo={isDemo} />
 
       <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6">
         <OnboardingGuide
