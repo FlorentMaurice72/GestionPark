@@ -1,10 +1,29 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+const SITE_URL = process.env.NEXT_PUBLIC_URL ?? "https://gestionpark.fr";
+const SLUG = "import-csv-bancaire-loyers";
+
 export const metadata: Metadata = {
   title: "Import CSV bancaire : automatisez le rapprochement de vos loyers",
   description:
     "Vérifier chaque virement un à un prend un temps fou. Découvrez comment l'import CSV bancaire transforme cette tâche en 30 secondes.",
+  alternates: { canonical: `${SITE_URL}/blog/${SLUG}` },
+  openGraph: {
+    type: "article",
+    url: `${SITE_URL}/blog/${SLUG}`,
+    title: "Import CSV bancaire : automatisez le rapprochement de vos loyers",
+    description: "Vérifier chaque virement un à un prend du temps. L'import CSV bancaire transforme cette tâche en 30 secondes.",
+    siteName: "GestionPark",
+    locale: "fr_FR",
+    images: [{ url: `${SITE_URL}/opengraph-image`, width: 1200, height: 630, alt: "GestionPark" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Import CSV bancaire : automatisez le rapprochement de vos loyers",
+    description: "Transformez la vérification des virements en 30 secondes avec l'import CSV.",
+    images: [`${SITE_URL}/opengraph-image`],
+  },
 };
 
 export default function ArticlePage() {

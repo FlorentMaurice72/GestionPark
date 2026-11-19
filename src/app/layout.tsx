@@ -49,13 +49,13 @@ export const metadata: Metadata = {
     title: "GestionPark — Gérez vos boxs de stockage en toute autonomie",
     description:
       "Suivi des locations, paiements et locataires depuis un seul tableau de bord. Sans agence, sans Excel.",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "GestionPark" }],
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "GestionPark — Logiciel de gestion de boxs de stockage" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "GestionPark — Logiciel de gestion de boxs de stockage",
     description: "Suivi des loyers, import CSV bancaire, relances automatiques. Essai gratuit 14 jours.",
-    images: ["/og-image.png"],
+    images: ["/opengraph-image"],
   },
   robots: {
     index: true,

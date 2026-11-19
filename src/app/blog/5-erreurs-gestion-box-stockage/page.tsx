@@ -1,10 +1,29 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+const SITE_URL = process.env.NEXT_PUBLIC_URL ?? "https://gestionpark.fr";
+const SLUG = "5-erreurs-gestion-box-stockage";
+
 export const metadata: Metadata = {
   title: "5 erreurs courantes dans la gestion de boxs de stockage",
   description:
     "Oubli de caution, loyer mal indexé, absence de quittance… Ces erreurs classiques coûtent du temps et de l'argent. Comment les éviter dès le départ.",
+  alternates: { canonical: `${SITE_URL}/blog/${SLUG}` },
+  openGraph: {
+    type: "article",
+    url: `${SITE_URL}/blog/${SLUG}`,
+    title: "5 erreurs courantes dans la gestion de boxs de stockage",
+    description: "Oubli de caution, loyer mal indexé, absence de quittance… Ces erreurs classiques coûtent du temps et de l'argent.",
+    siteName: "GestionPark",
+    locale: "fr_FR",
+    images: [{ url: `${SITE_URL}/opengraph-image`, width: 1200, height: 630, alt: "GestionPark" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "5 erreurs courantes dans la gestion de boxs de stockage",
+    description: "Oubli de caution, loyer mal indexé, absence de quittance… Comment les éviter.",
+    images: [`${SITE_URL}/opengraph-image`],
+  },
 };
 
 export default function ArticlePage() {

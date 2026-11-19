@@ -1,10 +1,29 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+const SITE_URL = process.env.NEXT_PUBLIC_URL ?? "https://gestionpark.fr";
+const SLUG = "gerer-ses-boxs-sans-excel";
+
 export const metadata: Metadata = {
   title: "Comment gérer vos boxs de stockage sans Excel",
   description:
     "Excel est gratuit mais limité pour gérer des boxs de stockage. Découvrez pourquoi un logiciel dédié vous fait gagner du temps et évite les erreurs.",
+  alternates: { canonical: `${SITE_URL}/blog/${SLUG}` },
+  openGraph: {
+    type: "article",
+    url: `${SITE_URL}/blog/${SLUG}`,
+    title: "Comment gérer vos boxs de stockage sans Excel",
+    description: "Excel est gratuit mais limité. Découvrez pourquoi un logiciel dédié vous fait gagner du temps et évite les erreurs.",
+    siteName: "GestionPark",
+    locale: "fr_FR",
+    images: [{ url: `${SITE_URL}/opengraph-image`, width: 1200, height: 630, alt: "GestionPark" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Comment gérer vos boxs de stockage sans Excel",
+    description: "Excel est limité. Découvrez pourquoi un logiciel dédié change tout.",
+    images: [`${SITE_URL}/opengraph-image`],
+  },
 };
 
 export default function ArticlePage() {
