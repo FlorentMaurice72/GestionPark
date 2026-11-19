@@ -20,6 +20,13 @@ function LogoSVG({ size = 28 }: { size?: number }) {
   );
 }
 
+const FEATURES = [
+  { icon: "📦", label: "Gestion des boxs & biens" },
+  { icon: "👤", label: "Locataires & contrats" },
+  { icon: "💶", label: "Suivi des loyers & relances" },
+  { icon: "✍️", label: "Signature électronique" },
+];
+
 export default function DemoPage() {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -35,84 +42,125 @@ export default function DemoPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-neutral-50 px-4 dark:bg-neutral-950">
-      <div className="mb-8 flex items-center gap-3">
-        <LogoSVG size={36} />
-        <span
-          className="text-xl font-bold tracking-wide"
-          style={{ color: "#0F2C59", fontFamily: "var(--font-montserrat, sans-serif)" }}
-        >
-          GESTIONPARK
-        </span>
-      </div>
-
-      <div className="w-full max-w-sm rounded-xl border border-neutral-200 bg-white p-8 shadow-sm text-center dark:border-neutral-800 dark:bg-neutral-900">
-        <div
-          className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full"
-          style={{ backgroundColor: "#EFF6FF" }}
-        >
-          <span className="text-2xl">🔑</span>
-        </div>
-        <h1 className="mb-2 text-lg font-semibold text-neutral-900 dark:text-neutral-100">
-          Connexion au compte démo
-        </h1>
-        <p className="mb-6 text-sm text-neutral-500 dark:text-neutral-400">
-          Vous allez accéder à un tableau de bord pré-rempli avec de vraies données fictives.
-        </p>
-
-        {error ? (
-          <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
-            {error === "demo_not_configured" ? (
-              <>
-                La démo n&apos;est pas encore disponible.{" "}
-                <Link href="/signup" className="font-medium underline">
-                  Créez votre compte gratuit →
-                </Link>
-              </>
-            ) : (
-              "Une erreur est survenue. Veuillez réessayer."
-            )}
-          </div>
-        ) : pending ? (
-          <div className="flex items-center justify-center gap-2 text-sm text-neutral-500">
-            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-              />
-            </svg>
-            Connexion en cours…
-          </div>
-        ) : (
-          <button
-            onClick={handleDemo}
-            className="w-full rounded-md px-4 py-2.5 text-sm font-medium text-white hover:opacity-90"
-            style={{ backgroundColor: "#0047AB" }}
+    <div className="flex min-h-screen flex-col bg-neutral-50 dark:bg-neutral-950">
+      {/* Header */}
+      <header className="flex items-center justify-between px-6 py-4 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
+        <div className="flex items-center gap-3">
+          <LogoSVG size={30} />
+          <span
+            className="text-lg font-bold tracking-wide"
+            style={{ color: "#0F2C59", fontFamily: "var(--font-montserrat, sans-serif)" }}
           >
-            Accéder à la démo →
-          </button>
-        )}
-
-        <p className="mt-4 text-xs text-neutral-400">
-          Compte de démonstration — données fictives.
-        </p>
-      </div>
-
-      <p className="mt-6 text-xs text-neutral-400">
-        Vous voulez votre propre compte ?{" "}
-        <Link href="/signup" className="underline hover:text-neutral-700">
-          Créer un compte gratuit →
+            GESTIONPARK
+          </span>
+        </div>
+        <Link
+          href="/signup"
+          className="text-sm font-medium px-4 py-2 rounded-md text-white hover:opacity-90 transition-opacity"
+          style={{ backgroundColor: "#0047AB" }}
+        >
+          Créer un compte →
         </Link>
-      </p>
+      </header>
+
+      <main className="flex-1 flex flex-col items-center px-4 py-10 gap-10">
+        {/* Hero text */}
+        <div className="text-center max-w-xl">
+          <h1 className="text-2xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-3">
+            Découvrez GestionPark en action
+          </h1>
+          <p className="text-neutral-500 dark:text-neutral-400 text-sm sm:text-base">
+            Gérez vos boxs de stockage simplement : locataires, loyers, baux et relances depuis une seule interface.
+          </p>
+        </div>
+
+        {/* Animation / "vidéo" */}
+        <div className="w-full max-w-3xl">
+          <div
+            className="relative w-full overflow-hidden rounded-2xl shadow-2xl border border-neutral-200 dark:border-neutral-700"
+            style={{ aspectRatio: "16/9", background: "#0F2C59" }}
+          >
+            <iframe
+              src="/videos/anim-marketing.html"
+              className="absolute inset-0 w-full h-full"
+              title="Aperçu de GestionPark"
+              loading="lazy"
+              sandbox="allow-scripts allow-same-origin"
+            />
+          </div>
+          <p className="text-center text-xs text-neutral-400 mt-2">
+            Aperçu interactif — données fictives à des fins de démonstration
+          </p>
+        </div>
+
+        {/* Feature pills */}
+        <div className="flex flex-wrap justify-center gap-3">
+          {FEATURES.map((f) => (
+            <div
+              key={f.label}
+              className="flex items-center gap-2 rounded-full border border-neutral-200 bg-white px-4 py-2 text-sm text-neutral-700 shadow-sm dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300"
+            >
+              <span>{f.icon}</span>
+              <span>{f.label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* CTA card */}
+        <div className="w-full max-w-sm rounded-xl border border-neutral-200 bg-white p-8 shadow-sm text-center dark:border-neutral-800 dark:bg-neutral-900">
+          <h2 className="mb-2 text-base font-semibold text-neutral-900 dark:text-neutral-100">
+            Essayer avec un vrai compte démo
+          </h2>
+          <p className="mb-6 text-sm text-neutral-500 dark:text-neutral-400">
+            Tableau de bord pré-rempli avec des données fictives réalistes.
+          </p>
+
+          {error ? (
+            <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
+              {error === "demo_not_configured" ? (
+                <>
+                  La démo n&apos;est pas encore disponible.{" "}
+                  <Link href="/signup" className="font-medium underline">
+                    Créez votre compte gratuit →
+                  </Link>
+                </>
+              ) : (
+                "Une erreur est survenue. Veuillez réessayer."
+              )}
+            </div>
+          ) : pending ? (
+            <div className="flex items-center justify-center gap-2 text-sm text-neutral-500">
+              <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              Connexion en cours…
+            </div>
+          ) : (
+            <button
+              onClick={handleDemo}
+              className="w-full rounded-md px-4 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: "#0047AB" }}
+            >
+              Accéder à la démo →
+            </button>
+          )}
+
+          <p className="mt-4 text-xs text-neutral-400">
+            Compte de démonstration — aucune installation requise.
+          </p>
+        </div>
+      </main>
+
+      <footer className="text-center py-6 text-xs text-neutral-400">
+        <Link href="/" className="underline hover:text-neutral-600">
+          ← Retour à l&apos;accueil
+        </Link>
+        {" · "}
+        <Link href="/signup" className="underline hover:text-neutral-600">
+          Créer un compte gratuit
+        </Link>
+      </footer>
     </div>
   );
 }
