@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { telechargerPdfSigne } from "@/lib/yousign";
 import { uploadFichier as uploadSupabase } from "@/lib/supabase-storage";
+import { envoyerEmailBailSigne } from "@/lib/email";
 
 interface YouSignEvent {
   event_name: string;
@@ -49,9 +50,13 @@ export async function POST(req: Request) {
   const requestId = event.signature_request?.id;
   if (!requestId) return NextResponse.json({ error: "signature_request.id manquant" }, { status: 400 });
 
-  // Retrouver la location correspondante
+  // Retrouver la location correspondante avec les données nécessaires pour l'email
   const location = await prisma.location.findFirst({
     where: { bailTransactionId: requestId },
+    include: {
+      locataire: { select: { nom: true, prenom: true } },
+      box: { include: { bien: { select: { nom: true, utilisateurId: true } } } },
+    },
   });
   if (!location) {
     return NextResponse.json({ received: true });
@@ -102,6 +107,29 @@ export async function POST(req: Request) {
       where: { id: location.id },
       data: { bailStatutSignature: "signe" },
     });
+  }
+
+  // Notifier le bailleur par email (non-bloquant)
+  try {
+    const admin = await prisma.admin.findUnique({
+      where: { id: location.box.bien.utilisateurId },
+      select: { email: true },
+    });
+    if (admin?.email) {
+      const bailSigneUrl = await prisma.location.findUnique({
+        where: { id: location.id },
+        select: { bailSigneUrl: true },
+      });
+      await envoyerEmailBailSigne(admin.email, {
+        locataireNom: location.locataire.nom,
+        locatairePrenom: location.locataire.prenom,
+        bienNom: location.box.bien.nom,
+        boxNumero: location.box.numero,
+        bailSigneUrl: bailSigneUrl?.bailSigneUrl ?? null,
+      });
+    }
+  } catch (err) {
+    console.error("Email bail signé — erreur non-bloquante:", err);
   }
 
   return NextResponse.json({ received: true });

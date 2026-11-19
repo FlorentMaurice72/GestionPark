@@ -270,6 +270,73 @@ export async function envoyerEmailRevisionIRL(
   });
 }
 
+export async function envoyerEmailBailSigne(
+  destinataire: string,
+  opts: {
+    locataireNom: string;
+    locatairePrenom: string;
+    bienNom: string;
+    boxNumero: string;
+    bailSigneUrl?: string | null;
+    siteUrl?: string;
+  }
+): Promise<void> {
+  if (isDemoAddress(destinataire)) return;
+  if (!process.env.RESEND_API_KEY) return;
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const siteUrl = opts.siteUrl ?? process.env.NEXT_PUBLIC_URL ?? "https://gestionpark.fr";
+  const html = `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#F4F8FF;font-family:Arial,sans-serif">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F4F8FF;padding:32px 16px">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08)">
+        <tr><td style="background:#0047AB;padding:28px 32px">
+          <p style="margin:0;color:#ffffff;font-size:20px;font-weight:700;letter-spacing:1px">GESTIONPARK</p>
+          <p style="margin:6px 0 0;color:rgba(255,255,255,.75);font-size:13px">Logiciel de gestion de boxs de stockage</p>
+        </td></tr>
+        <tr><td style="padding:32px">
+          <h1 style="margin:0 0 8px;font-size:22px;color:#0F2C59">✍️ Bail signé !</h1>
+          <p style="margin:0 0 20px;color:#64748B;font-size:14px;line-height:1.6">
+            <strong>${opts.locatairePrenom} ${opts.locataireNom}</strong> a signé électroniquement son bail pour le box <strong>${opts.boxNumero}</strong> (${opts.bienNom}).
+          </p>
+          ${opts.bailSigneUrl ? `
+          <table cellpadding="0" cellspacing="0" style="margin:0 0 24px">
+            <tr><td style="border-radius:8px;background:#0047AB">
+              <a href="${opts.bailSigneUrl}" style="display:inline-block;padding:14px 28px;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none">
+                Télécharger le bail signé →
+              </a>
+            </td></tr>
+          </table>` : `
+          <table cellpadding="0" cellspacing="0" style="margin:0 0 24px">
+            <tr><td style="border-radius:8px;background:#0047AB">
+              <a href="${siteUrl}" style="display:inline-block;padding:14px 28px;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none">
+                Voir dans GestionPark →
+              </a>
+            </td></tr>
+          </table>`}
+          <p style="margin:0;color:#94A3B8;font-size:12px;line-height:1.6">
+            Le bail signé est archivé dans votre tableau de bord et accessible à tout moment.
+          </p>
+        </td></tr>
+        <tr><td style="background:#F8FAFC;padding:16px 32px;border-top:1px solid #E2E8F0">
+          <p style="margin:0;color:#94A3B8;font-size:11px;text-align:center">
+            GestionPark · contact@gestionpark.fr
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
+  await resend.emails.send({
+    from: EMAIL_FROM,
+    to: destinataire,
+    subject: `✍️ Bail signé — ${opts.locatairePrenom} ${opts.locataireNom} · Box ${opts.boxNumero}`,
+    html,
+    text: `Bail signé par ${opts.locatairePrenom} ${opts.locataireNom} pour le box ${opts.boxNumero} (${opts.bienNom}).${opts.bailSigneUrl ? ` Télécharger : ${opts.bailSigneUrl}` : ""}`,
+  });
+}
+
 export async function envoyerEmailResetMotDePasse(destinataire: string, lien: string): Promise<void> {
   if (isDemoAddress(destinataire)) return;
   if (!process.env.RESEND_API_KEY) {
