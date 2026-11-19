@@ -250,7 +250,7 @@ function MobilePlusDrawer({
         onClick={onClose}
         aria-hidden="true"
       />
-      <div className="fixed bottom-16 left-0 right-0 z-50 rounded-t-2xl border-t border-neutral-200 bg-white pb-safe dark:border-neutral-700 dark:bg-neutral-900 md:hidden">
+      <div id="plus-drawer" className="fixed bottom-16 left-0 right-0 z-50 rounded-t-2xl border-t border-neutral-200 bg-white pb-safe dark:border-neutral-700 dark:bg-neutral-900 md:hidden">
         <div className="flex flex-col py-2">
           {PLUS_ITEMS.map((item) => (
             <Link
@@ -295,7 +295,7 @@ export function AppNav({
   return (
     <>
       {/* ── Desktop top nav ── */}
-      <nav className="flex items-center gap-1 border-b border-neutral-200 bg-white px-4 dark:border-neutral-800 dark:bg-neutral-900">
+      <nav aria-label="Navigation principale" className="flex items-center gap-1 border-b border-neutral-200 bg-white px-4 dark:border-neutral-800 dark:bg-neutral-900">
         <Logo />
         <div className="hidden flex-1 items-center gap-1 overflow-x-auto md:flex">
           {ONGLETS.map((onglet) => {
@@ -312,14 +312,20 @@ export function AppNav({
               >
                 {onglet.label}
                 {onglet.href === "/alertes" && nombreUrgentes > 0 && (
-                  <span className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white">
-                    {nombreUrgentes > 99 ? "99+" : nombreUrgentes}
-                  </span>
+                  <>
+                    <span aria-hidden="true" className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white">
+                      {nombreUrgentes > 99 ? "99+" : nombreUrgentes}
+                    </span>
+                    <span className="sr-only">— {nombreUrgentes} alerte{nombreUrgentes > 1 ? "s" : ""} urgente{nombreUrgentes > 1 ? "s" : ""}</span>
+                  </>
                 )}
                 {onglet.href === "/loyers" && nombreImpayesMois > 0 && (
-                  <span className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-orange-500 px-1 text-[10px] font-bold text-white">
-                    {nombreImpayesMois > 99 ? "99+" : nombreImpayesMois}
-                  </span>
+                  <>
+                    <span aria-hidden="true" className="ml-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-orange-500 px-1 text-[10px] font-bold text-white">
+                      {nombreImpayesMois > 99 ? "99+" : nombreImpayesMois}
+                    </span>
+                    <span className="sr-only">— {nombreImpayesMois} impayé{nombreImpayesMois > 1 ? "s" : ""}</span>
+                  </>
                 )}
               </Link>
             );
@@ -334,6 +340,7 @@ export function AppNav({
 
       {/* ── Mobile bottom tab bar ── */}
       <nav
+        aria-label="Navigation mobile"
         className="fixed bottom-0 left-0 right-0 z-30 flex border-t border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900 md:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
@@ -357,9 +364,12 @@ export function AppNav({
               <Icon className="h-5 w-5" />
               {tab.label}
               {tab.href === "/loyers" && nombreImpayesMois > 0 && (
-                <span className="absolute right-[calc(50%-16px)] top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-orange-500 px-1 text-[9px] font-bold text-white">
-                  {nombreImpayesMois > 9 ? "9+" : nombreImpayesMois}
-                </span>
+                <>
+                  <span aria-hidden="true" className="absolute right-[calc(50%-16px)] top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-orange-500 px-1 text-[9px] font-bold text-white">
+                    {nombreImpayesMois > 9 ? "9+" : nombreImpayesMois}
+                  </span>
+                  <span className="sr-only">{nombreImpayesMois} impayé{nombreImpayesMois > 1 ? "s" : ""}</span>
+                </>
               )}
             </Link>
           );
@@ -368,6 +378,9 @@ export function AppNav({
         {/* Plus button */}
         <button
           onClick={() => setPlusOpen((v) => !v)}
+          aria-expanded={plusOpen}
+          aria-haspopup="true"
+          aria-controls="plus-drawer"
           className={`flex flex-1 flex-col items-center justify-center gap-0.5 py-2.5 text-[10px] font-medium transition-colors ${
             plusIsActive || plusOpen
               ? "text-brand dark:text-canard"
@@ -377,9 +390,12 @@ export function AppNav({
           <IconGrid className="h-5 w-5" />
           Plus
           {nombreUrgentes > 0 && (
-            <span className="absolute right-[calc(10%-8px)] top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[9px] font-bold text-white">
-              {nombreUrgentes > 9 ? "9+" : nombreUrgentes}
-            </span>
+            <>
+              <span aria-hidden="true" className="absolute right-[calc(10%-8px)] top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-600 px-1 text-[9px] font-bold text-white">
+                {nombreUrgentes > 9 ? "9+" : nombreUrgentes}
+              </span>
+              <span className="sr-only">{nombreUrgentes} alerte{nombreUrgentes > 1 ? "s" : ""} urgente{nombreUrgentes > 1 ? "s" : ""}</span>
+            </>
           )}
         </button>
       </nav>

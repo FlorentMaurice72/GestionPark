@@ -158,7 +158,7 @@ export default async function SignupPage({
           </div>
 
           {error && messages[error] && (
-            <p className="text-sm text-red-600 dark:text-red-400">{messages[error]}</p>
+            <p role="alert" className="text-sm text-red-600 dark:text-red-400">{messages[error]}</p>
           )}
 
           <button

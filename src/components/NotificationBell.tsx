@@ -18,12 +18,15 @@ export function NotificationBell({ notifications }: { notifications: Notificatio
       <button
         type="button"
         onClick={() => setOuvert((v) => !v)}
-        aria-label="Notifications"
+        aria-label={notifications.length > 0 ? `Notifications — ${notifications.length} non lue${notifications.length > 1 ? "s" : ""}` : "Notifications"}
+        aria-expanded={ouvert}
+        aria-haspopup="true"
+        aria-controls="notifications-panel"
         className="relative rounded-full p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800"
       >
         <BellIcon />
         {notifications.length > 0 && (
-          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-medium text-white">
+          <span aria-hidden="true" className="absolute -right-0.5 -top-0.5 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-medium text-white">
             {notifications.length}
           </span>
         )}
@@ -31,8 +34,14 @@ export function NotificationBell({ notifications }: { notifications: Notificatio
 
       {ouvert && (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => setOuvert(false)} />
-          <div className="absolute right-0 z-50 mt-2 w-80 rounded-lg border border-neutral-200 bg-white shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
+          <div className="fixed inset-0 z-40" aria-hidden="true" onClick={() => setOuvert(false)} />
+          <div
+            id="notifications-panel"
+            role="dialog"
+            aria-label="Notifications"
+            aria-live="polite"
+            className="absolute right-0 z-50 mt-2 w-80 rounded-lg border border-neutral-200 bg-white shadow-lg dark:border-neutral-800 dark:bg-neutral-900"
+          >
             {notifications.length === 0 ? (
               <p className="p-4 text-sm text-neutral-500">Aucune notification.</p>
             ) : (
