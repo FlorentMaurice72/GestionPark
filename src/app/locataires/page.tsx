@@ -49,7 +49,37 @@ export default async function LocatairesPage({ searchParams }: { searchParams: P
 
       <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6">
         <FiltresLocataires biens={data.biens} statut={statut} bienId={bienId} recherche={recherche} />
-        <LocatairesTable locataires={data.locataires} />
+
+        {data.locataires.length === 0 && statut === "actif" && !bienId && !recherche ? (
+          <div className="rounded-xl border border-neutral-200 bg-white px-8 py-14 text-center dark:border-neutral-800 dark:bg-neutral-900">
+            <svg
+              className="mx-auto mb-5 h-16 w-16 opacity-25"
+              viewBox="0 0 64 64"
+              fill="none"
+              aria-hidden="true"
+            >
+              <circle cx="32" cy="22" r="12" fill="#0047AB" />
+              <circle cx="32" cy="22" r="5" fill="white" opacity="0.6" />
+              <path d="M8 56c0-13.255 10.745-24 24-24s24 10.745 24 24" fill="#0097A7" opacity="0.4" />
+              <rect x="28" y="40" width="8" height="16" rx="2" fill="#0097A7" opacity="0.3" />
+            </svg>
+            <h2 className="mb-2 text-base font-semibold text-neutral-800 dark:text-neutral-200">
+              Aucun locataire pour le moment
+            </h2>
+            <p className="mx-auto mb-6 max-w-xs text-sm text-neutral-500 dark:text-neutral-400">
+              Créez votre premier locataire pour lui attribuer un box et générer son bail.
+            </p>
+            <Link
+              href="/locataires/nouveau"
+              className="inline-block rounded-md px-5 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: "#0047AB" }}
+            >
+              Ajouter mon premier locataire →
+            </Link>
+          </div>
+        ) : (
+          <LocatairesTable locataires={data.locataires} />
+        )}
       </main>
     </div>
   );

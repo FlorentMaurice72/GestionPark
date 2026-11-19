@@ -30,11 +30,30 @@ export default async function BiensPage() {
 
       <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6">
         {biens.length === 0 ? (
-          <div className="rounded-lg border border-neutral-200 bg-white p-8 text-center dark:border-neutral-800 dark:bg-neutral-900">
-            <p className="text-sm text-neutral-500">Aucun bien enregistré pour le moment.</p>
+          <div className="rounded-xl border border-neutral-200 bg-white px-8 py-14 text-center dark:border-neutral-800 dark:bg-neutral-900">
+            <svg
+              className="mx-auto mb-5 h-16 w-16 opacity-25"
+              viewBox="0 0 64 64"
+              fill="none"
+              aria-hidden="true"
+            >
+              <rect x="4" y="28" width="56" height="30" rx="3" fill="#0047AB" />
+              <rect x="4" y="28" width="56" height="6" rx="2" fill="#0097A7" />
+              <rect x="12" y="10" width="40" height="20" rx="2" fill="#20B2AA" />
+              <rect x="20" y="4" width="24" height="12" rx="2" fill="#0047AB" opacity="0.6" />
+              <rect x="26" y="38" width="12" height="10" rx="1" fill="white" opacity="0.5" />
+              <rect x="26" y="52" width="12" height="4" rx="1" fill="white" opacity="0.4" />
+            </svg>
+            <h2 className="mb-2 text-base font-semibold text-neutral-800 dark:text-neutral-200">
+              Aucun bien enregistré
+            </h2>
+            <p className="mx-auto mb-6 max-w-xs text-sm text-neutral-500 dark:text-neutral-400">
+              Ajoutez votre premier entrepôt ou parking pour commencer à gérer vos boxs et locataires.
+            </p>
             <Link
               href="/biens/nouveau"
-              className="mt-4 inline-block rounded-md bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dk"
+              className="inline-block rounded-md px-5 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-opacity"
+              style={{ backgroundColor: "#0047AB" }}
             >
               Ajouter mon premier bien →
             </Link>
