@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { getTourStep, advanceTour, dismissTour, type TourStep } from "@/lib/tour/useTour";
 
@@ -63,6 +63,16 @@ export function SpotlightTour() {
   const pathname = usePathname();
   const router = useRouter();
   const driverRef = useRef<{ destroy: () => void } | null>(null);
+  const [tourRevision, setTourRevision] = useState(0);
+
+  // Re-trigger when startTourIfNeeded() fires the custom event
+  useEffect(() => {
+    function onReady() {
+      setTourRevision((r) => r + 1);
+    }
+    window.addEventListener("gp-tour-ready", onReady);
+    return () => window.removeEventListener("gp-tour-ready", onReady);
+  }, []);
 
   useEffect(() => {
     const currentStep = getTourStep();
@@ -151,7 +161,9 @@ export function SpotlightTour() {
       clearTimeout(timer);
       driverRef.current?.destroy();
     };
-  }, [pathname, router]);
+  // tourRevision triggers a re-run when startTourIfNeeded() fires gp-tour-ready
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, router, tourRevision]);
 
   return null;
 }

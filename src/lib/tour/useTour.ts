@@ -49,9 +49,19 @@ export function dismissTour() {
 
 export function startTourIfNeeded(isDemo: boolean, isNouveauCompte: boolean) {
   if (typeof window === "undefined") return;
-  const current = getTourStep();
-  if (current) return; // already in progress or done
-  if (isDemo || isNouveauCompte) {
+
+  if (isDemo) {
+    // Demo account is shared between visitors — always restart from the beginning
     setTourStep("nav-biens");
+    window.dispatchEvent(new Event("gp-tour-ready"));
+    return;
+  }
+
+  const current = getTourStep();
+  if (current) return; // real account: don't restart once started/done
+
+  if (isNouveauCompte) {
+    setTourStep("nav-biens");
+    window.dispatchEvent(new Event("gp-tour-ready"));
   }
 }
