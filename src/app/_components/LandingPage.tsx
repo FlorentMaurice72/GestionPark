@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PricingSection } from "./PricingSection";
+import { DashboardPreview } from "./DashboardPreview";
 
 function LogoSVG({ size = 28 }: { size?: number }) {
   const h = Math.round(size * 0.75);
@@ -150,70 +151,18 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ── Aperçu du tableau de bord ─────────────────────────────── */}
+      {/* ── Aperçu interactif ─────────────────────────────────────── */}
       <section className="py-6 pb-16 overflow-hidden">
         <div className="mx-auto max-w-5xl px-6">
-          <p className="text-center text-xs font-semibold uppercase tracking-widest text-neutral-400 mb-6">
-            Aperçu du tableau de bord
-          </p>
-          <div className="rounded-xl border border-neutral-200 shadow-2xl dark:border-neutral-700 overflow-hidden" style={{ background: "#f8fafc" }}>
-            <div className="flex items-center gap-2 border-b border-neutral-200 bg-neutral-100 px-4 py-2 dark:border-neutral-700 dark:bg-neutral-800">
-              <div className="flex gap-1.5">
-                <div className="h-3 w-3 rounded-full bg-red-400" />
-                <div className="h-3 w-3 rounded-full bg-yellow-400" />
-                <div className="h-3 w-3 rounded-full bg-green-400" />
-              </div>
-              <div className="mx-auto flex items-center gap-2 rounded-md bg-white border border-neutral-200 px-3 py-1 text-xs text-neutral-400 dark:bg-neutral-900 dark:border-neutral-700" style={{ minWidth: 200, maxWidth: 300 }}>
-                <span style={{ color: "#0097A7" }}>🔒</span> gestionpark.fr/dashboard
-              </div>
-            </div>
-            <div className="flex" style={{ minHeight: 320 }}>
-              <div className="hidden sm:flex flex-col items-center gap-1 border-r border-neutral-200 bg-white px-3 py-4 dark:border-neutral-700 dark:bg-neutral-900" style={{ width: 56 }}>
-                {[
-                  { icon: "⊞", active: true },
-                  { icon: "◈", active: false },
-                  { icon: "◉", active: false },
-                  { icon: "⊕", active: false },
-                ].map((item, i) => (
-                  <div
-                    key={i}
-                    className={`flex h-9 w-9 items-center justify-center rounded-lg text-sm ${item.active ? "text-white" : "text-neutral-400"}`}
-                    style={item.active ? { backgroundColor: "#0047AB" } : {}}
-                  >
-                    {item.icon}
-                  </div>
-                ))}
-              </div>
-              <div className="flex-1 overflow-hidden p-4 sm:p-5" style={{ background: "#f8fafc" }}>
-                <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  {[
-                    { label: "Taux d'occupation", val: "88 %", sub: "14 / 16 boxs", color: "#0047AB" },
-                    { label: "Loyers encaissés", val: "7 240 €", sub: "ce mois", color: "#0097A7" },
-                    { label: "Impayés", val: "2", sub: "à relancer", color: "#EF4444" },
-                    { label: "Locataires actifs", val: "14", sub: "en cours", color: "#0F2C59" },
-                  ].map((kpi) => (
-                    <div key={kpi.label} className="rounded-lg border border-neutral-200 bg-white p-3 shadow-sm dark:border-neutral-700 dark:bg-neutral-900">
-                      <p className="mb-1 text-[10px] text-neutral-400">{kpi.label}</p>
-                      <p className="text-lg font-bold" style={{ color: kpi.color }}>{kpi.val}</p>
-                      <p className="text-[10px] text-neutral-400">{kpi.sub}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="rounded-lg border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-700 dark:bg-neutral-900">
-                  <p className="mb-3 text-xs font-semibold text-neutral-600 dark:text-neutral-300">Loyers encaissés — 12 derniers mois</p>
-                  <div className="flex items-end gap-1 h-16">
-                    {[65, 72, 68, 70, 75, 73, 80, 85, 83, 88, 90, 88].map((h, i) => (
-                      <div key={i} className="flex-1 rounded-t-sm" style={{ height: `${h}%`, backgroundColor: i === 11 ? "#0047AB" : "#0097A7", opacity: i === 11 ? 1 : 0.6 }} />
-                    ))}
-                  </div>
-                  <div className="mt-1 flex justify-between text-[9px] text-neutral-300">
-                    <span>Déc</span><span>Jan</span><span>Fév</span><span>Mar</span><span>Avr</span><span>Mai</span>
-                    <span>Jun</span><span>Jul</span><span>Aoû</span><span>Sep</span><span>Oct</span><span className="font-bold" style={{ color: "#0047AB" }}>Nov</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="mb-6 text-center">
+            <p className="text-xs font-semibold uppercase tracking-widest text-neutral-400">
+              Aperçu de l&apos;application
+            </p>
+            <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+              Cliquez sur les onglets pour explorer chaque section
+            </p>
           </div>
+          <DashboardPreview />
         </div>
       </section>
 
