@@ -39,6 +39,7 @@ export default async function LocatairesPage({ searchParams }: { searchParams: P
         <div className="flex items-center gap-3">
           <Link
             href="/locataires/nouveau"
+            data-tour="ajouter-locataire"
             className="rounded-md bg-brand px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-dk"
           >
             + Ajouter

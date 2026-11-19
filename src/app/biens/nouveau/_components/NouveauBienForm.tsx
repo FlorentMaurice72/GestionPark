@@ -13,7 +13,7 @@ export function NouveauBienForm() {
   const [etat, formAction, enCours] = useActionState(creerBien, ETAT_INITIAL);
 
   return (
-    <form action={formAction} className="flex flex-col gap-6">
+    <form action={formAction} data-tour="nouveau-bien-form" className="flex flex-col gap-6">
       <fieldset className="rounded-lg border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
         <legend className="px-1 text-sm font-semibold text-neutral-900 dark:text-neutral-100">
           Informations générales

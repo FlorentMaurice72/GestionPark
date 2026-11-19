@@ -20,6 +20,7 @@ export default async function BiensPage() {
         <div className="flex items-center gap-3">
           <Link
             href="/biens/nouveau"
+            data-tour="ajouter-bien"
             className="rounded-md bg-brand px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-dk"
           >
             + Ajouter

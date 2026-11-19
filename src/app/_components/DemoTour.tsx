@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { startTourIfNeeded } from "@/lib/tour/useTour";
 
 const ETAPES = [
   {
@@ -169,6 +170,8 @@ export function DemoTour({ isDemo, isNouveauCompte = false }: Props) {
   function fermer() {
     try { localStorage.setItem(cleStorage, "1"); } catch {}
     setVisible(false);
+    // Start the interactive spotlight tour right after the overview modal
+    startTourIfNeeded(isDemo, isNouveauCompte);
   }
 
   function suivant() {

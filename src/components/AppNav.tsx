@@ -305,6 +305,7 @@ export function AppNav({
               <Link
                 key={onglet.href}
                 href={onglet.href}
+                {...(onglet.href === "/biens" ? { "data-tour": "nav-biens" } : {})}
                 className={`flex-shrink-0 border-b-2 px-2 py-3 text-sm font-medium transition-colors ${
                   actif
                     ? "border-brand text-brand dark:border-canard dark:text-canard"
