@@ -1,47 +1,48 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { telechargerPdfSigne } from "@/lib/yousign";
 import { uploadFichier as uploadSupabase } from "@/lib/supabase-storage";
 
-interface UniversignEvent {
-  event_type: string;
-  data: {
+interface YouSignEvent {
+  event_name: string;
+  signature_request: {
     id: string;
     status: string;
-    documents?: { signed_file_url?: string; download_url?: string }[];
+    documents?: { id: string; nature?: string }[];
   };
 }
 
 export async function POST(req: Request) {
-  let event: UniversignEvent;
+  let event: YouSignEvent;
   try {
-    event = await req.json() as UniversignEvent;
+    event = await req.json() as YouSignEvent;
   } catch {
     return NextResponse.json({ error: "Payload invalide" }, { status: 400 });
   }
 
-  // Seul l'événement "transaction.completed" nous intéresse
-  if (event.event_type !== "transaction.completed") {
+  // Seul l'événement "signature_request.done" nous intéresse
+  if (event.event_name !== "signature_request.done") {
     return NextResponse.json({ received: true });
   }
 
-  const txId = event.data?.id;
-  if (!txId) return NextResponse.json({ error: "transaction id manquant" }, { status: 400 });
+  const requestId = event.signature_request?.id;
+  if (!requestId) return NextResponse.json({ error: "signature_request.id manquant" }, { status: 400 });
 
   // Retrouver la location correspondante
   const location = await prisma.location.findFirst({
-    where: { bailTransactionId: txId },
+    where: { bailTransactionId: requestId },
   });
   if (!location) {
-    // Transaction inconnue — on ignore silencieusement
     return NextResponse.json({ received: true });
   }
 
-  try {
-    // Récupérer le PDF signé depuis Universign
-    const signedUrl = event.data.documents?.[0]?.signed_file_url
-      ?? event.data.documents?.[0]?.download_url;
+  // Trouver l'ID du document signable dans le payload
+  const documentId = event.signature_request.documents?.find(
+    (d) => !d.nature || d.nature === "signable_document",
+  )?.id;
 
-    if (!signedUrl) {
+  try {
+    if (!documentId) {
       await prisma.location.update({
         where: { id: location.id },
         data: { bailStatutSignature: "signe" },
@@ -49,18 +50,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ received: true });
     }
 
-    // Télécharger le PDF signé
-    const pdfRes = await fetch(signedUrl, {
-      headers: { Authorization: `Bearer ${process.env.UNIVERSIGN_API_KEY}` },
-    });
-    if (!pdfRes.ok) throw new Error(`Téléchargement PDF signé : ${pdfRes.status}`);
-    const pdfBuffer = Buffer.from(await pdfRes.arrayBuffer());
+    // Télécharger le PDF signé depuis YouSign
+    const pdfBuffer = await telechargerPdfSigne(requestId, documentId);
 
     // Stocker dans Supabase
     const chemin = `bails-signes/${location.id}/bail-signe.pdf`;
     await uploadSupabase(chemin, new Uint8Array(pdfBuffer), "application/pdf");
 
-    // Générer une URL publique permanente (signée 10 ans)
+    // Générer une URL signée permanente (10 ans)
     const { createClient } = await import("@supabase/supabase-js");
     const supabase = createClient(
       process.env.SUPABASE_URL!,
@@ -79,8 +76,7 @@ export async function POST(req: Request) {
       },
     });
   } catch (err) {
-    console.error("Universign webhook erreur:", err);
-    // On marque quand même comme signé même si le stockage échoue
+    console.error("YouSign webhook erreur:", err);
     await prisma.location.update({
       where: { id: location.id },
       data: { bailStatutSignature: "signe" },

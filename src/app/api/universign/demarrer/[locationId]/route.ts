@@ -4,12 +4,11 @@ import { prisma } from "@/lib/prisma";
 import React from "react";
 import { BailDocument } from "@/lib/pdf/BailDocument";
 import {
-  uploadFichier,
-  creerTransaction,
-  ajouterChampSignature,
-  ajouterParticipant,
-  demarrerTransaction,
-} from "@/lib/universign";
+  creerDemandeSignature,
+  ajouterDocument,
+  ajouterSignataire,
+  activerDemande,
+} from "@/lib/yousign";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { renderToBuffer } = require("@react-pdf/renderer") as { renderToBuffer: (el: unknown) => Promise<Buffer> };
@@ -51,8 +50,8 @@ export async function POST(
     return NextResponse.json({ error: "Signature déjà en cours" }, { status: 409 });
   }
 
-  if (!process.env.UNIVERSIGN_API_KEY) {
-    return NextResponse.json({ error: "Universign non configuré (clé API manquante)" }, { status: 503 });
+  if (!process.env.YOUSIGN_API_KEY) {
+    return NextResponse.json({ error: "YouSign non configuré (clé API manquante)" }, { status: 503 });
   }
 
   try {
@@ -83,51 +82,42 @@ export async function POST(
     });
     const pdfBuffer = await renderToBuffer(element);
 
-    // 2. Upload vers Universign
+    // 2. Créer la demande de signature YouSign
+    const nomDemande = `Bail ${location.box.bien.nom} · Box ${location.box.numero} · ${location.locataire.nom} ${location.locataire.prenom}`;
+    const requestId = await creerDemandeSignature(nomDemande);
+
+    // 3. Uploader le PDF dans la demande
     const nomFichier = `bail-${location.locataire.nom.toLowerCase()}-box${location.box.numero}.pdf`;
-    const fileId = await uploadFichier(pdfBuffer, nomFichier);
+    const documentId = await ajouterDocument(requestId, pdfBuffer, nomFichier);
 
-    // 3. Créer la transaction
-    const nomTransaction = `Bail ${location.box.bien.nom} · Box ${location.box.numero} · ${location.locataire.nom} ${location.locataire.prenom}`;
-    const { txId, docId } = await creerTransaction(nomTransaction, fileId);
-
-    // 4. Champs de signature
-    const champBailleurId = await ajouterChampSignature(txId, docId, "bailleur");
-    const champLocataireId = await ajouterChampSignature(txId, docId, "locataire");
-
-    // 5. Participants (bailleur en premier, locataire en second)
-    const telephoneBailleur = "";
-    const telephoneLocataire = location.locataire.telephone ?? "";
-
-    await ajouterParticipant(txId, {
-      prenom: admin?.nomBailleur?.split(" ")[0] ?? "Bailleur",
-      nom: admin?.nomBailleur?.split(" ").slice(1).join(" ") ?? "",
+    // 4. Ajouter les signataires avec leur champ de signature
+    const nomsBailleur = (admin?.nomBailleur ?? "").split(" ");
+    await ajouterSignataire(requestId, documentId, "bailleur", {
+      prenom: nomsBailleur[0] ?? "Bailleur",
+      nom: nomsBailleur.slice(1).join(" ") || ".",
       email: admin?.email ?? "",
-      telephone: telephoneBailleur,
-      fieldId: champBailleurId,
     });
-    await ajouterParticipant(txId, {
+    await ajouterSignataire(requestId, documentId, "locataire", {
       prenom: location.locataire.prenom,
       nom: location.locataire.nom,
       email: location.locataire.email,
-      telephone: telephoneLocataire,
-      fieldId: champLocataireId,
+      telephone: location.locataire.telephone ?? undefined,
     });
 
-    // 6. Démarrer (Universign envoie les emails)
-    await demarrerTransaction(txId);
+    // 5. Activer la demande (YouSign envoie les emails)
+    await activerDemande(requestId);
 
-    // 7. Sauvegarder l'ID de transaction en base
+    // 6. Sauvegarder l'ID de la demande en base
     await prisma.location.update({
       where: { id: locationId },
-      data: { bailTransactionId: txId, bailStatutSignature: "en_attente" },
+      data: { bailTransactionId: requestId, bailStatutSignature: "en_attente" },
     });
 
-    return NextResponse.json({ success: true, transactionId: txId });
+    return NextResponse.json({ success: true, transactionId: requestId });
   } catch (err) {
-    console.error("Universign erreur:", err);
+    console.error("YouSign erreur:", err);
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Erreur Universign" },
+      { error: err instanceof Error ? err.message : "Erreur YouSign" },
       { status: 500 },
     );
   }
