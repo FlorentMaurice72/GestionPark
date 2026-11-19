@@ -27,6 +27,8 @@ export function PaiementModal({ locationId, locataireLabel, boxNumero, mois, ann
     return resultat;
   }, ETAT_INITIAL);
 
+  const uid = `pm-${locationId}`;
+
   return (
     <>
       <button
@@ -39,6 +41,9 @@ export function PaiementModal({ locationId, locataireLabel, boxNumero, mois, ann
 
       {ouvert && (
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={`${uid}-titre`}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
           onClick={() => setOuvert(false)}
         >
@@ -46,7 +51,7 @@ export function PaiementModal({ locationId, locataireLabel, boxNumero, mois, ann
             onClick={(e) => e.stopPropagation()}
             className="w-full max-w-sm rounded-lg bg-white p-6 shadow-lg dark:bg-neutral-900"
           >
-            <h2 className="mb-1 text-sm font-semibold text-neutral-900 dark:text-neutral-100">
+            <h2 id={`${uid}-titre`} className="mb-1 text-sm font-semibold text-neutral-900 dark:text-neutral-100">
               Nouveau paiement
             </h2>
             <p className="mb-4 text-xs text-neutral-500">
@@ -58,8 +63,9 @@ export function PaiementModal({ locationId, locataireLabel, boxNumero, mois, ann
 
               <div className="flex gap-3">
                 <div className="flex-1">
-                  <label className="mb-1 block text-xs font-medium text-neutral-500">Mois</label>
+                  <label htmlFor={`${uid}-mois`} className="mb-1 block text-xs font-medium text-neutral-500">Mois</label>
                   <input
+                    id={`${uid}-mois`}
                     type="number"
                     name="mois"
                     min={1}
@@ -70,8 +76,9 @@ export function PaiementModal({ locationId, locataireLabel, boxNumero, mois, ann
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="mb-1 block text-xs font-medium text-neutral-500">Année</label>
+                  <label htmlFor={`${uid}-annee`} className="mb-1 block text-xs font-medium text-neutral-500">Année</label>
                   <input
+                    id={`${uid}-annee`}
                     type="number"
                     name="annee"
                     defaultValue={annee}
@@ -82,8 +89,9 @@ export function PaiementModal({ locationId, locataireLabel, boxNumero, mois, ann
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium text-neutral-500">Montant (€)</label>
+                <label htmlFor={`${uid}-montant`} className="mb-1 block text-xs font-medium text-neutral-500">Montant (€)</label>
                 <input
+                  id={`${uid}-montant`}
                   type="number"
                   name="montant"
                   step="0.01"
@@ -94,8 +102,9 @@ export function PaiementModal({ locationId, locataireLabel, boxNumero, mois, ann
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium text-neutral-500">Date de paiement</label>
+                <label htmlFor={`${uid}-date`} className="mb-1 block text-xs font-medium text-neutral-500">Date de paiement</label>
                 <input
+                  id={`${uid}-date`}
                   type="date"
                   name="datePaiement"
                   defaultValue={todayISO()}
@@ -105,8 +114,9 @@ export function PaiementModal({ locationId, locataireLabel, boxNumero, mois, ann
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-medium text-neutral-500">Mode</label>
+                <label htmlFor={`${uid}-mode`} className="mb-1 block text-xs font-medium text-neutral-500">Mode</label>
                 <input
+                  id={`${uid}-mode`}
                   type="text"
                   name="mode"
                   placeholder="virement"
@@ -115,7 +125,7 @@ export function PaiementModal({ locationId, locataireLabel, boxNumero, mois, ann
                 />
               </div>
 
-              {etat.error && <p className="text-sm text-red-600 dark:text-red-400">{etat.error}</p>}
+              {etat.error && <p role="alert" className="text-sm text-red-600 dark:text-red-400">{etat.error}</p>}
 
               <div className="flex justify-end gap-2 pt-2">
                 <button

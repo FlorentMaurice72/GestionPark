@@ -88,7 +88,7 @@ export function BailSignatureSection({
           </a>
         </div>
         <p className="text-xs text-neutral-500">
-          Liens de signature envoyés à <strong>{locataireEmail}</strong> et <strong>{bailleurEmail}</strong> par Universign.
+          Liens de signature envoyés à <strong>{locataireEmail}</strong> et <strong>{bailleurEmail}</strong> par YouSign.
         </p>
       </div>
     );

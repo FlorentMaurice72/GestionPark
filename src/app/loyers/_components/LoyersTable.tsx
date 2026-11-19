@@ -96,14 +96,14 @@ export function LoyersTable({ lignes, afficherColonneBien, mois, annee }: Props)
         <table className="w-full min-w-[720px] text-sm">
           <thead>
             <tr className="border-b border-neutral-200 text-left text-xs font-medium text-neutral-500 dark:border-neutral-800">
-              {afficherColonneBien && <th className="px-4 py-3">Bien</th>}
-              <th className="px-4 py-3">Box</th>
-              <th className="px-4 py-3">Locataire</th>
-              <th className="px-4 py-3">Loyer</th>
-              <th className="px-4 py-3">Statut</th>
-              <th className="px-4 py-3">Montant reçu</th>
-              <th className="px-4 py-3">Impayés cumulés</th>
-              <th className="px-4 py-3">Actions</th>
+              {afficherColonneBien && <th scope="col" className="px-4 py-3">Bien</th>}
+              <th scope="col" className="px-4 py-3">Box</th>
+              <th scope="col" className="px-4 py-3">Locataire</th>
+              <th scope="col" className="px-4 py-3">Loyer</th>
+              <th scope="col" className="px-4 py-3">Statut</th>
+              <th scope="col" className="px-4 py-3">Montant reçu</th>
+              <th scope="col" className="px-4 py-3">Impayés cumulés</th>
+              <th scope="col" className="px-4 py-3">Actions</th>
             </tr>
           </thead>
           <tbody>

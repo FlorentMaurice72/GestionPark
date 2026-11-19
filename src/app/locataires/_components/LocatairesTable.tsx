@@ -57,11 +57,11 @@ export function LocatairesTable({ locataires }: { locataires: LocataireListItem[
         <table className="w-full min-w-[640px] text-sm">
           <thead>
             <tr className="border-b border-neutral-200 text-left text-xs font-medium text-neutral-500 dark:border-neutral-800">
-              <th className="px-4 py-3">Nom</th>
-              <th className="px-4 py-3">Bien / Box</th>
-              <th className="px-4 py-3">Loyer</th>
-              <th className="px-4 py-3">Statut</th>
-              <th className="px-4 py-3">Contact</th>
+              <th scope="col" className="px-4 py-3">Nom</th>
+              <th scope="col" className="px-4 py-3">Bien / Box</th>
+              <th scope="col" className="px-4 py-3">Loyer</th>
+              <th scope="col" className="px-4 py-3">Statut</th>
+              <th scope="col" className="px-4 py-3">Contact</th>
             </tr>
           </thead>
           <tbody>

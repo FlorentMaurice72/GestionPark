@@ -21,13 +21,13 @@ export function DocumentsTable({ documents }: { documents: DocumentListItem[] })
       <table className="w-full min-w-[720px] text-sm">
         <thead>
           <tr className="border-b border-neutral-200 text-left text-xs font-medium text-neutral-500 dark:border-neutral-800">
-            <th className="px-4 py-3">Date</th>
-            <th className="px-4 py-3">Type</th>
-            <th className="px-4 py-3">Nom</th>
-            <th className="px-4 py-3">Bien</th>
-            <th className="px-4 py-3">Locataire</th>
-            <th className="px-4 py-3">Montant</th>
-            <th className="px-4 py-3">Actions</th>
+            <th scope="col" className="px-4 py-3">Date</th>
+            <th scope="col" className="px-4 py-3">Type</th>
+            <th scope="col" className="px-4 py-3">Nom</th>
+            <th scope="col" className="px-4 py-3">Bien</th>
+            <th scope="col" className="px-4 py-3">Locataire</th>
+            <th scope="col" className="px-4 py-3">Montant</th>
+            <th scope="col" className="px-4 py-3">Actions</th>
           </tr>
         </thead>
         <tbody>

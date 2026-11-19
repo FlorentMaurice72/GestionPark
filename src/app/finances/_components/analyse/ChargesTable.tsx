@@ -45,11 +45,11 @@ export function ChargesTable({ charges }: { charges: LigneCharge[] }) {
           <table className="w-full min-w-[560px] text-sm">
             <thead>
               <tr className="border-b border-neutral-200 text-left text-xs font-medium text-neutral-500 dark:border-neutral-800">
-                <th className="px-4 py-3">Date</th>
-                <th className="px-4 py-3">Bien</th>
-                <th className="px-4 py-3">Type</th>
-                <th className="px-4 py-3">Description</th>
-                <th className="px-4 py-3">Montant</th>
+                <th scope="col" className="px-4 py-3">Date</th>
+                <th scope="col" className="px-4 py-3">Bien</th>
+                <th scope="col" className="px-4 py-3">Type</th>
+                <th scope="col" className="px-4 py-3">Description</th>
+                <th scope="col" className="px-4 py-3">Montant</th>
               </tr>
             </thead>
             <tbody>

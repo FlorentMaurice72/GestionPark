@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRef, useState } from "react";
 import type { OptionSimple } from "@/lib/locataires/data";
 
 interface Props {
@@ -14,6 +15,8 @@ export function FiltresLocataires({ biens, statut, bienId, recherche }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [rechercheLocale, setRechercheLocale] = useState(recherche);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   function navigate(updates: Record<string, string | null>) {
     const params = new URLSearchParams(searchParams.toString());
@@ -25,6 +28,14 @@ export function FiltresLocataires({ biens, statut, bienId, recherche }: Props) {
       }
     }
     router.push(`${pathname}?${params.toString()}`);
+  }
+
+  function handleRecherche(valeur: string) {
+    setRechercheLocale(valeur);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      navigate({ q: valeur });
+    }, 400);
   }
 
   return (
@@ -62,8 +73,8 @@ export function FiltresLocataires({ biens, statut, bienId, recherche }: Props) {
         <label className="mb-1 block text-xs font-medium text-neutral-500">Recherche (nom)</label>
         <input
           type="search"
-          defaultValue={recherche}
-          onChange={(e) => navigate({ q: e.target.value })}
+          value={rechercheLocale}
+          onChange={(e) => handleRecherche(e.target.value)}
           placeholder="Nom ou prénom…"
           className="rounded-md border border-neutral-300 px-2 py-1.5 text-sm dark:border-neutral-700 dark:bg-neutral-800"
         />

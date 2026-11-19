@@ -67,11 +67,11 @@ export default async function BienDetailPage({ params }: { params: Promise<{ id:
           <table className="w-full min-w-[560px] text-sm">
             <thead>
               <tr className="border-b border-neutral-200 text-left text-xs font-medium text-neutral-500 dark:border-neutral-800">
-                <th className="px-4 py-3">Numéro</th>
-                <th className="px-4 py-3">Superficie</th>
-                <th className="px-4 py-3">Statut</th>
-                <th className="px-4 py-3">Locataire</th>
-                <th className="px-4 py-3">Actions</th>
+                <th scope="col" className="px-4 py-3">Numéro</th>
+                <th scope="col" className="px-4 py-3">Superficie</th>
+                <th scope="col" className="px-4 py-3">Statut</th>
+                <th scope="col" className="px-4 py-3">Locataire</th>
+                <th scope="col" className="px-4 py-3">Actions</th>
               </tr>
             </thead>
             <tbody>

@@ -180,12 +180,12 @@ export default async function LocataireDetailPage({ params }: { params: Promise<
             <table className="w-full min-w-[560px] text-sm">
               <thead>
                 <tr className="border-b border-neutral-200 text-left text-xs font-medium text-neutral-500 dark:border-neutral-800">
-                  <th className="px-4 py-3">Bien / Box</th>
-                  <th className="px-4 py-3">Période</th>
-                  <th className="px-4 py-3">Statut</th>
-                  <th className="px-4 py-3">Loyer</th>
-                  <th className="px-4 py-3">Encaissé</th>
-                  <th className="px-4 py-3">Solde</th>
+                  <th scope="col" className="px-4 py-3">Bien / Box</th>
+                  <th scope="col" className="px-4 py-3">Période</th>
+                  <th scope="col" className="px-4 py-3">Statut</th>
+                  <th scope="col" className="px-4 py-3">Loyer</th>
+                  <th scope="col" className="px-4 py-3">Encaissé</th>
+                  <th scope="col" className="px-4 py-3">Solde</th>
                 </tr>
               </thead>
               <tbody>
