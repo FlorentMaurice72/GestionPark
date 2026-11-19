@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { typeDocumentDepuisCharge, TYPES_CHARGE, type TypeCharge } from "@/lib/documents/types";
 
@@ -14,6 +15,10 @@ function estTypeCharge(valeur: unknown): valeur is TypeCharge {
 }
 
 export async function creerCharge(_prevState: ActionState, formData: FormData): Promise<ActionState> {
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "Non authentifié." };
+  const userId = parseInt(session.user.id);
+
   const bienId = Number(formData.get("bienId"));
   const chargeType = formData.get("chargeType");
   const chargeMontant = Number(formData.get("chargeMontant"));
@@ -29,7 +34,7 @@ export async function creerCharge(_prevState: ActionState, formData: FormData): 
     return { success: false, error: "Date invalide." };
   }
 
-  const bien = await prisma.bien.findUnique({ where: { id: bienId } });
+  const bien = await prisma.bien.findUnique({ where: { id: bienId, utilisateurId: userId } });
   if (!bien) return { success: false, error: "Bien introuvable." };
 
   await prisma.document.create({

@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { envoyerEmailRelance, EmailNonConfigure } from "@/lib/email";
 
@@ -14,6 +15,10 @@ export async function creerRelance(
   _prevState: CreerRelanceState,
   formData: FormData,
 ): Promise<CreerRelanceState> {
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "Non authentifié." };
+  const userId = parseInt(session.user.id);
+
   const locationId = Number(formData.get("locationId"));
   const canal = formData.get("canal");
   const contenuTexte = formData.get("contenuTexte");
@@ -28,8 +33,8 @@ export async function creerRelance(
     return { success: false, error: "Texte invalide." };
   }
 
-  const location = await prisma.location.findUnique({
-    where: { id: locationId },
+  const location = await prisma.location.findFirst({
+    where: { id: locationId, box: { bien: { utilisateurId: userId } } },
     include: { locataire: { select: { email: true } } },
   });
   if (!location) {

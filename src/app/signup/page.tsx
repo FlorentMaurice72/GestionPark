@@ -1,4 +1,5 @@
 import { randomBytes } from "crypto";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
@@ -11,6 +12,16 @@ function genererCodeParrainage(): string {
 
 async function inscrire(formData: FormData) {
   "use server";
+
+  // Rate limiting : max 5 inscriptions par IP sur 15 minutes (réutilise tentativeConnexion)
+  const hdrs = await headers();
+  const ip = hdrs.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const cleIp = `signup:${ip}`;
+  const fenetre = new Date(Date.now() - 15 * 60 * 1000);
+  const tentativesIp = await prisma.tentativeConnexion.count({
+    where: { email: cleIp, reussie: false, createdAt: { gte: fenetre } },
+  });
+  if (tentativesIp >= 5) redirect("/signup?error=trop-de-tentatives");
 
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
@@ -28,7 +39,10 @@ async function inscrire(formData: FormData) {
     const msg = err instanceof Error ? err.message : String(err);
     redirect(`/signup?error=db&detail=${encodeURIComponent(msg.slice(0, 200))}`);
   }
-  if (existant) redirect("/signup?error=email-pris");
+  if (existant) {
+    await prisma.tentativeConnexion.create({ data: { email: cleIp, reussie: false } });
+    redirect("/signup?error=email-pris");
+  }
 
   try {
     const passwordHash = await hashPassword(password);
@@ -84,6 +98,7 @@ export default async function SignupPage({
     "mdp-trop-court": "Le mot de passe doit contenir au moins 8 caractères.",
     "mdp-different": "Les mots de passe ne correspondent pas.",
     "email-pris": "Un compte existe déjà avec cet email.",
+    "trop-de-tentatives": "Trop de tentatives. Réessayez dans 15 minutes.",
     "db": `Erreur base de données : ${detail ?? "inconnue"}`,
   };
 

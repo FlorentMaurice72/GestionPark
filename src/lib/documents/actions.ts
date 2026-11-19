@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { TYPES_DOCUMENT, type TypeDocument } from "./types";
 import { genererLettreConge, genererLettreRelanceAR } from "./lettres";
@@ -16,6 +17,10 @@ function estTypeDocument(valeur: unknown): valeur is TypeDocument {
 }
 
 export async function creerDocument(_prevState: ActionState, formData: FormData): Promise<ActionState> {
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "Non authentifié." };
+  const userId = parseInt(session.user.id);
+
   const type = formData.get("type");
   const bienId = Number(formData.get("bienId"));
   const locataireIdBrut = String(formData.get("locataireId") ?? "").trim();
@@ -34,7 +39,7 @@ export async function creerDocument(_prevState: ActionState, formData: FormData)
     return { success: false, error: "Date invalide." };
   }
 
-  const bien = await prisma.bien.findUnique({ where: { id: bienId } });
+  const bien = await prisma.bien.findUnique({ where: { id: bienId, utilisateurId: userId } });
   if (!bien) return { success: false, error: "Bien introuvable." };
 
   const fileIdBrut = String(formData.get("fileId") ?? "").trim();
@@ -58,11 +63,20 @@ export async function creerDocument(_prevState: ActionState, formData: FormData)
 }
 
 export async function supprimerDocument(_prevState: ActionState, formData: FormData): Promise<ActionState> {
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "Non authentifié." };
+  const userId = parseInt(session.user.id);
+
   const id = Number(formData.get("id"));
   if (!Number.isInteger(id) || id <= 0) return { success: false, error: "Document invalide." };
 
-  const document = await prisma.document.findUnique({ where: { id } });
-  if (!document) return { success: false, error: "Document introuvable." };
+  const document = await prisma.document.findUnique({
+    where: { id },
+    include: { bien: { select: { utilisateurId: true } } },
+  });
+  if (!document || document.bien.utilisateurId !== userId) {
+    return { success: false, error: "Document introuvable." };
+  }
 
   await prisma.document.delete({ where: { id } });
 
@@ -80,13 +94,17 @@ export async function supprimerDocument(_prevState: ActionState, formData: FormD
 }
 
 export async function genererRelanceAR(_prevState: ActionState, formData: FormData): Promise<ActionState> {
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "Non authentifié." };
+  const userId = parseInt(session.user.id);
+
   const locataireId = Number(formData.get("locataireId"));
   if (!Number.isInteger(locataireId) || locataireId <= 0) {
     return { success: false, error: "Locataire invalide." };
   }
 
   const location = await prisma.location.findFirst({
-    where: { locataireId, statut: "actif" },
+    where: { locataireId, statut: "actif", box: { bien: { utilisateurId: userId } } },
     include: { box: { include: { bien: true } }, locataire: true },
   });
   if (!location) return { success: false, error: "Aucune location active pour ce locataire." };
@@ -131,6 +149,10 @@ export async function genererRelanceAR(_prevState: ActionState, formData: FormDa
 }
 
 export async function genererDemandeConge(_prevState: ActionState, formData: FormData): Promise<ActionState> {
+  const session = await auth();
+  if (!session?.user?.id) return { success: false, error: "Non authentifié." };
+  const userId = parseInt(session.user.id);
+
   const locataireId = Number(formData.get("locataireId"));
   const dateFin = formData.get("dateFin");
 
@@ -142,7 +164,7 @@ export async function genererDemandeConge(_prevState: ActionState, formData: For
   }
 
   const location = await prisma.location.findFirst({
-    where: { locataireId, statut: "actif" },
+    where: { locataireId, statut: "actif", box: { bien: { utilisateurId: userId } } },
     include: { box: { include: { bien: true } }, locataire: true },
   });
   if (!location) return { success: false, error: "Aucune location active pour ce locataire." };

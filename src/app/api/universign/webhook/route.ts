@@ -1,3 +1,4 @@
+import { createHmac, timingSafeEqual } from "crypto";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { telechargerPdfSigne } from "@/lib/yousign";
@@ -12,10 +13,30 @@ interface YouSignEvent {
   };
 }
 
+async function verifierSignatureYouSign(req: Request, body: string): Promise<boolean> {
+  const secret = process.env.YOUSIGN_WEBHOOK_SECRET;
+  if (!secret) {
+    // Pas de secret configuré → on accepte mais on log un avertissement
+    console.warn("YOUSIGN_WEBHOOK_SECRET non défini — vérification de signature ignorée");
+    return true;
+  }
+  const signature = req.headers.get("x-yousign-signature-256") ?? "";
+  // Format attendu : "sha256=<hex>"
+  const expected = "sha256=" + createHmac("sha256", secret).update(body).digest("hex");
+  if (signature.length !== expected.length) return false;
+  return timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+}
+
 export async function POST(req: Request) {
+  const rawBody = await req.text();
+
+  if (!await verifierSignatureYouSign(req, rawBody)) {
+    return NextResponse.json({ error: "Signature invalide" }, { status: 401 });
+  }
+
   let event: YouSignEvent;
   try {
-    event = await req.json() as YouSignEvent;
+    event = JSON.parse(rawBody) as YouSignEvent;
   } catch {
     return NextResponse.json({ error: "Payload invalide" }, { status: 400 });
   }
