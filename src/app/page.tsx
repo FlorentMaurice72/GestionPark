@@ -17,6 +17,7 @@ import { OnboardingGuide } from "./_components/OnboardingGuide";
 import { ProchainesEcheances } from "./_components/ProchainesEcheances";
 import { getEcheancierData } from "@/lib/echeancier/data";
 import { DemoTour } from "./_components/DemoTour";
+import { TourStarter } from "./_components/TourStarter";
 
 const formatteurDate = new Intl.DateTimeFormat("fr-FR", {
   weekday: "long",
@@ -69,6 +70,7 @@ export default async function DashboardPage() {
       </header>
 
       <DemoTour isDemo={isDemo} isNouveauCompte={isNouveauCompte} />
+      <TourStarter isDemo={isDemo} isNouveauCompte={isNouveauCompte} />
 
       <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6">
         <OnboardingGuide

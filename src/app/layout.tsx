@@ -19,6 +19,7 @@ import { CrispChat } from "@/components/CrispChat";
 import { CookieBanner } from "@/components/CookieBanner";
 import { PlausibleAnalytics } from "@/components/PlausibleAnalytics";
 import { ToastProvider } from "@/components/Toast";
+import { SpotlightTour } from "./_components/SpotlightTour";
 
 const SITE_URL = process.env.NEXT_PUBLIC_URL ?? "https://gestionpark.fr";
 
@@ -79,6 +80,7 @@ export default function RootLayout({
         <ToastProvider>
           <div className="flex-1">{children}</div>
         </ToastProvider>
+        <SpotlightTour />
         <Footer />
         <CrispChat />
         <CookieBanner />

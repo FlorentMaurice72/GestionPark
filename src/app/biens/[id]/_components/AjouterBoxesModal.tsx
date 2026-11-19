@@ -21,6 +21,7 @@ export function AjouterBoxesModal({ bienId }: { bienId: number }) {
       <button
         type="button"
         onClick={() => setOuvert(true)}
+        data-tour="ajouter-boxes"
         className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
       >
         Ajouter des boxs
