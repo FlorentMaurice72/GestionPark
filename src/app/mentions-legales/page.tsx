@@ -22,9 +22,10 @@ export default function MentionsLegalesPage() {
           <p>
             <strong>Nom :</strong> Florent Maurice<br />
             <strong>Statut juridique :</strong> Entrepreneur individuel<br />
-            <strong>SIRET :</strong> [À compléter à l&apos;obtention]<br />
-            <strong>Adresse :</strong> [À compléter]<br />
-            <strong>Email :</strong> contact@gestionpark.fr
+            <strong>SIRET :</strong> 13266020000016<br />
+            <strong>N° TVA intracommunautaire :</strong> FR88132660200<br />
+            <strong>Adresse :</strong> 4 Place Lecesve, 72220 Ecommoy, France<br />
+            <strong>Email :</strong> contact@gestion-park.fr
           </p>
         </section>
 

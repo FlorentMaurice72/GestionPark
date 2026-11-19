@@ -23,7 +23,7 @@ export default function ConfidentialitePage() {
           <h2 className="mb-3 text-base font-semibold text-neutral-900 dark:text-neutral-100">1. Responsable du traitement</h2>
           <p>
             Florent Maurice — GestionPark<br />
-            Email : contact@gestionpark.fr
+            Email : contact@gestion-park.fr
           </p>
         </section>
 
@@ -137,7 +137,7 @@ export default function ConfidentialitePage() {
             <li>Opposition au traitement</li>
           </ul>
           <p className="mt-3">
-            Pour exercer ces droits, contactez-nous à : <strong>contact@gestionpark.fr</strong><br />
+            Pour exercer ces droits, contactez-nous à : <strong>contact@gestion-park.fr</strong><br />
             En cas de réclamation, vous pouvez saisir la{" "}
             <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer" className="underline">
               CNIL

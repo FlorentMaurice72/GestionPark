@@ -162,7 +162,7 @@ export default function CguPage() {
 
         <section>
           <h2 className="mb-3 text-base font-semibold text-neutral-900 dark:text-neutral-100">Contact</h2>
-          <p>Pour toute question relative aux présentes CGU/CGV : <strong>contact@gestionpark.fr</strong></p>
+          <p>Pour toute question relative aux présentes CGU/CGV : <strong>contact@gestion-park.fr</strong></p>
         </section>
 
       </div>
