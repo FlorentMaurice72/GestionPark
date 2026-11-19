@@ -22,10 +22,11 @@ const TABS_BOTTOM = [
 ];
 
 const PLUS_ITEMS = [
-  { href: "/alertes",  label: "🔔 Alertes" },
-  { href: "/finances", label: "📊 Finances" },
-  { href: "/guide",    label: "📖 Guide" },
-  { href: "/profil",   label: "⚙️ Mon compte" },
+  { href: "/alertes",    label: "🔔 Alertes" },
+  { href: "/finances",   label: "📊 Finances" },
+  { href: "/guide",      label: "📖 Guide" },
+  { href: "/parrainage", label: "🎁 Parrainer un ami" },
+  { href: "/profil",     label: "⚙️ Mon compte" },
 ];
 
 // ── SVG icons ────────────────────────────────────────────────────────────────
@@ -204,7 +205,7 @@ function UserMenu({
           </div>
 
           <div className="border-t border-neutral-100 py-1 dark:border-neutral-800">
-            <MenuItem href="#" icon="🌐" label="Communauté" onClick={() => setOpen(false)} />
+            <MenuItem href="/parrainage" icon="🎁" label="Parrainer un ami" onClick={() => setOpen(false)} />
             <button
               type="button"
               onClick={() => {
