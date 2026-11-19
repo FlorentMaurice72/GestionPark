@@ -65,7 +65,7 @@ export async function envoyerEmailBienvenue(destinataire: string): Promise<void>
   if (isDemoAddress(destinataire)) return;
   if (!process.env.RESEND_API_KEY) return; /* non-bloquant si pas configuré */
   const resend = new Resend(process.env.RESEND_API_KEY);
-  const siteUrl = process.env.NEXT_PUBLIC_URL ?? "https://gestionpark.fr";
+  const siteUrl = process.env.NEXT_PUBLIC_URL ?? "https://gestion-park.fr";
   await resend.emails.send({
     from: EMAIL_FROM,
     to: destinataire,
@@ -130,8 +130,8 @@ export async function envoyerEmailBienvenue(destinataire: string): Promise<void>
         <!-- Footer -->
         <tr><td style="background:#F8FAFC;padding:16px 32px;border-top:1px solid #E2E8F0">
           <p style="margin:0;color:#94A3B8;font-size:11px;text-align:center">
-            GestionPark · contact@gestionpark.fr<br>
-            Vous recevez cet email car vous venez de créer un compte sur gestionpark.fr.
+            GestionPark · contact@gestion-park.fr<br>
+            Vous recevez cet email car vous venez de créer un compte sur gestion-park.fr.
           </p>
         </td></tr>
 
@@ -182,7 +182,7 @@ export async function envoyerEmailRappelEssai(
   if (isDemoAddress(destinataire)) return;
   if (!process.env.RESEND_API_KEY) return;
   const resend = new Resend(process.env.RESEND_API_KEY);
-  const siteUrl = process.env.NEXT_PUBLIC_URL ?? "https://gestionpark.fr";
+  const siteUrl = process.env.NEXT_PUBLIC_URL ?? "https://gestion-park.fr";
   const j = opts.joursRestants;
   await resend.emails.send({
     from: EMAIL_FROM,
@@ -219,7 +219,7 @@ export async function envoyerEmailRappelEssai(
         </td></tr>
         <tr><td style="background:#F8FAFC;padding:16px 32px;border-top:1px solid #E2E8F0">
           <p style="margin:0;color:#94A3B8;font-size:11px;text-align:center">
-            GestionPark · contact@gestionpark.fr
+            GestionPark · contact@gestion-park.fr
           </p>
         </td></tr>
       </table>
