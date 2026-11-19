@@ -198,9 +198,24 @@ function VueBiens() {
   );
 }
 
+/* ── SVG curseur main ───────────────────────────────────────────── */
+function CurseurSVG() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 3l14 9-7 1-4 7L5 3z" />
+    </svg>
+  );
+}
+
 /* ── Composant principal ─────────────────────────────────────────── */
 export function DashboardPreview() {
   const [ongletActif, setOngletActif] = useState<Onglet>("dashboard");
+  const [hasInteracted, setHasInteracted] = useState(false);
+
+  function handleClick(id: Onglet) {
+    setOngletActif(id);
+    if (!hasInteracted) setHasInteracted(true);
+  }
 
   return (
     <div
@@ -216,14 +231,56 @@ export function DashboardPreview() {
         </div>
         <div
           className="mx-auto flex items-center gap-2 rounded-md border border-neutral-200 bg-white px-3 py-1 text-xs text-neutral-400 dark:border-neutral-700 dark:bg-neutral-900"
-          style={{ minWidth: 180, maxWidth: 280 }}
+          style={{ minWidth: 180, maxWidth: 260 }}
         >
           <span style={{ color: "#0097A7" }}>🔒</span> gestion-park.fr
+        </div>
+        {/* Badge "Interactif" dans la barre du navigateur */}
+        <div
+          className="flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold text-white flex-shrink-0"
+          style={{ backgroundColor: "#0097A7" }}
+        >
+          <CurseurSVG />
+          <span className="hidden sm:inline">Interactif</span>
         </div>
       </div>
 
       {/* Layout app */}
-      <div className="flex" style={{ minHeight: 340 }}>
+      <div className="relative flex" style={{ minHeight: 340 }}>
+
+        {/* ── Tooltip "Explorez" (desktop uniquement, disparaît au premier clic) */}
+        <div
+          className="pointer-events-none absolute z-20 hidden sm:block"
+          style={{ left: 60, top: 16, transition: "opacity 0.6s, transform 0.6s", opacity: hasInteracted ? 0 : 1, transform: hasInteracted ? "translateX(-6px)" : "translateX(0)" }}
+          aria-hidden="true"
+        >
+          {/* Flèche pointant vers la gauche (sidebar) */}
+          <div className="relative">
+            <div
+              className="relative flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold shadow-lg"
+              style={{ backgroundColor: "#0047AB", color: "white", whiteSpace: "nowrap" }}
+            >
+              {/* Triangle gauche */}
+              <span
+                className="absolute"
+                style={{ left: -7, top: "50%", transform: "translateY(-50%)", width: 0, height: 0, borderTop: "6px solid transparent", borderBottom: "6px solid transparent", borderRight: "7px solid #0047AB" }}
+              />
+              <CurseurSVG />
+              Explorez les sections
+            </div>
+            {/* Indicateurs des 4 onglets */}
+            <div className="mt-1.5 flex justify-center gap-1.5">
+              {ONGLETS.map((o, i) => (
+                <div
+                  key={o.id}
+                  className="rounded-full"
+                  style={{ width: i === 0 ? 20 : 8, height: 4, backgroundColor: i === 0 ? "#0047AB" : "#93c5fd", transition: "width 0.3s" }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
         {/* Sidebar */}
         <div
           className="hidden sm:flex flex-col items-center gap-1 border-r border-neutral-200 bg-white px-2 py-4 dark:border-neutral-700 dark:bg-neutral-900"
@@ -232,13 +289,20 @@ export function DashboardPreview() {
           {ONGLETS.map((o) => (
             <button
               key={o.id}
-              onClick={() => setOngletActif(o.id)}
+              onClick={() => handleClick(o.id)}
               title={o.label}
-              className={`flex h-9 w-9 items-center justify-center rounded-lg text-sm transition-all ${
+              className={`relative flex h-9 w-9 items-center justify-center rounded-lg text-sm transition-all ${
                 ongletActif === o.id ? "text-white shadow-sm scale-105" : "text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800"
               }`}
               style={ongletActif === o.id ? { backgroundColor: "#0047AB" } : {}}
             >
+              {/* Anneau pulsant avant la première interaction */}
+              {!hasInteracted && ongletActif !== o.id && (
+                <span
+                  className="absolute inset-0 animate-ping rounded-lg"
+                  style={{ backgroundColor: "#0047AB", opacity: 0.2 }}
+                />
+              )}
               {o.icon}
             </button>
           ))}
@@ -246,17 +310,20 @@ export function DashboardPreview() {
 
         {/* Contenu principal */}
         <div className="flex-1 overflow-hidden" style={{ background: "#f8fafc" }}>
-          {/* Onglets mobiles */}
+          {/* Onglets mobiles avec pulsing */}
           <div className="flex border-b border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900 sm:hidden">
             {ONGLETS.map((o) => (
               <button
                 key={o.id}
-                onClick={() => setOngletActif(o.id)}
-                className={`flex-1 py-2 text-[11px] font-medium transition-colors ${
+                onClick={() => handleClick(o.id)}
+                className={`relative flex-1 py-2 text-[11px] font-medium transition-colors ${
                   ongletActif === o.id ? "border-b-2 font-semibold" : "text-neutral-400"
                 }`}
                 style={ongletActif === o.id ? { borderColor: "#0047AB", color: "#0047AB" } : {}}
               >
+                {!hasInteracted && ongletActif !== o.id && (
+                  <span className="absolute inset-0 animate-pulse rounded" style={{ backgroundColor: "#0047AB", opacity: 0.06 }} />
+                )}
                 {o.label}
               </button>
             ))}
@@ -284,11 +351,26 @@ export function DashboardPreview() {
         </div>
       </div>
 
-      {/* Invite à cliquer */}
-      <div className="border-t border-neutral-200 bg-white px-4 py-2 text-center dark:border-neutral-700 dark:bg-neutral-900">
-        <p className="text-[10px] text-neutral-400">
-          Cliquez sur les icônes pour explorer les différentes sections →
-        </p>
+      {/* Footer — se met à jour après interaction */}
+      <div className="border-t border-neutral-200 bg-white px-4 py-2.5 dark:border-neutral-700 dark:bg-neutral-900">
+        {hasInteracted ? (
+          <div className="flex items-center justify-center gap-2 text-[10px] text-neutral-400">
+            {ONGLETS.map((o) => (
+              <button
+                key={o.id}
+                onClick={() => handleClick(o.id)}
+                className={`rounded-full px-2 py-0.5 transition-all ${ongletActif === o.id ? "font-semibold text-white" : "hover:bg-neutral-100 dark:hover:bg-neutral-800"}`}
+                style={ongletActif === o.id ? { backgroundColor: "#0047AB" } : {}}
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <p className="animate-pulse text-center text-[10px] font-medium" style={{ color: "#0047AB" }}>
+            ← Cliquez sur les icônes à gauche pour naviguer entre les sections
+          </p>
+        )}
       </div>
     </div>
   );
