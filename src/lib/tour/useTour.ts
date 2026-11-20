@@ -10,7 +10,8 @@ export type TourStep =
   | "btn-importer-csv"
   | "done";
 
-const ORDRE: TourStep[] = [
+// Steps visible in the tour (without "done") — single source of truth
+export const TOUR_STEPS: TourStep[] = [
   "nav-biens",
   "btn-ajouter-bien",
   "form-nouveau-bien",
@@ -18,10 +19,17 @@ const ORDRE: TourStep[] = [
   "btn-ajouter-loc",
   "btn-faire-signer",
   "btn-importer-csv",
-  "done",
 ];
 
+const ORDRE: TourStep[] = [...TOUR_STEPS, "done"];
+
 const CLE = "spotlight-tour-step";
+
+declare global {
+  interface Window {
+    plausible?: (event: string, options?: { props?: Record<string, string> }) => void;
+  }
+}
 
 export function getTourStep(): TourStep | null {
   if (typeof window === "undefined") return null;
@@ -44,11 +52,14 @@ export function advanceTour() {
   const idx = ORDRE.indexOf(current);
   if (idx < ORDRE.length - 1) {
     setTourStep(ORDRE[idx + 1]);
+    window.plausible?.("tour_step", { props: { step: current } });
   }
 }
 
 export function dismissTour() {
+  const current = getTourStep();
   setTourStep("done");
+  window.plausible?.("tour_dismissed", { props: { at_step: current ?? "unknown" } });
 }
 
 export function startTourIfNeeded(isDemo: boolean, isNouveauCompte: boolean) {

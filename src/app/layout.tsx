@@ -21,6 +21,7 @@ import { CookieBanner } from "@/components/CookieBanner";
 import { PlausibleAnalytics } from "@/components/PlausibleAnalytics";
 import { ToastProvider } from "@/components/Toast";
 import { SpotlightTour } from "./_components/SpotlightTour";
+import { TourResumeBar } from "./_components/TourResumeBar";
 
 const SITE_URL = process.env.NEXT_PUBLIC_URL ?? "https://gestionpark.fr";
 
@@ -78,6 +79,7 @@ export default function RootLayout({
       className={`${montserrat.variable} ${lato.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <TourResumeBar />
         <ToastProvider>
           <div className="flex-1">{children}</div>
         </ToastProvider>

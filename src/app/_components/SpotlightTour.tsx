@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { getTourStep, advanceTour, dismissTour, type TourStep } from "@/lib/tour/useTour";
+import { getTourStep, advanceTour, dismissTour, TOUR_STEPS, type TourStep } from "@/lib/tour/useTour";
 
 type StepDef = {
   tourStep: TourStep;
@@ -66,15 +66,7 @@ const LOCATAIREID_STEP: StepDef = {
   nextLabel: "Découvrir l'import CSV →",
 };
 
-const ALL_STEPS: TourStep[] = [
-  "nav-biens",
-  "btn-ajouter-bien",
-  "form-nouveau-bien",
-  "btn-ajouter-box",
-  "btn-ajouter-loc",
-  "btn-faire-signer",
-  "btn-importer-csv",
-];
+// Use TOUR_STEPS from useTour.ts — single source of truth (R2)
 
 export function SpotlightTour() {
   const pathname = usePathname();
@@ -106,17 +98,33 @@ export function SpotlightTour() {
     if (!stepDef || stepDef.tourStep !== currentStep) return;
 
     let cancelled = false;
-    const stepIndex = ALL_STEPS.indexOf(currentStep);
-    const total = ALL_STEPS.length;
+    const stepIndex = TOUR_STEPS.indexOf(currentStep);
+    const total = TOUR_STEPS.length;
 
     async function run() {
       const { driver } = await import("driver.js");
       if (cancelled) return;
 
+      // R1: Wait for the target element to appear, with retries up to 2s
+      let el: Element | null = null;
+      for (let attempt = 0; attempt < 10 && !cancelled; attempt++) {
+        el = document.querySelector(stepDef!.selector);
+        if (el) break;
+        await new Promise((r) => setTimeout(r, 200));
+      }
+      if (!el || cancelled) {
+        // Element never appeared — skip this step gracefully
+        if (!cancelled) {
+          advanceTour();
+          window.dispatchEvent(new Event("gp-tour-ready"));
+        }
+        return;
+      }
+
       driverRef.current?.destroy();
 
       // Build progress dots HTML
-      const dotsHtml = ALL_STEPS.map((_, i) => {
+      const dotsHtml = TOUR_STEPS.map((_, i) => {
         if (i === stepIndex) return `<div class="gp-dot gp-dot-active"></div>`;
         if (i < stepIndex) return `<div class="gp-dot gp-dot-done"></div>`;
         return `<div class="gp-dot"></div>`;
