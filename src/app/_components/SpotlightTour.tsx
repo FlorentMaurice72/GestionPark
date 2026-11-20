@@ -2,71 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { getTourStep, advanceTour, dismissTour, TOUR_STEPS, type TourStep } from "@/lib/tour/useTour";
+import {
+  getTourStep,
+  advanceTour,
+  dismissTour,
+  TOUR_STEPS,
+  TOUR_CONFIG,
+} from "@/lib/tour/useTour";
+import { saveOnboardingStep } from "@/lib/tour/actions";
 
-type StepDef = {
-  tourStep: TourStep;
-  selector: string;
-  title: string;
-  desc: string;
-  nextLabel: string;
-};
-
-const STEPS_BY_PATH: Record<string, StepDef> = {
-  "/": {
-    tourStep: "nav-biens",
-    selector: "[data-tour='nav-biens']",
-    title: "Créez votre premier bien",
-    desc: "Commençons par déclarer votre entrepôt ou parking. Cliquez sur <strong>Mes biens immobiliers</strong> dans la barre de navigation.",
-    nextLabel: "Aller aux biens →",
-  },
-  "/biens": {
-    tourStep: "btn-ajouter-bien",
-    selector: "[data-tour='ajouter-bien']",
-    title: "Ajoutez votre premier bien",
-    desc: "Cliquez sur <strong>+ Ajouter</strong> pour renseigner le nom, le type et l'adresse de votre bien.",
-    nextLabel: "Créer un bien →",
-  },
-  "/biens/nouveau": {
-    tourStep: "form-nouveau-bien",
-    selector: "[data-tour='nouveau-bien-form']",
-    title: "Remplissez les informations",
-    desc: "Renseignez les informations de votre bien. Cliquez ensuite sur <strong>Créer le bien</strong> pour continuer — les boxs s'ajoutent à l'étape suivante.",
-    nextLabel: "J'ai compris",
-  },
-  "/locataires": {
-    tourStep: "btn-ajouter-loc",
-    selector: "[data-tour='ajouter-locataire']",
-    title: "Ajoutez votre premier locataire",
-    desc: "Renseignez les coordonnées de votre locataire et attribuez-lui un box. Le bail est généré automatiquement.",
-    nextLabel: "Créer le locataire →",
-  },
-  "/loyers/import": {
-    tourStep: "btn-importer-csv",
-    selector: "[data-tour='importer-csv']",
-    title: "Importez votre relevé bancaire",
-    desc: "Glissez votre fichier CSV bancaire ici. GestionPark reconnaît automatiquement chaque virement et l'associe au bon locataire.",
-    nextLabel: "Terminer la visite ✓",
-  },
-};
-
-const BIENID_STEP: StepDef = {
-  tourStep: "btn-ajouter-box",
-  selector: "[data-tour='ajouter-boxes']",
-  title: "Ajoutez les boxs",
-  desc: "Votre bien est créé ! Ajoutez maintenant les boxs qui le composent : numéro, superficie et loyer mensuel.",
-  nextLabel: "Ajouter des boxs →",
-};
-
-const LOCATAIREID_STEP: StepDef = {
-  tourStep: "btn-faire-signer",
-  selector: "[data-tour='faire-signer']",
-  title: "Faites signer le bail électroniquement",
-  desc: "Votre locataire est créé ! Envoyez le bail en signature électronique via YouSign. Bailleur et locataire signent depuis leur téléphone.",
-  nextLabel: "Découvrir l'import CSV →",
-};
-
-// Use TOUR_STEPS from useTour.ts — single source of truth (R2)
+// R7: STEPS_BY_PATH / BIENID_STEP / LOCATAIREID_STEP removed — now in TOUR_CONFIG
 
 export function SpotlightTour() {
   const pathname = usePathname();
@@ -87,17 +32,20 @@ export function SpotlightTour() {
     const currentStep = getTourStep();
     if (!currentStep || currentStep === "done") return;
 
-    const isBienId = /^\/biens\/\d+$/.test(pathname);
-    const isLocataireId = /^\/locataires\/\d+$/.test(pathname);
-    const stepDef = isBienId
-      ? BIENID_STEP
-      : isLocataireId
-        ? LOCATAIREID_STEP
-        : STEPS_BY_PATH[pathname];
+    // R7: Single lookup using centralized TOUR_CONFIG
+    const stepCfg = TOUR_CONFIG.find((c) => {
+      if (c.step !== currentStep) return false;
+      return typeof c.path === "string"
+        ? c.path === pathname
+        : c.path.test(pathname);
+    });
 
-    if (!stepDef || stepDef.tourStep !== currentStep) return;
+    if (!stepCfg) return;
 
     let cancelled = false;
+    let activeObserver: MutationObserver | null = null;
+    let activeTimer: ReturnType<typeof setTimeout> | null = null;
+
     const stepIndex = TOUR_STEPS.indexOf(currentStep);
     const total = TOUR_STEPS.length;
 
@@ -105,15 +53,31 @@ export function SpotlightTour() {
       const { driver } = await import("driver.js");
       if (cancelled) return;
 
-      // R1: Wait for the target element to appear, with retries up to 2s
-      let el: Element | null = null;
-      for (let attempt = 0; attempt < 10 && !cancelled; attempt++) {
-        el = document.querySelector(stepDef!.selector);
-        if (el) break;
-        await new Promise((r) => setTimeout(r, 200));
-      }
+      // R8: MutationObserver-based element wait with 3s timeout
+      const el = await new Promise<Element | null>((resolve) => {
+        const immediate = document.querySelector(stepCfg!.selector);
+        if (immediate) return resolve(immediate);
+
+        activeTimer = setTimeout(() => {
+          activeObserver?.disconnect();
+          resolve(null);
+        }, 3000);
+
+        activeObserver = new MutationObserver(() => {
+          const found = document.querySelector(stepCfg!.selector);
+          if (found) {
+            clearTimeout(activeTimer!);
+            activeObserver?.disconnect();
+            resolve(found);
+          }
+        });
+        activeObserver.observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
+      });
+
       if (!el || cancelled) {
-        // Element never appeared — skip this step gracefully
         if (!cancelled) {
           advanceTour();
           window.dispatchEvent(new Event("gp-tour-ready"));
@@ -153,6 +117,8 @@ export function SpotlightTour() {
           dismiss.textContent = "Passer la visite guidée";
           dismiss.onclick = () => {
             dismissTour();
+            // R6: persist to DB
+            saveOnboardingStep("done").catch(() => {});
             d.destroy();
           };
           (popover as unknown as { wrapper: HTMLElement }).wrapper.appendChild(dismiss);
@@ -160,24 +126,27 @@ export function SpotlightTour() {
       });
 
       d.highlight({
-        element: stepDef!.selector,
+        element: stepCfg!.selector,
         popover: {
-          title: stepDef!.title,
-          description: stepDef!.desc,
+          title: stepCfg!.title,
+          description: stepCfg!.desc,
           showButtons: ["next", "close"],
-          nextBtnText: stepDef!.nextLabel,
+          nextBtnText: stepCfg!.nextLabel,
           onNextClick: () => {
             advanceTour();
+            const nextStep = getTourStep();
+            // R6: persist next step to DB (fire-and-forget)
+            if (nextStep) saveOnboardingStep(nextStep).catch(() => {});
             d.destroy();
-            const next = getTourStep();
-            if (next === "btn-ajouter-bien") router.push("/biens");
-            else if (next === "btn-ajouter-loc") router.push("/locataires");
-            else if (next === "btn-importer-csv") router.push("/loyers/import");
+            // R7: autoNavigateTo from config instead of multi-if
+            if (stepCfg!.autoNavigateTo) router.push(stepCfg!.autoNavigateTo);
             // btn-ajouter-box: user submits form → creerBien redirects to /biens/[id]
             // btn-faire-signer: user creates locataire → creerLocataire redirects to /locataires/[id]
           },
           onCloseClick: () => {
             dismissTour();
+            // R6: persist to DB
+            saveOnboardingStep("done").catch(() => {});
             d.destroy();
           },
         },
@@ -186,10 +155,12 @@ export function SpotlightTour() {
       driverRef.current = d;
     }
 
-    const timer = setTimeout(run, 500);
+    run();
+
     return () => {
       cancelled = true;
-      clearTimeout(timer);
+      if (activeTimer !== null) clearTimeout(activeTimer);
+      activeObserver?.disconnect();
       driverRef.current?.destroy();
     };
   // tourRevision triggers a re-run when startTourIfNeeded() fires gp-tour-ready

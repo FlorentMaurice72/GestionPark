@@ -18,6 +18,7 @@ import { ProchainesEcheances } from "./_components/ProchainesEcheances";
 import { getEcheancierData } from "@/lib/echeancier/data";
 import { DemoTour } from "./_components/DemoTour";
 import { TourStarter } from "./_components/TourStarter";
+import type { TourStep } from "@/lib/tour/useTour";
 
 const formatteurDate = new Intl.DateTimeFormat("fr-FR", {
   weekday: "long",
@@ -42,11 +43,18 @@ export default async function DashboardPage() {
   const [data, echeancierData, admin] = await Promise.all([
     getDashboardPageData(userId),
     getEcheancierData(userId),
-    prisma.admin.findUnique({ where: { id: userId }, select: { createdAt: true } }),
+    prisma.admin.findUnique({
+      where: { id: userId },
+      select: { createdAt: true, onboardingStep: true },
+    }),
   ]);
 
   const compteAgeH = admin ? (Date.now() - admin.createdAt.getTime()) / 36e5 : 999;
   const isNouveauCompte = !isDemo && compteAgeH < 48 && data.kpiOccupation.boxesTotal === 0;
+  // R6: server-persisted tour step for cross-device resume
+  const serverStep = !isDemo
+    ? ((admin?.onboardingStep as TourStep | null | undefined) ?? null)
+    : null;
 
   const prochainesEcheances = [
     ...echeancierData.ceMoisCi,
@@ -70,7 +78,7 @@ export default async function DashboardPage() {
       </header>
 
       <DemoTour isDemo={isDemo} isNouveauCompte={isNouveauCompte} />
-      <TourStarter isDemo={isDemo} isNouveauCompte={isNouveauCompte} />
+      <TourStarter isDemo={isDemo} isNouveauCompte={isNouveauCompte} serverStep={serverStep} />
 
       <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6">
         <OnboardingGuide

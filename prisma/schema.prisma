@@ -216,6 +216,8 @@ model Admin {
   adresseBailleur               String?   @map("adresse_bailleur")
   referralCode                  String?   @unique @map("referral_code")
   referredById                  Int?      @map("referred_by_id")
+  // R6: onboarding tour step persisted for cross-device resume
+  onboardingStep                String?   @map("onboarding_step")
 
   biens                      Bien[]
   locataires                 Locataire[]
