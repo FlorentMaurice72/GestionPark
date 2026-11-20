@@ -32,6 +32,14 @@ const ARTICLES = [
     date: "3 novembre 2025",
     tempsLecture: "6 min",
   },
+  {
+    slug: "revision-loyer-icc-irl-box-stockage",
+    titre: "Révision de loyer ICC/IRL pour les boxs de stockage : calcul et application",
+    extrait:
+      "IRL ou ICC ? Quelle formule appliquer ? Comment éviter les erreurs d'indice ? Tout ce qu'il faut savoir pour réviser vos loyers de boxs chaque année.",
+    date: "15 novembre 2025",
+    tempsLecture: "7 min",
+  },
 ];
 
 export default function BlogPage() {

@@ -1,6 +1,88 @@
 import Link from "next/link";
 import { PricingSection } from "./PricingSection";
 import { DashboardPreview } from "./DashboardPreview";
+import { JsonLd } from "@/components/JsonLd";
+
+const SITE_URL = process.env.NEXT_PUBLIC_URL ?? "https://gestionpark.fr";
+
+const SOFTWARE_APP_LD = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "GestionPark",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  url: SITE_URL,
+  description:
+    "Application SaaS de gestion de boxs de stockage pour propriétaires bailleurs. Suivi des loyers, impayés, révision ICC/IRL, import CSV bancaire et quittances PDF automatiques.",
+  offers: {
+    "@type": "Offer",
+    price: "9.90",
+    priceCurrency: "EUR",
+    description: "Plan Essentiel — jusqu'à 30 boxs",
+  },
+  featureList: [
+    "Gestion multi-biens",
+    "Import CSV bancaire",
+    "Révision de loyer IRL/ICC automatique",
+    "Quittances PDF automatiques",
+    "Suivi des impayés",
+    "Tableau de bord temps réel",
+  ],
+};
+
+const ORGANIZATION_LD = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "GestionPark",
+  url: SITE_URL,
+  logo: `${SITE_URL}/logo.png`,
+  sameAs: [`${SITE_URL}/blog`],
+};
+
+const FAQ_QUESTIONS = [
+  {
+    q: "Est-ce vraiment gratuit au départ ?",
+    r: "Oui, 14 jours d'essai complet sans carte bancaire. Aucun prélèvement pendant la période d'essai. Un email de rappel est envoyé 3 jours avant la fin.",
+  },
+  {
+    q: "Combien de boxs puis-je gérer ?",
+    r: "Le plan Essentiel (9,90 €/mois) gère jusqu'à 30 boxs. Le plan Pro (24,90 €/mois) est illimité, avec connexion bancaire DSP2 et relances automatiques.",
+  },
+  {
+    q: "Mon relevé bancaire est-il compatible ?",
+    r: "Oui. GestionPark accepte les exports CSV de toutes les banques françaises : Crédit Mutuel, CIC, BNP Paribas, LCL, Société Générale, Boursorama et bien d'autres.",
+  },
+  {
+    q: "Puis-je gérer plusieurs bâtiments ou sites ?",
+    r: "Oui, le multi-biens est inclus dans les deux plans. Vous gérez autant de bâtiments que vous voulez depuis un seul compte avec une vue globale du taux d'occupation.",
+  },
+  {
+    q: "Comment sont générées les quittances ?",
+    r: "Après chaque paiement validé, GestionPark génère automatiquement une quittance PDF à votre nom de bailleur. Vous pouvez la télécharger et l'envoyer par email en un clic.",
+  },
+  {
+    q: "Mes données sont-elles sécurisées ?",
+    r: "Oui. Les données sont hébergées en Europe, transmises en HTTPS/TLS et sauvegardées quotidiennement. GestionPark ne revend jamais vos données.",
+  },
+  {
+    q: "Y a-t-il une démo sans inscription ?",
+    r: "Oui ! Vous pouvez accéder à un compte démo pré-rempli avec de vraies données fictives pour tester toutes les fonctionnalités. Cliquez sur \"Essayer la démo\" en haut de page.",
+  },
+  {
+    q: "Puis-je annuler à tout moment ?",
+    r: "Oui, sans frais ni préavis. Résiliez en un clic depuis votre espace facturation. Vos données restent accessibles 30 jours après la résiliation.",
+  },
+];
+
+const FAQ_LD = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ_QUESTIONS.map((faq) => ({
+    "@type": "Question",
+    name: faq.q,
+    acceptedAnswer: { "@type": "Answer", text: faq.r },
+  })),
+};
 
 function LogoSVG({ size = 28 }: { size?: number }) {
   const h = Math.round(size * 0.75);
@@ -23,6 +105,9 @@ function LogoSVG({ size = 28 }: { size?: number }) {
 export function LandingPage() {
   return (
     <div className="min-h-screen bg-white text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
+      <JsonLd data={SOFTWARE_APP_LD} />
+      <JsonLd data={ORGANIZATION_LD} />
+      <JsonLd data={FAQ_LD} />
 
       {/* ── Nav ─────────────────────────────────────────────────────── */}
       <nav className="flex items-center justify-between border-b border-neutral-100 px-4 py-3 dark:border-neutral-800 md:px-6">
@@ -267,40 +352,7 @@ export function LandingPage() {
             <p className="text-neutral-500 dark:text-neutral-400">Tout ce que vous voulez savoir avant de démarrer.</p>
           </div>
           <div className="space-y-3">
-            {[
-              {
-                q: "Est-ce vraiment gratuit au départ ?",
-                r: "Oui, 14 jours d'essai complet sans carte bancaire. Aucun prélèvement pendant la période d'essai. Un email de rappel est envoyé 3 jours avant la fin.",
-              },
-              {
-                q: "Combien de boxs puis-je gérer ?",
-                r: "Le plan Essentiel (9,90 €/mois) gère jusqu'à 30 boxs. Le plan Pro (24,90 €/mois) est illimité, avec connexion bancaire DSP2 et relances automatiques.",
-              },
-              {
-                q: "Mon relevé bancaire est-il compatible ?",
-                r: "Oui. GestionPark accepte les exports CSV de toutes les banques françaises : Crédit Mutuel, CIC, BNP Paribas, LCL, Société Générale, Boursorama et bien d'autres.",
-              },
-              {
-                q: "Puis-je gérer plusieurs bâtiments ou sites ?",
-                r: "Oui, le multi-biens est inclus dans les deux plans. Vous gérez autant de bâtiments que vous voulez depuis un seul compte avec une vue globale du taux d'occupation.",
-              },
-              {
-                q: "Comment sont générées les quittances ?",
-                r: "Après chaque paiement validé, GestionPark génère automatiquement une quittance PDF à votre nom de bailleur. Vous pouvez la télécharger et l'envoyer par email en un clic.",
-              },
-              {
-                q: "Mes données sont-elles sécurisées ?",
-                r: "Oui. Les données sont hébergées en Europe, transmises en HTTPS/TLS et sauvegardées quotidiennement. GestionPark ne revend jamais vos données.",
-              },
-              {
-                q: "Y a-t-il une démo sans inscription ?",
-                r: "Oui ! Vous pouvez accéder à un compte démo pré-rempli avec de vraies données fictives pour tester toutes les fonctionnalités. Cliquez sur \"Essayer la démo\" en haut de page.",
-              },
-              {
-                q: "Puis-je annuler à tout moment ?",
-                r: "Oui, sans frais ni préavis. Résiliez en un clic depuis votre espace facturation. Vos données restent accessibles 30 jours après la résiliation.",
-              },
-            ].map((faq) => (
+            {FAQ_QUESTIONS.map((faq) => (
               <details
                 key={faq.q}
                 className="group rounded-xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900"

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { JsonLd } from "@/components/JsonLd";
 
 const SITE_URL = process.env.NEXT_PUBLIC_URL ?? "https://gestionpark.fr";
 const SLUG = "5-erreurs-gestion-box-stockage";
@@ -26,9 +27,23 @@ export const metadata: Metadata = {
   },
 };
 
+const ARTICLE_LD = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "5 erreurs courantes dans la gestion de boxs de stockage (et comment les éviter)",
+  description: "Oubli de caution, loyer mal indexé, absence de quittance… Ces erreurs classiques coûtent du temps et de l'argent. Comment les éviter dès le départ.",
+  datePublished: "2025-11-03",
+  dateModified: "2025-11-03",
+  url: `${SITE_URL}/blog/${SLUG}`,
+  mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/blog/${SLUG}` },
+  author: { "@type": "Organization", name: "GestionPark", url: SITE_URL },
+  publisher: { "@type": "Organization", name: "GestionPark", url: SITE_URL },
+};
+
 export default function ArticlePage() {
   return (
     <div className="mx-auto max-w-2xl px-6 py-12">
+      <JsonLd data={ARTICLE_LD} />
       <p className="mb-8">
         <Link href="/blog" className="text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100">
           ← Retour au blog

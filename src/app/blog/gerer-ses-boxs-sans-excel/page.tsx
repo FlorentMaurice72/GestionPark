@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { JsonLd } from "@/components/JsonLd";
 
 const SITE_URL = process.env.NEXT_PUBLIC_URL ?? "https://gestionpark.fr";
 const SLUG = "gerer-ses-boxs-sans-excel";
@@ -26,9 +27,23 @@ export const metadata: Metadata = {
   },
 };
 
+const ARTICLE_LD = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: "Comment gérer vos boxs de stockage sans Excel",
+  description: "Excel est gratuit mais limité pour gérer des boxs de stockage. Découvrez pourquoi un logiciel dédié vous fait gagner du temps et évite les erreurs.",
+  datePublished: "2025-10-15",
+  dateModified: "2025-10-15",
+  url: `${SITE_URL}/blog/${SLUG}`,
+  mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/blog/${SLUG}` },
+  author: { "@type": "Organization", name: "GestionPark", url: SITE_URL },
+  publisher: { "@type": "Organization", name: "GestionPark", url: SITE_URL },
+};
+
 export default function ArticlePage() {
   return (
     <div className="mx-auto max-w-2xl px-6 py-12">
+      <JsonLd data={ARTICLE_LD} />
       <p className="mb-8">
         <Link href="/blog" className="text-sm text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-100">
           ← Retour au blog
