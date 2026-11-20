@@ -6,7 +6,7 @@ import { authConfig } from "@/lib/auth.config";
 const { auth } = NextAuth(authConfig);
 
 // Routes accessibles sans abonnement actif (auth requise mais pas d'abo).
-const ROUTES_LIBRES = ["/abonnement", "/login", "/signup"];
+const ROUTES_LIBRES = ["/abonnement", "/login", "/signup", "/admin"];
 // Routes publiques (pas d'auth du tout).
 const ROUTES_PUBLIQUES = ["/login", "/signup", "/api/auth", "/api/stripe/webhook", "/videos", "/mentions-legales", "/confidentialite", "/cgu", "/abonnement", "/tarifs", "/blog", "/parrainage", "/guide", "/demo"];
 

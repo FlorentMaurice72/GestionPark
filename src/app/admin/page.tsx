@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { getAdminDashboardData } from "@/lib/admin-dashboard/data";
 
@@ -7,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 const STATUT_LABEL: Record<string, { label: string; className: string }> = {
   active:    { label: "Payant",    className: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" },
-  trial:     { label: "Essai",     className: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" },
+  trialing:  { label: "Essai",     className: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" },
   canceled:  { label: "Résilié",   className: "bg-neutral-100 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400" },
   past_due:  { label: "En retard", className: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" },
   incomplete:{ label: "Incomplet", className: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" },
@@ -40,10 +41,20 @@ export default async function AdminPage() {
   return (
     <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 pb-16">
       <header className="border-b border-neutral-200 bg-white px-6 py-4 dark:border-neutral-800 dark:bg-neutral-900">
-        <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
-          Admin — Tableau de bord
-        </h1>
-        <p className="text-xs text-neutral-500">Vue réservée — accès restreint</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+              Admin — Tableau de bord
+            </h1>
+            <p className="text-xs text-neutral-500">Vue réservée — accès restreint</p>
+          </div>
+          <Link
+            href="/"
+            className="text-sm text-neutral-500 underline hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200"
+          >
+            ← Retour à l&apos;application
+          </Link>
+        </div>
       </header>
 
       <main className="mx-auto max-w-6xl space-y-8 px-6 py-8">
