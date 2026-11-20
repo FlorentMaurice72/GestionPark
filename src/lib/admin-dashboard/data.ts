@@ -56,7 +56,7 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
   ] = await Promise.all([
     prisma.admin.count(),
     prisma.admin.count({ where: { subscriptionStatus: "active" } }),
-    prisma.admin.count({ where: { subscriptionStatus: "trialing" } }),
+    prisma.admin.count({ where: { subscriptionStatus: { in: ["trialing", "trial"] } } }),
     prisma.admin.count({ where: { subscriptionStatus: "canceled" } }),
     prisma.admin.count({ where: { subscriptionStatus: "past_due" } }),
     prisma.admin.groupBy({
@@ -78,7 +78,7 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
     }),
     prisma.admin.findMany({
       where: {
-        subscriptionStatus: "trialing",
+        subscriptionStatus: { in: ["trialing", "trial"] },
         trialEndsAt: { gte: now, lte: in7Days },
       },
       orderBy: { trialEndsAt: "asc" },

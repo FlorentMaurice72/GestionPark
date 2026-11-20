@@ -9,6 +9,7 @@ export const dynamic = "force-dynamic";
 const STATUT_LABEL: Record<string, { label: string; className: string }> = {
   active:    { label: "Payant",    className: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" },
   trialing:  { label: "Essai",     className: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" },
+  trial:     { label: "Essai",     className: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" },
   canceled:  { label: "Résilié",   className: "bg-neutral-100 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400" },
   past_due:  { label: "En retard", className: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" },
   incomplete:{ label: "Incomplet", className: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400" },
