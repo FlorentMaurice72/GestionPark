@@ -88,7 +88,7 @@ export async function getAlertesData(userId: number): Promise<{
       }
     }
 
-    if (loc.dateRevisionIRL) {
+    if (loc.dateRevisionIRL && ["IRL", "ICC"].includes(loc.indiceRevision ?? "")) {
       const rev = new Date(loc.dateRevisionIRL);
       const joursAvant = Math.ceil((rev.getTime() - aujourd.getTime()) / 86400000);
       if (joursAvant >= -30 && joursAvant <= 60) {
@@ -100,7 +100,7 @@ export async function getAlertesData(userId: number): Promise<{
           dateEcheance: rev,
           statut: rev <= aujourd ? "due" : "a_venir",
           type: "fin_bail",
-          lien: `/locataires/${loc.locataire.id}`,
+          lien: "/loyers/revision",
         });
       }
     }

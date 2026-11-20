@@ -19,6 +19,7 @@ import { getEcheancierData } from "@/lib/echeancier/data";
 import { DemoTour } from "./_components/DemoTour";
 import { TourStarter } from "./_components/TourStarter";
 import type { TourStep } from "@/lib/tour/useTour";
+import { getNombreRevisionsDues } from "@/lib/revision/data";
 
 const formatteurDate = new Intl.DateTimeFormat("fr-FR", {
   weekday: "long",
@@ -40,13 +41,14 @@ export default async function DashboardPage() {
   const userId = parseInt(session.user!.id!);
   const isDemo = session.user?.email === "demo@gestionpark.fr";
 
-  const [data, echeancierData, admin] = await Promise.all([
+  const [data, echeancierData, admin, nombreRevisionsDues] = await Promise.all([
     getDashboardPageData(userId),
     getEcheancierData(userId),
     prisma.admin.findUnique({
       where: { id: userId },
       select: { createdAt: true, onboardingStep: true },
     }),
+    getNombreRevisionsDues(userId),
   ]);
 
   const compteAgeH = admin ? (Date.now() - admin.createdAt.getTime()) / 36e5 : 999;
@@ -131,6 +133,7 @@ export default async function DashboardPage() {
         <ActionsUrgentes
           nombreImpayes={data.kpiImpayes ?? 0}
           nombreNonIdentifiees={data.nombreNonIdentifiees}
+          nombreRevisionsDues={nombreRevisionsDues}
         />
 
         <ProchainesEcheances echeances={prochainesEcheances} />

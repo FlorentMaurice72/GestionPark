@@ -3,9 +3,10 @@ import Link from "next/link";
 interface Props {
   nombreImpayes: number;
   nombreNonIdentifiees: number;
+  nombreRevisionsDues?: number;
 }
 
-export function ActionsUrgentes({ nombreImpayes, nombreNonIdentifiees }: Props) {
+export function ActionsUrgentes({ nombreImpayes, nombreNonIdentifiees, nombreRevisionsDues = 0 }: Props) {
   const actions = [
     nombreImpayes > 0
       ? {
@@ -19,6 +20,13 @@ export function ActionsUrgentes({ nombreImpayes, nombreNonIdentifiees }: Props) 
           key: "non_identifiees",
           texte: `${nombreNonIdentifiees} paiement${nombreNonIdentifiees > 1 ? "s" : ""} nécessit${nombreNonIdentifiees > 1 ? "ent" : "e"} une attribution manuelle`,
           href: "/loyers/import",
+        }
+      : null,
+    nombreRevisionsDues > 0
+      ? {
+          key: "revisions",
+          texte: `${nombreRevisionsDues} révision${nombreRevisionsDues > 1 ? "s" : ""} de loyer en attente`,
+          href: "/loyers/revision",
         }
       : null,
   ].filter((a): a is { key: string; texte: string; href: string } => a !== null);
