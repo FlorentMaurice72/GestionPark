@@ -5,6 +5,7 @@
     { "path": "/api/cron/quittances", "schedule": "0 8 1 * *" },
     { "path": "/api/cron/rappel-essai", "schedule": "0 9 * * *" },
     { "path": "/api/cron/revision-irl", "schedule": "0 8 * * *" },
-    { "path": "/api/cron/reset-demo", "schedule": "0 3 * * *" }
+    { "path": "/api/cron/reset-demo", "schedule": "0 3 * * *" },
+    { "path": "/api/cron/nordigen-sync", "schedule": "0 7 * * *" }
   ]
 }

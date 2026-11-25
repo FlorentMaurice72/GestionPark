@@ -224,6 +224,8 @@ model Admin {
   importPresets              ImportPreset[]
   transactionsNonIdentifiees TransactionNonIdentifiee[]
   rappels                    Rappel[]
+  bankConnections            BankConnection[]
+  bankTransactions           BankTransaction[]
 
   @@map("admins")
 }
@@ -344,4 +346,51 @@ model Rappel {
   location Location? @relation(fields: [locationId], references: [id], onDelete: SetNull)
 
   @@map("rappels")
+}
+
+// ---------------------------------------------------------------------------
+// BankConnection — connexion bancaire via Nordigen/GoCardless Open Banking
+// ---------------------------------------------------------------------------
+model BankConnection {
+  id              Int       @id @default(autoincrement())
+  adminId         Int       @map("admin_id")
+  institutionId   String    @map("institution_id")
+  institutionName String    @map("institution_name")
+  institutionLogo String?   @map("institution_logo")
+  requisitionId   String    @unique @map("requisition_id")
+  accountIds      String[]  @default([]) @map("account_ids")
+  // "pending" | "linked" | "expired"
+  statut          String    @default("pending")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  lastSyncAt      DateTime? @map("last_sync_at")
+
+  admin        Admin             @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  transactions BankTransaction[]
+
+  @@map("bank_connections")
+}
+
+// ---------------------------------------------------------------------------
+// BankTransaction — transactions bancaires synchronisées depuis Nordigen
+// ---------------------------------------------------------------------------
+model BankTransaction {
+  id           Int       @id @default(autoincrement())
+  connectionId Int       @map("connection_id")
+  adminId      Int       @map("admin_id")
+  externalId   String    @map("external_id")
+  montant      Decimal   @db.Decimal(10, 2)
+  date         DateTime  @db.Date
+  libelle      String
+  // "non_rapproche" | "rapproche" | "ignore"
+  statut       String    @default("non_rapproche")
+  locationId   Int?      @map("location_id")
+  mois         Int?
+  annee        Int?
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  connection BankConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  admin      Admin          @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@unique([connectionId, externalId])
+  @@map("bank_transactions")
 }
