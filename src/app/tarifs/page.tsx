@@ -59,8 +59,8 @@ const COMPARAISON: { categorie: string; items: { label: string; essentiel: Valeu
     items: [
       { label: "Suivi des paiements mensuels", essentiel: true, pro: true },
       { label: "Import CSV bancaire (toutes banques FR)", essentiel: true, pro: true },
-      { label: "Connexion bancaire DSP2 (automatique)", essentiel: false, pro: true },
-      { label: "Rapprochement automatique", essentiel: false, pro: true },
+      { label: "Relances email automatiques", essentiel: false, pro: true },
+      { label: "Avis d'échéance mensuel automatique", essentiel: false, pro: true },
       { label: "Détection des impayés", essentiel: true, pro: true },
       { label: "Relances par email/SMS", essentiel: true, pro: true },
       { label: "Relances automatiques programmées", essentiel: false, pro: true },
@@ -106,7 +106,7 @@ const FAQ_TARIFS = [
   },
   {
     q: "Puis-je changer de plan pendant l'essai ?",
-    r: "Oui, à tout moment. Vous pouvez commencer avec l'Essentiel et passer au Pro si vous avez besoin des relances automatiques ou de la connexion bancaire DSP2.",
+    r: "Oui, à tout moment. Vous pouvez commencer avec l'Essentiel et passer au Pro si vous avez besoin des relances automatiques ou des avis d'échéance mensuels.",
   },
   {
     q: "Comment fonctionne la facturation annuelle ?",
@@ -117,8 +117,8 @@ const FAQ_TARIFS = [
     r: "Oui, sans frais ni préavis. Résiliez en un clic depuis votre espace facturation. Vos données restent accessibles 30 jours après la date de fin d'abonnement.",
   },
   {
-    q: "La connexion bancaire DSP2 est-elle sécurisée ?",
-    r: "Oui. La connexion DSP2 (disponible en Pro) utilise les APIs bancaires officielles, sans jamais stocker vos identifiants. Elle est réglementée par la Banque de France.",
+    q: "Puis-je exporter mes données comptables ?",
+    r: "Oui. Le plan Pro inclut un export comptable complet (bilan annuel CSV) avec toutes les locations, paiements et impayés du mois — prêt pour votre expert-comptable.",
   },
 ];
 

@@ -64,7 +64,7 @@ export default function CguPage() {
           <p className="mb-2">À l&apos;issue de la période d&apos;essai, deux formules sont proposées :</p>
           <ul className="list-disc space-y-1 pl-5">
             <li><strong>Essentiel :</strong> 9,90 € / mois (ou 99 € / an) — jusqu&apos;à 30 boxs.</li>
-            <li><strong>Pro :</strong> 24,90 € / mois (ou 249 € / an) — boxs illimités + connexion bancaire DSP2.</li>
+            <li><strong>Pro :</strong> 24,90 € / mois (ou 249 € / an) — boxs illimités + relances automatiques + avis d&apos;échéance + export comptable.</li>
           </ul>
           <p className="mt-2">
             Les prix sont en euros TTC. L&apos;abonnement est prélevé automatiquement via Stripe à la date anniversaire.

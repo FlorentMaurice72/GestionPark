@@ -46,7 +46,7 @@ const FAQ_QUESTIONS = [
   },
   {
     q: "Combien de boxs puis-je gérer ?",
-    r: "Le plan Essentiel (9,90 €/mois) gère jusqu'à 30 boxs. Le plan Pro (24,90 €/mois) est illimité, avec connexion bancaire DSP2 et relances automatiques.",
+    r: "Le plan Essentiel (9,90 €/mois) gère jusqu'à 30 boxs. Le plan Pro (24,90 €/mois) est illimité, avec relances email automatiques, avis d'échéance mensuel et export comptable complet.",
   },
   {
     q: "Mon relevé bancaire est-il compatible ?",

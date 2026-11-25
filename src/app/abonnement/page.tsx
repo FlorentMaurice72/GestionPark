@@ -25,10 +25,10 @@ const PLANS = {
     prixAnnuel: 249,
     features: [
       "Boxs illimités",
-      "Connexion bancaire DSP2",
-      "Rapprochement automatique",
-      "Relances automatiques",
-      "Statistiques avancées",
+      "Relances email automatiques",
+      "Avis d'échéance mensuel automatique",
+      "Export comptable complet (bilan annuel)",
+      "Support prioritaire",
     ],
   },
 };
