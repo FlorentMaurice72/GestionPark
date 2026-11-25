@@ -337,6 +337,43 @@ export async function envoyerEmailBailSigne(
   });
 }
 
+export async function envoyerEmailPaiementEchoue(destinataire: string): Promise<void> {
+  if (isDemoAddress(destinataire)) return;
+  if (!process.env.RESEND_API_KEY) return;
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const siteUrl = process.env.NEXT_PUBLIC_URL ?? "https://gestion-park.fr";
+  await resend.emails.send({
+    from: EMAIL_FROM,
+    to: destinataire,
+    subject: "⚠️ Échec de paiement — votre abonnement GestionPark",
+    html: `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;background:#F4F8FF;font-family:Arial,sans-serif">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F4F8FF;padding:32px 16px">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08)">
+        <tr><td style="background:#0047AB;padding:28px 32px">
+          <p style="margin:0;color:#ffffff;font-size:20px;font-weight:700;letter-spacing:1px">GESTIONPARK</p>
+        </td></tr>
+        <tr><td style="padding:32px">
+          <p style="margin:0 0 16px;font-size:16px;font-weight:700;color:#DC2626">⚠️ Votre paiement a échoué</p>
+          <p style="margin:0 0 16px;font-size:15px;color:#374151;line-height:1.6">
+            Nous n'avons pas pu prélever votre abonnement GestionPark. Votre accès sera suspendu si le problème n'est pas résolu.
+          </p>
+          <p style="margin:0 0 24px;font-size:15px;color:#374151;line-height:1.6">
+            Mettez à jour votre moyen de paiement pour continuer à gérer vos boxs.
+          </p>
+          <a href="${siteUrl}/abonnement" style="display:inline-block;background:#0047AB;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;padding:14px 28px;border-radius:8px">
+            Mettre à jour mon paiement
+          </a>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`,
+  });
+}
+
 export async function envoyerEmailResetMotDePasse(destinataire: string, lien: string): Promise<void> {
   if (isDemoAddress(destinataire)) return;
   if (!process.env.RESEND_API_KEY) {

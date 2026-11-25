@@ -50,7 +50,7 @@ export async function POST(req: Request) {
     customer: customerId,
     mode: "subscription",
     line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${origin}/abonnement?success=1`,
+    success_url: `${origin}/?abonnement=actif`,
     cancel_url: `${origin}/abonnement?canceled=1&plan=${plan}&periode=${periode}`,
     subscription_data: {
       trial_period_days: 14,

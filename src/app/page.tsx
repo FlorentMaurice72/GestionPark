@@ -32,7 +32,13 @@ function capitaliser(texte: string): string {
   return texte.charAt(0).toUpperCase() + texte.slice(1);
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | undefined>>;
+}) {
+  const params = await searchParams;
+  const abonnementActif = params?.abonnement === "actif";
   const session = await auth();
   if (!session) {
     return <LandingPage />;
@@ -79,6 +85,13 @@ export default async function DashboardPage() {
         </div>
       </header>
 
+      {abonnementActif && (
+        <div className="bg-green-50 border-b border-green-200 px-4 py-3 dark:bg-green-950/30 dark:border-green-900">
+          <p className="text-sm font-medium text-green-800 dark:text-green-300 text-center">
+            🎉 Votre abonnement est activé — bienvenue dans GestionPark !
+          </p>
+        </div>
+      )}
       <DemoTour isDemo={isDemo} isNouveauCompte={isNouveauCompte} />
       <TourStarter isDemo={isDemo} isNouveauCompte={isNouveauCompte} serverStep={serverStep} />
 

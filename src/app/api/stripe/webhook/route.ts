@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
+import { envoyerEmailPaiementEchoue } from "@/lib/email";
 import type Stripe from "stripe";
 
 export const runtime = "nodejs";
@@ -9,6 +10,7 @@ export const runtime = "nodejs";
 //   checkout.session.completed       → abonnement créé + crédit parrainage parrain
 //   customer.subscription.updated    → changement de statut
 //   customer.subscription.deleted    → résiliation
+//   invoice.payment_failed           → email alerte au bailleur
 
 async function crediterParrain(filleulAdminId: number): Promise<void> {
   const filleul = await prisma.admin.findUnique({
@@ -91,6 +93,18 @@ export async function POST(req: NextRequest) {
         await prisma.admin.update({ where: { id: admin.id }, data: updateData });
       } else {
         await prisma.admin.update({ where: { id: parseInt(adminId) }, data: updateData });
+      }
+      break;
+    }
+  }
+
+    case "invoice.payment_failed": {
+      const invoice = event.data.object as Stripe.Invoice;
+      const custId = typeof invoice.customer === "string" ? invoice.customer : invoice.customer?.id;
+      if (!custId) break;
+      const admin = await prisma.admin.findFirst({ where: { stripeCustomerId: custId }, select: { email: true } });
+      if (admin) {
+        await envoyerEmailPaiementEchoue(admin.email).catch(() => {});
       }
       break;
     }

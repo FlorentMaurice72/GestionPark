@@ -3,6 +3,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { renderToBuffer } = require("@react-pdf/renderer") as { renderToBuffer: (el: unknown) => Promise<Buffer> };
+
+export const maxDuration = 30;
 import React from "react";
 import { BailDocument } from "@/lib/pdf/BailDocument";
 

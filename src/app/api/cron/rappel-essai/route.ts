@@ -7,14 +7,19 @@ export async function GET(req: Request) {
   }
 
   const maintenant = new Date();
-  // Fenêtre : essai se terminant entre J+2 et J+3 (rappel à 3 jours)
+  // Fenêtre J-3 : essai se terminant entre J+2 et J+3
   const dans2Jours = new Date(maintenant.getTime() + 2 * 86400000);
   const dans3Jours = new Date(maintenant.getTime() + 3 * 86400000);
+  // Fenêtre J-1 : essai se terminant entre J+0 et J+1
+  const dans1Jour = new Date(maintenant.getTime() + 1 * 86400000);
 
   const admins = await prisma.admin.findMany({
     where: {
-      subscriptionStatus: "trial",
-      trialEndsAt: { gte: dans2Jours, lte: dans3Jours },
+      subscriptionStatus: { in: ["trial", "trialing"] },
+      OR: [
+        { trialEndsAt: { gte: dans2Jours, lte: dans3Jours } },
+        { trialEndsAt: { gte: maintenant, lte: dans1Jour } },
+      ],
     },
     select: { id: true, email: true, trialEndsAt: true },
   });
