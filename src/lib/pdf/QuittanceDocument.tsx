@@ -1,10 +1,11 @@
+import path from "path";
 import { Document, Page, Text, View, StyleSheet, Font } from "@react-pdf/renderer";
 
 Font.register({
   family: "NotoSans",
   fonts: [
-    { src: "https://cdn.jsdelivr.net/npm/@fontsource/noto-sans@5.0.12/files/noto-sans-latin-400-normal.woff2", fontWeight: "normal" },
-    { src: "https://cdn.jsdelivr.net/npm/@fontsource/noto-sans@5.0.12/files/noto-sans-latin-700-normal.woff2", fontWeight: "bold" },
+    { src: path.join(process.cwd(), "public", "fonts", "LiberationSans-Regular.ttf"), fontWeight: "normal" },
+    { src: path.join(process.cwd(), "public", "fonts", "LiberationSans-Bold.ttf"), fontWeight: "bold" },
   ],
 });
 
