@@ -11,6 +11,10 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   serverExternalPackages: ["@prisma/client", "pg"],
   transpilePackages: ["@react-pdf/renderer"],
+  outputFileTracingIncludes: {
+    "/api/quittance/[locationId]/[mois]/[annee]": ["./src/lib/pdf/fonts/**"],
+    "/api/bail/[locationId]": ["./src/lib/pdf/fonts/**"],
+  },
   async headers() {
     return [
       {
