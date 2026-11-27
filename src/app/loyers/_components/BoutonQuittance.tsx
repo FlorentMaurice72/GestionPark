@@ -18,15 +18,16 @@ export function BoutonQuittance({ locationId, mois, annee }: Props) {
     setLoading(true);
     try {
       const res = await fetch(`/api/quittance/${locationId}/${mois}/${annee}`);
-      if (!res.ok) throw new Error("Génération échouée");
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        throw new Error(`HTTP ${res.status}: ${text.slice(0, 200)}`);
+      }
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `quittance-${mois}-${annee}.pdf`;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch {
+      window.open(url, "_blank");
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    } catch (err) {
+      console.error("[quittance]", err);
       addToast("Impossible de générer la quittance.", "error");
     } finally {
       setLoading(false);

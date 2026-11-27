@@ -72,14 +72,23 @@ export async function GET(
     bailleurAdresse: admin?.adresseBailleur ?? null,
   });
 
-  const pdfBuffer = await renderToBuffer(element);
+  let pdfBuffer: Buffer;
+  try {
+    pdfBuffer = await renderToBuffer(element);
+  } catch (err) {
+    console.error("[quittance] renderToBuffer failed:", err);
+    return NextResponse.json(
+      { error: "PDF generation failed", detail: err instanceof Error ? err.message : String(err) },
+      { status: 500 },
+    );
+  }
 
   const filename = `quittance-${location.locataire.nom.toLowerCase()}-${mois}-${annee}.pdf`;
 
   return new NextResponse(new Uint8Array(pdfBuffer), {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="${filename}"`,
+      "Content-Disposition": `inline; filename="${filename}"`,
     },
   });
 }
