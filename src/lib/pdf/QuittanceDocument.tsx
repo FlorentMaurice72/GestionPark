@@ -1,4 +1,12 @@
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Font } from "@react-pdf/renderer";
+
+Font.register({
+  family: "NotoSans",
+  fonts: [
+    { src: "https://cdn.jsdelivr.net/npm/@fontsource/noto-sans@5.0.12/files/noto-sans-latin-400-normal.woff2", fontWeight: "normal" },
+    { src: "https://cdn.jsdelivr.net/npm/@fontsource/noto-sans@5.0.12/files/noto-sans-latin-700-normal.woff2", fontWeight: "bold" },
+  ],
+});
 
 interface QuittanceProps {
   locataireNom: string;
@@ -25,20 +33,20 @@ const NOMS_MOIS = [
 ];
 
 const styles = StyleSheet.create({
-  page: { padding: 50, fontFamily: "Helvetica", fontSize: 10, color: "#1a1a1a" },
+  page: { padding: 50, fontFamily: "NotoSans", fontSize: 10, color: "#1a1a1a" },
   header: { marginBottom: 30 },
-  titre: { fontSize: 18, fontFamily: "Helvetica-Bold", marginBottom: 4 },
+  titre: { fontSize: 18, fontWeight: "bold", marginBottom: 4 },
   sousTitre: { fontSize: 10, color: "#555" },
   section: { marginBottom: 20 },
-  sectionTitre: { fontSize: 9, fontFamily: "Helvetica-Bold", color: "#888", marginBottom: 6 },
+  sectionTitre: { fontSize: 9, fontWeight: "bold", color: "#888", marginBottom: 6 },
   ligne: { flexDirection: "row", marginBottom: 3 },
   label: { width: 140, color: "#555" },
-  valeur: { flex: 1, fontFamily: "Helvetica-Bold" },
+  valeur: { flex: 1, fontWeight: "bold" },
   separator: { borderBottomWidth: 1, borderBottomColor: "#e0e0e0", marginVertical: 16 },
-  montant: { fontSize: 14, fontFamily: "Helvetica-Bold", color: "#111" },
+  montant: { fontSize: 14, fontWeight: "bold", color: "#111" },
   footer: { position: "absolute", bottom: 30, left: 50, right: 50, fontSize: 8, color: "#888", textAlign: "center" },
   badge: { backgroundColor: "#f0f9f0", padding: 6, borderRadius: 4, marginTop: 8 },
-  badgeText: { color: "#166534", fontFamily: "Helvetica-Bold", fontSize: 9 },
+  badgeText: { color: "#166534", fontWeight: "bold", fontSize: 9 },
   reste: { color: "#b91c1c" },
 });
 

@@ -1,4 +1,12 @@
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Font } from "@react-pdf/renderer";
+
+Font.register({
+  family: "NotoSans",
+  fonts: [
+    { src: "https://cdn.jsdelivr.net/npm/@fontsource/noto-sans@5.0.12/files/noto-sans-latin-400-normal.woff2", fontWeight: "normal" },
+    { src: "https://cdn.jsdelivr.net/npm/@fontsource/noto-sans@5.0.12/files/noto-sans-latin-700-normal.woff2", fontWeight: "bold" },
+  ],
+});
 
 export interface BailProps {
   // Bailleur
@@ -57,19 +65,19 @@ const fmtDate = (d: Date) =>
   new Date(d).toLocaleDateString("fr-FR", { day: "2-digit", month: "long", year: "numeric" });
 
 const s = StyleSheet.create({
-  page: { padding: 50, fontFamily: "Helvetica", fontSize: 10, color: "#1a1a1a", lineHeight: 1.5 },
-  titre: { fontSize: 16, fontFamily: "Helvetica-Bold", textAlign: "center", marginBottom: 4 },
+  page: { padding: 50, fontFamily: "NotoSans", fontSize: 10, color: "#1a1a1a", lineHeight: 1.5 },
+  titre: { fontSize: 16, fontWeight: "bold", textAlign: "center", marginBottom: 4 },
   sousTitre: { fontSize: 10, textAlign: "center", color: "#555", marginBottom: 24 },
   separator: { borderBottomWidth: 1, borderBottomColor: "#d0d0d0", marginVertical: 14 },
-  h2: { fontSize: 10, fontFamily: "Helvetica-Bold", color: "#0047AB", marginBottom: 6, marginTop: 2 },
+  h2: { fontSize: 10, fontWeight: "bold", color: "#0047AB", marginBottom: 6, marginTop: 2 },
   p: { fontSize: 10, marginBottom: 6 },
-  bold: { fontFamily: "Helvetica-Bold" },
+  bold: { fontWeight: "bold" },
   row: { flexDirection: "row", marginBottom: 3 },
   label: { width: 160, color: "#555" },
   val: { flex: 1 },
   parties: { flexDirection: "row", gap: 20, marginBottom: 10 },
   partiBox: { flex: 1, padding: 10, backgroundColor: "#f8f8f8", borderRadius: 4 },
-  partiLabel: { fontSize: 8, fontFamily: "Helvetica-Bold", color: "#888", marginBottom: 4 },
+  partiLabel: { fontSize: 8, fontWeight: "bold", color: "#888", marginBottom: 4 },
   footer: {
     position: "absolute", bottom: 28, left: 50, right: 50,
     fontSize: 8, color: "#aaa", textAlign: "center", borderTopWidth: 1, borderTopColor: "#e8e8e8", paddingTop: 6,
