@@ -4,6 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { FeedbackModal } from "./FeedbackModal";
+import {
+  MenuIconProfil,
+  MenuIconParametres,
+  MenuIconAbonnement,
+  MenuIconParrainage,
+  MenuIconFeedback,
+} from "./MenuIcons";
 
 const ONGLETS = [
   { href: "/",           label: "Dashboard" },
@@ -119,7 +126,7 @@ function MenuItem({
   onClick,
 }: {
   href: string;
-  icon: string;
+  icon: React.ReactNode;
   label: string;
   onClick: () => void;
 }) {
@@ -129,7 +136,7 @@ function MenuItem({
       onClick={onClick}
       className="flex items-center gap-3 px-4 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50 dark:text-neutral-300 dark:hover:bg-neutral-800"
     >
-      <span className="w-5 text-center text-base">{icon}</span>
+      <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center">{icon}</span>
       {label}
     </Link>
   );
@@ -201,13 +208,13 @@ function UserMenu({
           </div>
 
           <div className="py-1">
-            <MenuItem href="/profil?onglet=compte"       icon="🏢" label="Mon profil"            onClick={() => setOpen(false)} />
-            <MenuItem href="/profil?onglet=securite"    icon="⚙️" label="Paramètres du compte" onClick={() => setOpen(false)} />
-            <MenuItem href="/profil?onglet=facturation"  icon="💳" label="Abonnement"            onClick={() => setOpen(false)} />
+            <MenuItem href="/profil?onglet=compte"      icon={<MenuIconProfil className="h-4 w-4" />}      label="Mon profil"            onClick={() => setOpen(false)} />
+            <MenuItem href="/profil?onglet=securite"    icon={<MenuIconParametres className="h-4 w-4" />}  label="Paramètres du compte"  onClick={() => setOpen(false)} />
+            <MenuItem href="/profil?onglet=facturation" icon={<MenuIconAbonnement className="h-4 w-4" />}  label="Abonnement"            onClick={() => setOpen(false)} />
           </div>
 
           <div className="border-t border-neutral-100 py-1 dark:border-neutral-800">
-            <MenuItem href="/parrainage" icon="🎁" label="Parrainer un ami" onClick={() => setOpen(false)} />
+            <MenuItem href="/parrainage" icon={<MenuIconParrainage className="h-4 w-4" />} label="Parrainer un ami" onClick={() => setOpen(false)} />
             <button
               type="button"
               onClick={() => {
@@ -216,7 +223,9 @@ function UserMenu({
               }}
               className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50 dark:text-neutral-300 dark:hover:bg-neutral-800"
             >
-              <span className="w-5 text-center text-base">💬</span>
+              <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center">
+                <MenuIconFeedback className="h-4 w-4" />
+              </span>
               Faire une remontée
             </button>
           </div>

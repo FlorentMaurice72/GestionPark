@@ -2,6 +2,7 @@ import { auth, signOut } from "@/lib/auth";
 import { getNombreAlertesUrgentes } from "@/lib/alertes/data";
 import { getNombreImpayesMoisActuel } from "@/lib/loyers/data";
 import { AppNav } from "./AppNav";
+import { MenuIconDeconnexion } from "./MenuIcons";
 
 export async function AppNavWrapper() {
   const session = await auth();
@@ -26,7 +27,9 @@ export async function AppNavWrapper() {
         type="submit"
         className="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50 dark:text-neutral-300 dark:hover:bg-neutral-800"
       >
-        <span className="text-base">🚪</span>
+        <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center">
+          <MenuIconDeconnexion className="h-4 w-4" />
+        </span>
         Se déconnecter
       </button>
     </form>
