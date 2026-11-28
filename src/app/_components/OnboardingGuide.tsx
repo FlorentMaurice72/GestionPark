@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-  OnboardingRocket,
+  GestionParkLogo,
   OnboardingIconBien,
   OnboardingIconLocataire,
   OnboardingIconImport,
@@ -75,7 +75,7 @@ export function OnboardingGuide({ biensDone, locatairesDone, paiementDone }: Pro
             className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full overflow-hidden"
             style={{ backgroundColor: "#EFF6FF" }}
           >
-            <OnboardingRocket className="h-8 w-8" />
+            <GestionParkLogo className="h-7 w-7" />
           </div>
           <div>
             <h2 className="font-semibold text-neutral-900 dark:text-neutral-100">

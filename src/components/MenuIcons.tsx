@@ -153,41 +153,18 @@ export function MenuIconDeconnexion({ className }: IconProps) {
 
 // ── Onboarding illustrations ──────────────────────────────────────────────────
 
-/**
- * Onboarding welcome rocket — a storage box launching like a rocket,
- * unique to GestionPark (warehouse box body + nose cone + boosters + flame).
- * Filled, brand colors: #0047AB (cobalt), #20B2AA (teal), #F59E0B (amber flame).
- */
-export function OnboardingRocket({ className }: IconProps) {
+/** GestionPark logo mark — same SVG as the top nav logo */
+export function GestionParkLogo({ className }: IconProps) {
   return (
-    <svg className={className} viewBox="0 0 48 54" fill="none" aria-hidden>
-      {/* Nose cone — teal roof of the box */}
-      <path d="M10 22 L24 4 L38 22Z" fill="#20B2AA" />
-      {/* Box body — cobalt storage unit */}
-      <rect x="10" y="21" width="28" height="20" rx="2.5" fill="#0047AB" />
-      {/* Box door / window panel */}
-      <rect x="18" y="27" width="12" height="10" rx="1.5" fill="white" fillOpacity={0.18} />
-      {/* Door handle */}
-      <line x1="24" y1="30" x2="24" y2="34" stroke="white" strokeWidth={1.5} strokeOpacity={0.5} strokeLinecap="round" />
-      {/* Left booster */}
-      <rect x="2" y="28" width="8" height="10" rx="1.5" fill="#0097A7" />
-      {/* Right booster */}
-      <rect x="38" y="28" width="8" height="10" rx="1.5" fill="#0097A7" />
-      {/* Left fin */}
-      <path d="M2 36 L-1 44 L10 40Z" fill="#0047AB" />
-      {/* Right fin */}
-      <path d="M46 36 L49 44 L38 40Z" fill="#0047AB" />
-      {/* Main flame */}
-      <path d="M15 41 Q19 52 24 46 Q29 54 33 41" fill="#F59E0B" />
-      {/* Left booster flame */}
-      <path d="M4 38 Q6 44 6 41 Q7 46 8 38" fill="#FCD34D" />
-      {/* Right booster flame */}
-      <path d="M40 38 Q42 44 42 41 Q43 46 44 38" fill="#FCD34D" />
-      {/* Star sparkles */}
-      <circle cx="6" cy="12" r="1.5" fill="#FCD34D" />
-      <circle cx="40" cy="8" r="1" fill="#20B2AA" />
-      <circle cx="43" cy="20" r="1.5" fill="#FCD34D" />
-      <circle cx="4" cy="22" r="1" fill="#20B2AA" />
+    <svg className={className} viewBox="0 0 80 60" aria-hidden>
+      <polygon points="30,4 50,14 30,24 10,14" fill="#20B2AA" />
+      <polygon points="10,14 30,24 30,42 10,32" fill="#0097A7" />
+      <polygon points="30,24 50,14 50,32 30,42" fill="#0047AB" />
+      <polygon points="50,18 62,24 50,30 38,24" fill="#20B2AA" />
+      <polygon points="50,30 62,24 62,38 50,44" fill="#0047AB" />
+      <circle cx="26" cy="40" r="8" fill="#0097A7" />
+      <circle cx="26" cy="40" r="3.5" fill="white" />
+      <rect x="32" y="37" width="17" height="5" rx="2" fill="#0097A7" />
     </svg>
   );
 }
