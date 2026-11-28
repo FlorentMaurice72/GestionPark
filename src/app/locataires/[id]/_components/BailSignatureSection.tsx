@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { BoutonTelechargerBail } from "./BoutonTelechargerBail";
 
 interface Props {
   locationId: number;
@@ -9,7 +10,6 @@ interface Props {
   bailleurEmail: string;
   statutSignature: string | null;
   bailSigneUrl: string | null;
-  bailBrouillonUrl: string;
 }
 
 export function BailSignatureSection({
@@ -18,7 +18,6 @@ export function BailSignatureSection({
   bailleurEmail,
   statutSignature,
   bailSigneUrl,
-  bailBrouillonUrl,
 }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -59,13 +58,7 @@ export function BailSignatureSection({
             ↓ Télécharger le bail signé
           </a>
         ) : (
-          <a
-            href={bailBrouillonUrl}
-            download
-            className="inline-flex items-center gap-1.5 rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
-          >
-            ↓ Télécharger le bail
-          </a>
+          <BoutonTelechargerBail locationId={locationId} />
         )}
       </div>
     );
@@ -79,13 +72,7 @@ export function BailSignatureSection({
           <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
             ⏳ En attente de signature
           </span>
-          <a
-            href={bailBrouillonUrl}
-            download
-            className="inline-flex items-center gap-1.5 rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
-          >
-            ↓ Brouillon (non signé)
-          </a>
+          <BoutonTelechargerBail locationId={locationId} label="↓ Brouillon (non signé)" />
         </div>
         <p className="text-xs text-neutral-500">
           Liens de signature envoyés à <strong>{locataireEmail}</strong> et <strong>{bailleurEmail}</strong> par YouSign.
@@ -116,13 +103,7 @@ export function BailSignatureSection({
   // Pas encore de signature
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <a
-        href={bailBrouillonUrl}
-        download
-        className="inline-flex items-center gap-1.5 rounded-md border border-neutral-300 px-3 py-1.5 text-sm font-medium hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
-      >
-        ↓ Télécharger le bail
-      </a>
+      <BoutonTelechargerBail locationId={locationId} />
       <button
         onClick={handleDemarrer}
         disabled={loading}

@@ -151,7 +151,6 @@ export default async function LocataireDetailPage({ params }: { params: Promise<
                   bailleurEmail={session.user!.email!}
                   statutSignature={loc.bailStatutSignature ?? null}
                   bailSigneUrl={loc.bailSigneUrl ?? null}
-                  bailBrouillonUrl={`/api/bail/${loc.id}`}
                 />
               </div>
 

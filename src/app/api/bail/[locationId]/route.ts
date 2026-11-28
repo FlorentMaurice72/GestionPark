@@ -1,12 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { renderToBuffer } = require("@react-pdf/renderer") as { renderToBuffer: (el: unknown) => Promise<Buffer> };
 
 export const maxDuration = 30;
-import React from "react";
-import { BailDocument } from "@/lib/pdf/BailDocument";
 
 export async function GET(
   _req: Request,
@@ -43,7 +39,7 @@ export async function GET(
     return NextResponse.json({ error: "Location introuvable" }, { status: 404 });
   }
 
-  const element = React.createElement(BailDocument, {
+  return NextResponse.json({
     bailleurNom: admin?.nomBailleur ?? admin?.email ?? "",
     bailleurAdresse: admin?.adresseBailleur ?? null,
     bailleurEmail: admin?.email ?? "",
@@ -66,16 +62,5 @@ export async function GET(
     renouvellementAuto: location.renouvellementAuto,
     indiceRevision: location.indiceRevision,
     dateRevisionIRL: location.dateRevisionIRL,
-  });
-
-  const pdfBuffer = await renderToBuffer(element);
-
-  const nomFichier = `bail-${location.locataire.nom.toLowerCase()}-box${location.box.numero}.pdf`;
-
-  return new NextResponse(new Uint8Array(pdfBuffer), {
-    headers: {
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="${nomFichier}"`,
-    },
   });
 }
