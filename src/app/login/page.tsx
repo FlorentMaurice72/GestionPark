@@ -4,6 +4,7 @@ import { AuthError } from "next-auth";
 import { signIn } from "@/lib/auth";
 import { TropDeTentatives } from "@/lib/login-rate-limit";
 import { DemoModal } from "@/components/DemoModal";
+import { LoginSubmitButton } from "./_components/LoginSubmitButton";
 
 async function login(formData: FormData) {
   "use server";
@@ -89,12 +90,7 @@ export default async function LoginPage({
             </p>
           )}
 
-          <button
-            type="submit"
-            className="w-full rounded-md bg-brand px-3 py-2 text-sm font-medium text-white hover:bg-brand-dk"
-          >
-            Se connecter
-          </button>
+          <LoginSubmitButton />
 
           <p className="text-center text-sm">
             <Link
