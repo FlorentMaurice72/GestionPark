@@ -1,12 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { renderToBuffer } = require("@react-pdf/renderer") as { renderToBuffer: (el: unknown) => Promise<Buffer> };
 
 export const maxDuration = 30;
-import React from "react";
-import { QuittanceDocument } from "@/lib/pdf/QuittanceDocument";
 
 export async function GET(
   _req: Request,
@@ -53,7 +49,7 @@ export async function GET(
     ? new Date(paiements[0].datePaiement).toLocaleDateString("fr-FR")
     : "—";
 
-  const element = React.createElement(QuittanceDocument, {
+  return NextResponse.json({
     locataireNom: location.locataire.nom,
     locatairePrenom: location.locataire.prenom,
     locataireAdresse: location.locataire.adresse,
@@ -70,25 +66,5 @@ export async function GET(
     bailleurEmail: admin?.email ?? "",
     bailleurNom: admin?.nomBailleur ?? null,
     bailleurAdresse: admin?.adresseBailleur ?? null,
-  });
-
-  let pdfBuffer: Buffer;
-  try {
-    pdfBuffer = await renderToBuffer(element);
-  } catch (err) {
-    console.error("[quittance] renderToBuffer failed:", err);
-    return NextResponse.json(
-      { error: "PDF generation failed", detail: err instanceof Error ? err.message : String(err) },
-      { status: 500 },
-    );
-  }
-
-  const filename = `quittance-${location.locataire.nom.toLowerCase()}-${mois}-${annee}.pdf`;
-
-  return new NextResponse(new Uint8Array(pdfBuffer), {
-    headers: {
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `inline; filename="${filename}"`,
-    },
   });
 }

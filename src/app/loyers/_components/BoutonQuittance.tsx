@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useToast } from "@/components/Toast";
 
 interface Props {
@@ -17,15 +17,28 @@ export function BoutonQuittance({ locationId, mois, annee }: Props) {
     if (loading) return;
     setLoading(true);
     try {
+      // 1. Fetch quittance data from the API (pure JSON, no PDF server-side)
       const res = await fetch(`/api/quittance/${locationId}/${mois}/${annee}`);
       if (!res.ok) {
         const text = await res.text().catch(() => "");
         throw new Error(`HTTP ${res.status}: ${text.slice(0, 200)}`);
       }
-      const blob = await res.blob();
+      const data = await res.json();
+
+      // 2. Load react-pdf and QuittanceDocument lazily in the browser
+      const [{ pdf }, { QuittanceDocument }] = await Promise.all([
+        import("@react-pdf/renderer"),
+        import("@/lib/pdf/QuittanceDocument"),
+      ]);
+
+      // 3. Generate PDF blob client-side (full browser React — no internals issues)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const blob = await pdf(React.createElement(QuittanceDocument, data) as any).toBlob();
+
+      // 4. Open the PDF in a new tab
       const url = URL.createObjectURL(blob);
       window.open(url, "_blank");
-      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      setTimeout(() => URL.revokeObjectURL(url), 30000);
     } catch (err) {
       console.error("[quittance]", err);
       addToast("Impossible de générer la quittance.", "error");
