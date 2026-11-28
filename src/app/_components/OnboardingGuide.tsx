@@ -1,7 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import {
+  OnboardingRocket,
+  OnboardingIconBien,
+  OnboardingIconLocataire,
+  OnboardingIconImport,
+} from "@/components/MenuIcons";
 
 interface Props {
   biensDone: boolean;
@@ -9,23 +15,23 @@ interface Props {
   paiementDone: boolean;
 }
 
-const ETAPES = [
+const ETAPES: { icone: React.ReactNode; titre: string; desc: string; href: string; cta: string }[] = [
   {
-    icone: "🏢",
+    icone: <OnboardingIconBien className="h-4 w-4" />,
     titre: "Ajoutez votre premier bien",
     desc: "Renseignez l'adresse et les boxs qui le composent.",
     href: "/biens/nouveau",
     cta: "Ajouter un bien",
   },
   {
-    icone: "👤",
+    icone: <OnboardingIconLocataire className="h-4 w-4" />,
     titre: "Créez votre premier locataire",
     desc: "Coordonnées, box attribué, loyer et date d'entrée.",
     href: "/locataires/nouveau",
     cta: "Ajouter un locataire",
   },
   {
-    icone: "📊",
+    icone: <OnboardingIconImport className="h-4 w-4" />,
     titre: "Importez vos relevés bancaires",
     desc: "GestionPark rapproche automatiquement les paiements.",
     href: "/loyers/import",
@@ -66,10 +72,10 @@ export function OnboardingGuide({ biensDone, locatairesDone, paiementDone }: Pro
       <div className="mb-4 flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
           <div
-            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-lg"
+            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full overflow-hidden"
             style={{ backgroundColor: "#EFF6FF" }}
           >
-            🚀
+            <OnboardingRocket className="h-8 w-8" />
           </div>
           <div>
             <h2 className="font-semibold text-neutral-900 dark:text-neutral-100">
