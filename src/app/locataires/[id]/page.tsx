@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { getLocataireDetail } from "@/lib/locataires/data";
 import { AppNavWrapper } from "@/components/AppNavWrapper";
 import { DeconnexionButton } from "@/components/DeconnexionButton";
@@ -37,8 +38,16 @@ export default async function LocataireDetailPage({ params }: { params: Promise<
   const locataireId = Number(id);
   if (!Number.isInteger(locataireId) || locataireId <= 0) notFound();
 
-  const locataire = await getLocataireDetail(locataireId, userId);
+  const [locataire, admin] = await Promise.all([
+    getLocataireDetail(locataireId, userId),
+    prisma.admin.findUnique({
+      where: { id: userId },
+      select: { nomBailleur: true, adresseBailleur: true },
+    }),
+  ]);
   if (!locataire) notFound();
+
+  const profilBailleurIncomplet = !admin?.nomBailleur || !admin?.adresseBailleur;
 
   const nomComplet = `${locataire.nom} ${locataire.prenom}`;
 
@@ -144,6 +153,17 @@ export default async function LocataireDetailPage({ params }: { params: Promise<
               </div>
 
               {/* Bail — téléchargement et/ou signature électronique */}
+              {profilBailleurIncomplet && (
+                <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-300">
+                  <span className="mt-0.5 shrink-0">⚠️</span>
+                  <span>
+                    Vos informations de bailleur sont incomplètes. Le bail affichera uniquement votre adresse e-mail à la place de votre nom et adresse.{" "}
+                    <Link href="/profil" className="font-semibold underline underline-offset-2 hover:opacity-80">
+                      Remplissez votre profil bailleur →
+                    </Link>
+                  </span>
+                </div>
+              )}
               <div className="flex justify-end">
                 <BailSignatureSection
                   locationId={loc.id}
