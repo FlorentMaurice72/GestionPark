@@ -201,8 +201,8 @@ function UserMenu({
           </div>
 
           <div className="py-1">
-            <MenuItem href="/profil?onglet=compte"       icon="⚙️" label="Paramètres du compte" onClick={() => setOpen(false)} />
             <MenuItem href="/profil?onglet=compte"       icon="🏢" label="Mon profil"            onClick={() => setOpen(false)} />
+            <MenuItem href="/profil?onglet=securite"    icon="⚙️" label="Paramètres du compte" onClick={() => setOpen(false)} />
             <MenuItem href="/profil?onglet=facturation"  icon="💳" label="Abonnement"            onClick={() => setOpen(false)} />
           </div>
 

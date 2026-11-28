@@ -92,7 +92,7 @@ export default async function ProfilPage({
       {/* Contenu */}
       <main className="mx-auto max-w-3xl px-6 py-8">
 
-        {/* ── Onglet : Mon compte ── */}
+        {/* ── Onglet : Mon profil ── */}
         {onglet === "compte" && (
           <div className="space-y-6">
 
@@ -102,7 +102,7 @@ export default async function ProfilPage({
                 Informations bailleur
               </h2>
               <p className="mb-5 text-xs text-neutral-500">
-                Ces informations apparaissent sur vos quittances de loyer.
+                Ces informations apparaissent sur vos quittances de loyer et vos baux.
               </p>
               <ProfilInfosForm nomBailleur={admin.nomBailleur} adresseBailleur={admin.adresseBailleur} />
             </section>
@@ -128,13 +128,48 @@ export default async function ProfilPage({
                 </div>
               </div>
             </section>
+          </div>
+        )}
 
-            {/* Sécurité */}
+        {/* ── Onglet : Paramètres du compte ── */}
+        {onglet === "securite" && (
+          <div className="space-y-6">
+
+            {/* Mot de passe */}
             <section className="rounded-xl border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900">
-              <h2 className="mb-5 text-base font-semibold text-neutral-900 dark:text-neutral-100">
+              <h2 className="mb-1 text-base font-semibold text-neutral-900 dark:text-neutral-100">
                 Mot de passe
               </h2>
+              <p className="mb-5 text-xs text-neutral-500">
+                Modifiez votre mot de passe de connexion. Utilisez au moins 8 caractères.
+              </p>
               <ProfilMdpForm />
+            </section>
+
+            {/* Zone de danger */}
+            <section className="rounded-xl border border-red-200 bg-white p-6 dark:border-red-900/40 dark:bg-neutral-900">
+              <h2 className="mb-1 text-base font-semibold text-red-700 dark:text-red-400">
+                Zone de danger
+              </h2>
+              <p className="mb-5 text-xs text-neutral-500">
+                Ces actions sont irréversibles. Procédez avec précaution.
+              </p>
+              <div className="flex items-center justify-between rounded-lg border border-red-100 bg-red-50 px-4 py-3 dark:border-red-900/30 dark:bg-red-950/20">
+                <div>
+                  <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">Supprimer mon compte</p>
+                  <p className="text-xs text-neutral-500">Supprime définitivement toutes vos données (biens, locataires, historique).</p>
+                </div>
+                <button
+                  disabled
+                  title="Contactez le support pour supprimer votre compte"
+                  className="rounded-md border border-red-300 px-3 py-1.5 text-sm font-medium text-red-600 opacity-50 cursor-not-allowed dark:border-red-700 dark:text-red-400"
+                >
+                  Supprimer
+                </button>
+              </div>
+              <p className="mt-2 text-xs text-neutral-400">
+                Pour supprimer votre compte, utilisez &quot;Faire une remontée&quot; dans le menu.
+              </p>
             </section>
           </div>
         )}

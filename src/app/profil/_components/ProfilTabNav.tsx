@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 const ONGLETS = [
-  { id: "compte",      label: "Mon compte" },
+  { id: "compte",      label: "Mon profil" },
+  { id: "securite",   label: "Paramètres du compte" },
   { id: "facturation", label: "Facturation" },
 ];
 
