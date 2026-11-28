@@ -9,6 +9,7 @@ import { AjouterBoxesModal } from "./_components/AjouterBoxesModal";
 import { SupprimerBoxButton } from "./_components/SupprimerBoxButton";
 import { SupprimerBienSection } from "./_components/SupprimerBienSection";
 import { ExportCSVButton } from "@/app/loyers/_components/ExportCSVButton";
+import { PlanBoxes } from "./_components/PlanBoxes";
 
 export default async function BienDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
@@ -55,6 +56,8 @@ export default async function BienDetailPage({ params }: { params: Promise<{ id:
           {bien.tauxEmprunt != null && <Info label="Taux emprunt" valeur={`${bien.tauxEmprunt} %`} />}
           {bien.dureeEmprunt != null && <Info label="Durée emprunt" valeur={`${bien.dureeEmprunt} mois`} />}
         </div>
+
+        <PlanBoxes boxes={bien.boxes} typeBien={bien.typeBien} />
 
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">
