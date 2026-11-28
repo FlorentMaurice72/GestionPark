@@ -9,15 +9,8 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: [
-    "@prisma/client",
-    "pg",
-    "@react-pdf/renderer",
-    "@react-pdf/reconciler",
-    "@react-pdf/font",
-    "@react-pdf/layout",
-    "@react-pdf/render",
-  ],
+  serverExternalPackages: ["@prisma/client", "pg"],
+  transpilePackages: ["@react-pdf/renderer"],
   outputFileTracingIncludes: {
     "/api/quittance/[locationId]/[mois]/[annee]": ["./src/lib/pdf/fonts/**"],
     "/api/bail/[locationId]": ["./src/lib/pdf/fonts/**"],

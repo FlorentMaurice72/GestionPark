@@ -1,0 +1,31 @@
+diff --git a/node_modules/@react-pdf/reconciler/lib/index.js b/node_modules/@react-pdf/reconciler/lib/index.js
+index 2fc711e..2118696 100644
+--- a/node_modules/@react-pdf/reconciler/lib/index.js
++++ b/node_modules/@react-pdf/reconciler/lib/index.js
+@@ -1,22 +1,6 @@
+-import React from 'react';
+-import createRendererForReact19 from './reconciler-31.js';
++// Patched for React 19.2+: only load reconciler-33.js.
++// reconciler-23.js (React 18) accesses React.__SECRET_INTERNALS at module-init
++// time, which does not exist in React 19 — it crashes even when never called.
+ import createRendererForReact19_2 from './reconciler-33.js';
+-import createRendererForReact18AndLess from './reconciler-23.js';
+-
+-const [major, minor] = React.version.split('.').map((v) => parseInt(v, 10));
+-let renderer;
+-if (major >= 20 || (major === 19 && minor >= 2)) {
+-    // Use the reconciler built for 19.2, assuming it's compatible with later versions.
+-    renderer = createRendererForReact19_2;
+-}
+-else if (major === 19) {
+-    // Use the older 19.x reconciler (for 19.0.x and 19.1.x)
+-    renderer = createRendererForReact19;
+-}
+-else {
+-    // Fallback for React 18.x and previous versions.
+-    renderer = createRendererForReact18AndLess;
+-}
+-var renderer$1 = renderer;
+-
++var renderer$1 = createRendererForReact19_2;
+ export { renderer$1 as default };

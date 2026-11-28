@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate && patch-package",
     "create-admin": "tsx scripts/create-admin.ts",
     "seed-import-presets": "tsx scripts/seed-import-presets.ts"
   },
@@ -39,6 +39,7 @@
     "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
+    "patch-package": "^8.0.1",
     "tailwindcss": "^4",
     "tsx": "^4.23.1",
     "typescript": "^5"
