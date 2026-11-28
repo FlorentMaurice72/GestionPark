@@ -16,6 +16,11 @@ export function BoutonQuittance({ locationId, mois, annee }: Props) {
   async function telecharger() {
     if (loading) return;
     setLoading(true);
+
+    // Open the tab synchronously within the user gesture — popup blockers only
+    // allow window.open() in direct response to a click, before any await.
+    const win = window.open("about:blank", "_blank");
+
     try {
       // 1. Fetch quittance data from the API (pure JSON, no PDF server-side)
       const res = await fetch(`/api/quittance/${locationId}/${mois}/${annee}`);
@@ -35,11 +40,22 @@ export function BoutonQuittance({ locationId, mois, annee }: Props) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const blob = await pdf(React.createElement(QuittanceDocument, data) as any).toBlob();
 
-      // 4. Open the PDF in a new tab
+      // 4. Navigate the already-open tab to the blob URL
       const url = URL.createObjectURL(blob);
-      window.open(url, "_blank");
+      if (win && !win.closed) {
+        win.location.href = url;
+      } else {
+        // Fallback: trigger a download if the tab was closed or blocked
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `quittance-${mois}-${annee}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
       setTimeout(() => URL.revokeObjectURL(url), 30000);
     } catch (err) {
+      if (win && !win.closed) win.close();
       console.error("[quittance]", err);
       addToast("Impossible de générer la quittance.", "error");
     } finally {
